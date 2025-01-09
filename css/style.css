@@ -1,0 +1,103 @@
+body{
+    margin:0;
+    padding:0;
+    width:100%;
+    height: auto;
+}
+.container{
+    width:100%;
+    height: auto;
+    background-color: #d8e5f1;
+    padding:0;
+}
+.header{
+    height:8%;
+    background-color:#1f6625;
+}
+.btn1{
+    border:transparent;
+    background:transparent;
+    margin-left:60vw;
+    height:1vw;
+}
+.signUp{
+    height:2vw;
+    width:4vw;
+    margin-top:15px;
+}
+.logoImg{
+    height:2vw;
+    width:2vw;
+}
+.mainHeading{
+    color:white;
+    margin-left:10vw;
+
+}
+.heading{
+    margin-left:12vw;
+    margin-bottom:5%;
+    color:#1f6625;
+}
+.contentBox{
+    height:3vw;
+    width:20vw;
+    align-self: center;
+    box-shadow: #535658;
+    border :1px solid rgb(48, 48, 58);
+    border-radius: 8px; 
+}
+.contentBox:hover{
+    box-shadow: 5px 5px #c6d4c2;
+}
+.addCategoryBtn{
+    height:2vw;
+    width:5vw;
+    background: white;
+    border-radius:13px;
+    border:1px solid #1f6625; 
+    color:#1f6625;
+}
+.categoryName,.headingSignup{
+    margin-right: 20px;
+    font-size: 20px;
+    color: #1f6625;
+    margin-left:10px;
+}
+.edtButton,.dltButton,.viewButton{
+    height:25px;
+    width:25px;
+    border:1px solid #90b993;
+    margin-top: 5px;
+    margin-left: 8px;
+}
+.mainSection{
+    height :auto;
+    width : 35vw;
+    margin-left:35vw;
+    border: 1px solid transparent;
+}
+.mainSection:hover{
+    border:#9ec7a2 solid;
+}
+.logIn{
+    margin-left:70vw;
+    margin-top:10px;
+}
+.headerText{
+    color:white;
+    font-size:20px;
+}
+.btn{
+    border:1px solid #1f6625;
+    background-color:white;
+    width:15vw;
+    margin-left:5px;
+    border-radius:20px;
+}
+.abc{
+    width:40vw;
+    height:20vw;
+    background-color: white;
+    border:1px solid #90b993;
+}
