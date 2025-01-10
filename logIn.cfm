@@ -22,12 +22,12 @@
                     <h5 class = "heading fs-3 mt-2 ms-5 ps-5">LOGIN</h5>
                     <form method="post" class="ms-5 " name="form">
                         <div class="input d-flex-column">
-                            <div class="text-secondary mt-2 ms-5"> Email/Phone No</div>
+                            <div class="text-secondary mt-2 ms-3"> Email/Phone No</div>
                             <input type="text" name="userName" class="inputs ms-3">
                             <div class="error text-danger" id="usersError"></div>
                         </div>
                         <div class="input">
-                            <div class="text-secondary mt-2 ms-5"> Password </div>
+                            <div class="text-secondary mt-2 ms-3"> Password </div>
                             <input type="password" name="userPassword" class="inputs ms-3">
                             <div class="error text-danger" id="passError"></div>
                         </div>

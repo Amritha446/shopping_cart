@@ -6,7 +6,7 @@
     
     <cffunction  name="onRequest" returnType="void">
         <cfargument  name="requestPage" required="true"> 
-        <cfset local.excludePages = ["/Amritha_CF/testTask/myCart/login.cfm","/Amritha_CF/testTask/myCart/signUp.cfm"]>
+        <cfset local.excludePages = ["/Amritha_CF/testTask/myCart/shopping_cart/login.cfm","/Amritha_CF/testTask/myCart/shopping_cart/signUp.cfm"]>
         <cfif ArrayContains(local.excludePages,arguments.requestPage)>
             <cfinclude  template="#arguments.requestPage#">
         <cfelseif structKeyExists(session, "isAuthenticated")>

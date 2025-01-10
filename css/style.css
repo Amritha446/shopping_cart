@@ -41,7 +41,7 @@ body{
 }
 .contentBox{
     height:3vw;
-    width:20vw;
+    width:25vw;
     align-self: center;
     box-shadow: #535658;
     border :1px solid rgb(48, 48, 58);
@@ -50,7 +50,7 @@ body{
 .contentBox:hover{
     box-shadow: 5px 5px #c6d4c2;
 }
-.addCategoryBtn{
+.addCategoryBtn,.addSubCategoryBtn{
     height:2vw;
     width:5vw;
     background: white;
@@ -95,9 +95,20 @@ body{
     margin-left:5px;
     border-radius:20px;
 }
-.abc{
+.addBox{
+    width:30vw;
+    height:20vw;
+    margin-top:50px;
+    margin-left:30vw;
+}
+.modalData{
     width:40vw;
     height:20vw;
     background-color: white;
     border:1px solid #90b993;
+}
+.inputs{
+    width:10vw;
+    height:2vw;
+    margin-top:20px;
 }
