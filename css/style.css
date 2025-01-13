@@ -47,7 +47,7 @@ body{
     border :1px solid rgb(48, 48, 58);
     border-radius: 8px; 
 }
-.contentBox:hover{
+.contentBox,.contentBoxProduct:hover{
     box-shadow: 5px 5px #c6d4c2;
 }
 .addCategoryBtn,.addSubCategoryBtn{
@@ -111,4 +111,39 @@ body{
     width:10vw;
     height:2vw;
     margin-top:20px;
+}
+.contentBoxProduct{
+    height:4vw;
+    width:20vw;
+    align-self: center;
+    box-shadow: #535658;
+    border :1px solid rgb(48, 48, 58);
+    border-radius: 10px; 
+}
+.headEdit{
+    background-color: #daeef7;
+    color:#1f6625;
+    width:18vw;
+    height:30px;
+    margin-left:3vw;
+    align-items: center;
+}
+.textHead{
+    font-size:13px;
+    color:#1f6625;
+    margin-left:2vw;
+    margin-top:1vw;
+    font-weight:bold;
+}
+.headEditText{
+    margin-left:5vw;
+    font-weight:bold;
+    background-color:#90b993;
+}
+.btn2{
+    border:1px solid white;
+    background-color:white;
+    width:15vw;
+    margin-left:5px;
+    border-radius:20px;
 }
