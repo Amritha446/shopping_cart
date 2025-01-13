@@ -95,7 +95,7 @@
         </cfif>
     </cffunction>
 
-    <cffunction name = "viewCategoryData" access="public" returnType = "query">
+    <cffunction name = "viewCategoryData" access="public" returnType = "query" returnFormat = "json">
         <cfquery name = "viewCategory">
             SELECT fldCategory_Id,
                 fldCategoryName
@@ -158,8 +158,7 @@
             FROM 
                 shoppingcart.tblsubcategory
             WHERE 
-                fldCategoryId = <cfqueryparam value="#arguments.categoryId#" cfsqltype="cf_sql_varchar">
-                AND fldSubCategoryName = <cfqueryparam value="#arguments.subCategoryName#" cfsqltype="cf_sql_varchar">
+                fldSubCategoryName = <cfqueryparam value="#arguments.subCategoryName#" cfsqltype="cf_sql_varchar">
                 AND fldActive = 1
         </cfquery>
         <cfif local.checkSubCategory.recordCount EQ 0> 
@@ -175,19 +174,9 @@
                     <cfqueryparam value="#session.userId#" cfsqltype="cf_sql_varchar">
                 )
             </cfquery>
-            <!---<cfreturn "Inserted successfully">
-            <cfelse>
-                 <cfquery name = "updateCategory">
-                    UPDATE 
-                        shoppingcart.tblcategory
-                    SET
-                        fldActive = 1
-                    WHERE
-                        fldCategoryName = <cfqueryparam value="#arguments.categoryName#" cfsqltype="cf_sql_varchar">
-                </cfquery> 
-            </cfif>--->
+            <cfreturn "Subcategory addedd successfully">
         <cfelse>
-            <cfreturn "Subcatagory should be unique">
+            <cfreturn "Subcategory should be unique">
         </cfif>
     </cffunction>
 
@@ -204,5 +193,60 @@
                 AND fldActive = 1
         </cfquery>
         <cfreturn viewSubCategory>
+    </cffunction>
+
+    <cffunction name = "viewEachSubCategory" access = "remote" returnType = "string" returnFormat = "json">
+        <cfargument name="subCategoryId">
+        <cfquery name = "viewData">
+            SELECT
+                fldSubCategoryName
+            FROM
+                shoppingcart.tblsubcategory
+            WHERE
+                fldSubCategory_Id = <cfqueryparam value="#arguments.subCategoryId#" cfsqltype="cf_sql_varchar">
+        </cfquery>
+        <cfreturn viewData.fldSubCategoryName>
+    </cffunction>
+
+    <cffunction name = "delSubCategory" access = "remote" returnType = "void" returnFormat = "json">
+        <cfargument name="subCategoryId">
+        <cfset removedTime = "#Now()#">
+        <cfquery name = "removeSubCategory">
+            UPDATE 
+                shoppingcart.tblsubcategory
+            SET
+                fldActive = 0,
+                fldUpdatedBy = <cfqueryparam value="#session.userId#" cfsqltype="cf_sql_integer">
+            WHERE
+                fldSubCategory_Id = <cfqueryparam value="#arguments.subCategoryId#" cfsqltype="cf_sql_integer">
+        </cfquery>
+    </cffunction>
+
+    <cffunction name="updateSubCategory" access="remote" returnType="string" returnFormat="json">
+        <cfargument name="subCategoryName">
+        <cfargument name="subCategoryId">
+        <cfargument name="categoryId">
+
+        <cfquery name = "updateSubCategory">
+            UPDATE
+                shoppingcart.tblsubcategory
+            SET
+                fldCategoryId = <cfqueryparam value="#arguments.categoryId#" cfsqltype="cf_sql_integer">,
+                fldSubCategoryName = <cfqueryparam value="#arguments.subCategoryName#" cfsqltype="cf_sql_varchar">
+            WHERE
+                fldSubCategory_Id = <cfqueryparam value="#arguments.subCategoryId#" cfsqltype="cf_sql_varchar">
+        </cfquery>
+        <cfreturn "Sub-Category updated successfully!">
+    </cffunction>
+    
+    <cffunction name = "viewBrands" access = "remote" returnType = "query">
+        <cfquery name = "viewProductBrands">
+            SELECT 
+                fldBrand_Id,
+                fldBrandName
+            FROM 
+                shoppingcart.tblbrands
+        </cfquery>
+        <cfreturn viewProductBrands>
     </cffunction>
 </cfcomponent>
