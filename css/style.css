@@ -121,8 +121,8 @@ body{
     border-radius: 10px; 
 }
 .headEdit{
-    background-color: #daeef7;
-    color:#1f6625;
+   background-color: #daeef7;
+    color:#1f6625; 
     width:18vw;
     height:30px;
     margin-left:3vw;
@@ -138,7 +138,6 @@ body{
 .headEditText{
     margin-left:5vw;
     font-weight:bold;
-    background-color:#90b993;
 }
 .btn2{
     border:1px solid white;
@@ -146,4 +145,11 @@ body{
     width:15vw;
     margin-left:5px;
     border-radius:20px;
+}
+.prdctImg{
+    width:45px;
+    height:45px;
+    border-radius: 50%;
+    margin-top:9px;
+    margin-right:8px;
 }

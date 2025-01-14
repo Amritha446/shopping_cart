@@ -52,7 +52,7 @@
                                     </button>
                                 </div>
                                 <div class = "p-1">  
-                                    <button type="button" class="viewButton" id="viewBtn" onClick="redirectSubCategory(#viewCategory.fldCategory_Id#)" >
+                                    <button type="button" class="viewButton" id="viewBtn1" onClick="redirectSubCategory(#viewCategory.fldCategory_Id#)" >
                                         <i class="fa-solid fa-angle-right pe-none"></i>
                                     </button>
                                 </div>
@@ -79,6 +79,7 @@
                                 </div>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>

@@ -10,7 +10,7 @@
     </head>
     <body>
         <cfoutput>
-            <cfset categoryId = URL.categoryId>
+             <cfset categoryId = URL.categoryId>
             <div class = "container-fluid" id = "container">
                 <div class = "header d-flex col-12" id = "header">
                     <!--- <div class = "logo">
@@ -51,10 +51,14 @@
                                     </button>
                                 </div>
                                 <div class = " p-1">
-                                    <button type="submit" class="viewButton" data-bs-toggle="modal" data-bs-target="##viewProduct" 
-                                    id="viewBtn" onClick = "viewProductButton()">
-                                        <i class="fa-solid fa-angle-right"></i>
-                                    </button>
+                                    <form action = "productPage.cfm" method="GET">
+                                        <button type="submit" class="viewButton" 
+                                        id="viewBtn1" value ="#viewSubCategory.fldSubCategory_Id#" <!--- onClick = "viewProductButton1(event)" ---> >
+                                            <i class="fa-solid fa-angle-right"></i>
+                                        </button>
+                                        <input type="hidden" value="#url.categoryId#" name="categoryId">
+                                        <input type="hidden" value="#viewSubCategory.fldSubCategory_Id#" name="subCategoryId">
+                                    </form>
                                 </div>
                             </div>
                         </cfloop>
@@ -103,127 +107,7 @@
                             #result#
                             <!--- <cflocation  url="subCategory.cfm?categoryId=#categoryId#"> --->
                         </cfif>
-                        <!--- <cfset obj = createObject("component","components.myCart")>
-                        <cfset result = obj.updateSubCategory()>
-                        #obj# --->
-
-                        <div class="modal fade" id="viewProduct" tabindex="-1">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class = "categorySection d-flex">
-                                        <h5 id= "modalHeading" class = "ms-5 mt-4">PRODUCT LIST</h5>
-                                        <button type="submit" class="addSubCategoryBtn ms-4 mb-3 mt-4" id="addProductBtn" onClick="createNewProduct()"
-                                         id="createNewProductBtn">Add</button>
-                                    </div>
-                                    <div class = "contentBox h-50 d-flex mb-3 bg-success">
-                                        <div class = "d-flex-column productData">
-                                            <div class="ms-4 font-weight-bold h5">hi</div>
-                                            <div class="ms-4 h6 ">hlo</div>
-                                            <div class="ms-4 small">hlo</div>
-                                        </div>
-                                        <div class="prdctImg">
-                                            <img src="" alt="img" class = "ms-5 mt-e prdctImg">
-                                        </div>
-                                        <div class = " p-1">
-                                            <button type="submit" class="dltProductButton ms-5 mt-3" id="dltProductBtn" onClick="deleteProduct(event)"  >
-                                                <i class="fa-regular fa-trash-can pe-none"></i>
-                                            </button>
-                                            </div>
-                                            <div class = " p-1">
-                                            <button type="submit" class="viewProductButton ms-3 mt-3" data-bs-toggle="modal" data-bs-target="##viewProductDetails" 
-                                                id="viewProductBtn" onClick = "viewProductDetailsButton()">
-                                                <i class="fa-solid fa-angle-right"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="modal fade" id="viewProductDetails" tabindex="-1">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <form method="post" name="form" enctype="multipart/form-data" id="createProductData">
-                                        <input type="hidden" value="" name = "contactId" id = "contactId">
-                                        <div class="headEdit mt-1 ">
-                                            <div class="headEditText" id="heading"></div>
-                                        </div>
-                                        <div class="textHead">
-                                            PRODUCT DETAILS
-                                        </div><hr class="horizontalLine1 mt-1">                                                
-                                        
-                                        <div class="d-flex-column" id = "multiSelect">
-                                            <cfset objCreate = createObject("component","components.myCart")>
-                                            <cfset viewCategory = objCreate.viewCategoryData()>
-                                            <div class="textHead ">Category Name:</div>
-                                            <select id="categoryList" name="categoryList" class="ms-3" >
-                                                <cfloop query = #viewCategory#>
-                                                    <option value="#viewCategory.fldCategory_Id#">#viewCategory.fldCategoryName#</option>
-                                                </cfloop>
-                                            </select>
-                                        </div>
-
-                                        <div class="d-flex-column" id = "multiSelect">
-                                            <div class="textHead ">Sub-Category Name:</div>
-                                            <select id="categoryList" name="categoryList" class="ms-3">
-                                                <cfloop query = #viewSubCategory#>
-                                                    <option value="#viewSubCategory.fldSubCategory_Id#">#viewSubCategory.fldSubCategoryName#</option>
-                                                </cfloop>
-                                            </select>
-                                        </div>
-
-                                        <div class="d-flex-column">
-                                            <div class="textHead">PRODUCT NAME</div>
-                                            <input type="text" name="firstName" class="editBtn2 ms-3" id="firstName">
-                                            <div class="error text-danger" id="nameError"></div>
-                                        </div>
-
-                                        <div class="d-flex-column">
-                                            <div class="textHead">PRODUCT BRAND</div>
-                                            <select id="categoryList" name="categoryList" class="ms-3">
-                                                <cfset obj = createObject("component","components.myCart")>
-                                                <cfset brandName = obj.viewBrands()>
-                                                <cfloop query = #brandName#>
-                                                    <option value="#brandName.fldBrand_Id#">#brandName.fldBrandName#</option>
-                                                </cfloop>
-                                            </select>
-                                            <div class="error text-danger" id="brandError"></div>
-                                        </div>
-
-                                        <div class="d-flex-column">
-                                            <div class="textHead">PRODUCT DESCRIPTION</div>
-                                            <input type="text" name="firstName" class="editBtn2 ms-3" id="firstName">
-                                            <div class="error text-danger" id="descriptionError"></div>
-                                        </div>
-
-                                        <div class="d-flex-column">
-                                            <div class="textHead">PRODUCT PRICE</div>
-                                            <input type="text" name="firstName" class="editBtn2 ms-3" id="firstName">
-                                            <div class="error text-danger" id="priceError"></div>
-                                        </div>
-
-                                        <div class="d-flex ">
-                                            <div class="d-flex-column">
-                                                <div class="textHead">UPLOAD PHOTO</div>
-                                                <input type="file" class="editBtn1 ms-3 " name="img" id="img1" multiple>
-                                                <div class="error text-danger" id="imgError"></div>
-                                            </div>
-                                        </div>
-
-                                        <div class="d-flex-column">
-                                            <div class="textHead">PRODUCT TAX</div>
-                                            <input type="number" name="firstName" class="editBtn2 ms-3" id="firstName">
-                                            <div class="error text-danger" id="taxError"></div>
-                                        </div>
-
-
-                                        <button type="button" value="submit" class="btn mt-3 mb-5 ms-5" name="submit" <!--- onClick="return validation()" --->>SUBMIT</button>
-                                        <button type="button" class="btn2 btn-secondary ms-5" data-bs-dismiss="modal">Close</button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-
+                       
                     </div>
                 </div>
             </div>

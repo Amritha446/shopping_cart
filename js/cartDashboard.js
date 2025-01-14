@@ -1,3 +1,4 @@
+
 function logoutUser(){
     if(confirm("Confirm Logout?")){
         $.ajax({
@@ -129,9 +130,87 @@ function deleteSubCategory(event){
 }
 
 function createNewProduct(){
+    document.getElementById('heading').textContent = "ADD PRODUCT";
     document.getElementById('createProductData').reset();
     $('.error').text("");
-    $('#viewProductDetails').modal('show');
+    $('#editProductDetails').modal('show'); 
     
 }
 
+function editProductDetailsButton(event){
+    document.getElementById('heading').textContent = "EDIT PRODUCT";
+    document.getElementById('createProductData').reset();
+    document.getElementById('productId').value= event.target.value;
+    $('.error').text("");
+    $.ajax({
+        type:"POST",
+        url:"Components/myCart.cfc?method=viewProduct", 
+        data:{productId:event.target.value,
+            subCategoryId:document.getElementById('subCategoryIdProduct').value
+        },
+        success:function(result){
+            let formattedResult=JSON.parse(result);
+            console.log(formattedResult)
+            document.getElementById('categoryIdProduct').value = formattedResult.DATA[0][0].categoryId;
+            document.getElementById('subCategoryIdProduct').value = formattedResult.DATA[0][1].subCategoryId;
+            document.getElementById('productName').value = formattedResult.DATA[0][2].productName;
+            document.getElementById('productBrand').value = formattedResult.DATA[0][3].productBrandId;
+            document.getElementById('productDescrptn').value = formattedResult.DATA[0][4].productDescrptn;
+            document.getElementById('productPrice').value = formattedResult.DATA[0][5].productPrice;
+            document.getElementById('productTax').value = formattedResult.DATA[0][6].productTax;
+        }
+    })
+}
+
+function deleteProduct(event){
+    console.log(event.target.value)
+    if(confirm("Confirm delete?")){
+        $.ajax({
+            type:"POST",
+            url:"Components/myCart.cfc?method=delProduct",
+            data:{productId:event.target.value},
+            success:function(result){
+                event.target.parentNode.parentNode.remove()
+            }
+        })
+    }
+    else{
+        event.preventDefault()
+    }
+}
+
+    $(document).ready(function() {
+        $("#categoryIdProduct").change(function() {
+            let categoryId = this.value;
+            $.ajax({
+                type: "POST",
+                url: "./Components/myCart.cfc?method=viewSubCategoryData",
+                data: {
+                    categoryId: categoryId
+                },
+                success: function(response) {
+                    const data = JSON.parse(response);
+                    $("#subCategoryIdProduct").empty();
+                    for(let i=0; i<data.DATA.length; i++) {
+                        let subCategoryName = data.DATA[i][0];
+                        let  subCategoryId= data.DATA[i][1];
+                        let optionTag = `<option value="${subCategoryId}">${subCategoryId}</option>`;
+                        $("#subCategoryIdProduct").append(optionTag);
+                        console.log(subCategoryId)
+                    }
+                }
+            });	
+        });
+    });
+
+    /* function viewProductButton1(event){
+        $.ajax({
+            type:"POST",
+            url:"Components/myCart.cfc?method=viewProduct",
+            data:{subCategoryId:2},
+            success:function(result){
+                location.reload();
+            }
+        })
+    } */
+    
