@@ -147,9 +147,37 @@ body{
     border-radius:20px;
 }
 .prdctImg{
+     width:45px;
+    height:45px; 
+    border-radius: 50%;
+    /* margin-top:9px; */
+    margin-right:8px; 
+}
+.imgBtn{
     width:45px;
     height:45px;
     border-radius: 50%;
-    margin-top:9px;
-    margin-right:8px;
+    border:transparent;
+    background-color: transparent;
+}
+.imgBox{
+    height:20vw;
+    width:5vw;
+}
+.imageButtonDiv{
+    
+    margin-top:30px;
+}
+.btnImg2{
+    background-color: red;
+}
+.btnImg1{
+    background-color: green;
+}
+.imageShow{
+    width:200px;
+    height:200px; 
+    border:1px solid black;
+    margin-left:9vw;
+    margin-top:10px;
 }

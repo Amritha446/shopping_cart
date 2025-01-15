@@ -140,24 +140,24 @@ function createNewProduct(){
 function editProductDetailsButton(event){
     document.getElementById('heading').textContent = "EDIT PRODUCT";
     document.getElementById('createProductData').reset();
-    document.getElementById('productId').value= event.target.value;
+    document.getElementById('productId').value= event.target.value; 
     $('.error').text("");
     $.ajax({
         type:"POST",
         url:"Components/myCart.cfc?method=viewProduct", 
-        data:{productId:event.target.value,
-            subCategoryId:document.getElementById('subCategoryIdProduct').value
+        data:{productId:  event.target.value,
+            subCategoryId: new URLSearchParams(document.URL.split('?')[1]).get('subCategoryId') //passing values through url param
         },
         success:function(result){
             let formattedResult=JSON.parse(result);
             console.log(formattedResult)
-            document.getElementById('categoryIdProduct').value = formattedResult.DATA[0][0].categoryId;
-            document.getElementById('subCategoryIdProduct').value = formattedResult.DATA[0][1].subCategoryId;
-            document.getElementById('productName').value = formattedResult.DATA[0][2].productName;
-            document.getElementById('productBrand').value = formattedResult.DATA[0][3].productBrandId;
-            document.getElementById('productDescrptn').value = formattedResult.DATA[0][4].productDescrptn;
-            document.getElementById('productPrice').value = formattedResult.DATA[0][5].productPrice;
-            document.getElementById('productTax').value = formattedResult.DATA[0][6].productTax;
+            document.getElementById('productId').value = formattedResult.DATA[0][0];
+            document.getElementById('subCategoryIdProduct').value = formattedResult.DATA[0][1];
+            document.getElementById('productName').value = formattedResult.DATA[0][2];
+            document.getElementById('productBrand').value = formattedResult.DATA[0][7];
+            document.getElementById('productDescrptn').value = formattedResult.DATA[0][4];
+            document.getElementById('productPrice').value = formattedResult.DATA[0][5];
+            document.getElementById('productTax').value = formattedResult.DATA[0][6];
         }
     })
 }
@@ -203,14 +203,95 @@ function deleteProduct(event){
         });
     });
 
-    /* function viewProductButton1(event){
+    function loadProductImages() {
+        let productId = event.target.value;
+        
         $.ajax({
-            type:"POST",
-            url:"Components/myCart.cfc?method=viewProduct",
-            data:{subCategoryId:2},
-            success:function(result){
-                location.reload();
-            }
-        })
-    } */
+            url: './Components/myCart.cfc?method=getProductImages', 
+            data: { productId: productId },
+            type: 'POST',
+            success: function(response) {
+                let images = JSON.parse(response);
+                let carouselContent = '';
+                let activeClass = 'active'; // To mark the first image as active
+                console.log(images)
+                for (let i = 0; i < images.length; i++) {
+                    let image = images[i];
+                    let defaultImageClass = image.fldDefaultImage == 1 ? 'default-image' : '';
+                    
+                    // Add carousel slide
+                    carouselContent += `
+                    
+                    <div class="carousel-item ${activeClass}">
+                        <div class="d-flex imageButtonDiv">
+                            <button type="submit" class="ms-3 btnImg1 " onClick="setDefaultImage()" value="${image.fldProductImages_Id},${image.fldProductId}">Default</button>
+                            <button type="submit" class=" ms-3 btnImg2" onClick="deleteImage()" value="${image.fldProductImages_Id},${image.fldProductId}">Delete</button>
+                        </div>
+                        <img src="assets/${image.fldImageFileName}" class="d-block w-100 ${defaultImageClass}" alt="Image ${i+1}">
+                    </div>
+                    
+                    `;
+                    
+                    activeClass = '';
+                }
     
+                $('#carouselImages').html(carouselContent);
+            }
+        });
+    }
+    
+    function setDefaultImage() {
+        let currentId = event.target.value;
+        let Id = currentId.split(",")
+        let currentImageId=Id[0]
+        let currentProductId = Id[1]
+
+        if (!currentImageId) return alert('No image selected');
+    
+        $.ajax({
+            url: './Components/myCart.cfc?method=setDefaultImage',
+            type: 'POST',
+            data: { 
+                productId: currentProductId,
+                imageId: currentImageId
+            },
+            success: function(response) {
+                alert('Default image updated successfully!');
+                /* loadProductImages(currentProductId); */ // Refresh images
+            }
+        });
+    }
+    
+    function deleteImage() {
+        let currentId = event.target.value;
+        let Id = currentId.split(",")
+        let currentImageId=Id[0]
+        let currentProductId = Id[1]
+        console.log(currentImageId)
+        console.log(currentProductId)
+        if (!currentImageId) return alert('No image selected');
+    
+        if (confirm('Are you sure you want to delete this image?')) {
+            $.ajax({
+                url: './Components/myCart.cfc?method=deleteImage',
+                type: 'POST',
+                data: { 
+                    productId: currentProductId,
+                    imageId: currentImageId
+                },
+                success: function(response) {
+                    alert('Image deleted successfully!');
+                    /* loadProductImages(currentProductId); */ // Refresh images
+                }
+            });
+        }
+    }
+    
+    /* // Event listener for image clicks to set the current image ID
+    $(document).on('click', '.image-item', function() {
+        currentImageId = $(this).data('id');
+        // Highlight the selected image (optional)
+        $('.image-item').removeClass('selected');
+        $(this).addClass('selected');
+    }); */
+        

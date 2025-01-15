@@ -298,32 +298,31 @@
            <!---  <cffile  action="upload" destination="#local.path#" nameConflict="makeUnique"> --->
             <cffile  action="uploadall" destination="#local.path#" nameConflict="makeUnique" result="uploadImg">
           
-                <cfquery name = "local.prdctImg">
-                    INSERT INTO shoppingcart.tblproductimages (
-                        fldProductId, 
-                        fldImageFileName, 
-                        fldDefaultImage, 
-                        fldCreatedBy
-                    )
-                    VALUES 
-                        <cfloop array="#uploadImg#" item="item" index="i"> 
-                            (
-                                <cfqueryparam value = '#keyValue.generatedKey#' cfsqltype = "cf_sql_integer" >,
-                                <cfqueryparam value = '#item.serverFile#' cfsqltype = "cf_sql_varchar" >,
-                                <cfif i EQ 1>
-                                    <cfqueryparam value = 1 cfsqltype = "cf_sql_integer" >,
-                                <cfelse>
-                                    <cfqueryparam value = 0 cfsqltype = "cf_sql_integer" >,
-                                </cfif>
-                                <cfqueryparam value = '#session.userId#' cfsqltype = "cf_sql_integer" >
-                            )
-                            <cfif i NEQ arrayLen(uploadImg)>
-                                ,
+            <cfquery name = "local.prdctImg">
+                INSERT INTO shoppingcart.tblproductimages (
+                    fldProductId, 
+                    fldImageFileName, 
+                    fldDefaultImage, 
+                    fldCreatedBy
+                )
+                VALUES 
+                    <cfloop array="#uploadImg#" item="item" index="i"> 
+                        (
+                            <cfqueryparam value = '#keyValue.generatedKey#' cfsqltype = "cf_sql_integer" >,
+                            <cfqueryparam value = '#item.serverFile#' cfsqltype = "cf_sql_varchar" >,
+                            <cfif i EQ 1>
+                                <cfqueryparam value = 1 cfsqltype = "cf_sql_integer" >,
+                            <cfelse>
+                                <cfqueryparam value = 0 cfsqltype = "cf_sql_integer" >,
                             </cfif>
-                        </cfloop>
-                    
-                </cfquery>
-             
+                            <cfqueryparam value = '#session.userId#' cfsqltype = "cf_sql_integer" >
+                        )
+                        <cfif i NEQ arrayLen(uploadImg)>
+                            ,
+                        </cfif>
+                    </cfloop>
+                
+            </cfquery>
             <cfreturn "">
         <cfelse>
             <cfreturn "Product should be unique">
@@ -338,10 +337,11 @@
                 p.fldProduct_Id, 
                 p.fldSubCategoryid, 
                 p.fldProductName, 
-                b.fldBrandName, 
+                b.fldBrandName,
                 p.fldDescription, 
                 p.fldPrice, 
                 p.fldTax, 
+                b.fldBrand_Id,
                 i.fldProductImages_Id AS imageId,
                 i.fldImageFileName AS imageFileName
             FROM 
@@ -353,9 +353,10 @@
             WHERE
                 p.fldSubCategoryid = <cfqueryparam value="#arguments.subCategoryId#" cfsqltype="cf_sql_integer">
                 AND p.fldActive = 1
-                <cfif len(trim(arguments.productId))>
-                AND p.fldProduct_Id = <cfqueryparam value="#arguments.productId#" cfsqltype="cf_sql_integer">
-                </cfif>
+                <cfif len(trim(arguments.productId))> 
+                    AND p.fldProduct_Id = <cfqueryparam value="#arguments.productId#" cfsqltype="cf_sql_integer">
+                </cfif> 
+                AND i.fldDefaultImage = 1
             ORDER BY 
                 p.fldProduct_Id;
         </cfquery>
@@ -401,16 +402,22 @@
                 WHERE 
                     fldProduct_Id = <cfqueryparam value="#arguments.productId#" cfsqltype="cf_sql_integer">
             </cfquery>
-
-            <cfquery name="local.updateProductImage">
-                UPDATE 
-                    shoppingcart.tblproductimages
-                SET 
-                    fldImageFileName = <cfqueryparam value="#local.value#" cfsqltype="cf_sql_varchar">,
-                    fldUpdatedBy = <cfqueryparam value="#session.userId#" cfsqltype="cf_sql_integer">
-                WHERE 
-                    fldProductId = <cfqueryparam value="#arguments.productId#" cfsqltype="cf_sql_integer">
-            </cfquery>
+            <cfloop array="#uploadImg#" item="item" index="i">
+                <cfquery name="insertProductImage">
+                    INSERT INTO shoppingcart.tblproductimages (
+                        fldProductId, 
+                        fldImageFileName, 
+                        fldDefaultImage, 
+                        fldDeactivatedBy
+                    )
+                    VALUES (
+                        <cfqueryparam value="#arguments.productId#" cfsqltype="cf_sql_integer">,
+                        <cfqueryparam value="#item.serverFile#" cfsqltype="cf_sql_varchar">,
+                        0,
+                        <cfqueryparam value="#session.userId#" cfsqltype="cf_sql_integer">
+                    )
+                </cfquery>
+            </cfloop>
             <cfreturn "Product updated successfully.">
         <cfelse>
             <cfreturn "Product does not exist or is inactive.">
@@ -431,5 +438,75 @@
         </cfquery>
     </cffunction>
 
+    <cffunction name="getProductImages" returnType="array" access="remote" returnFormat="json">
+        <cfargument name="productId" >
+        <cfquery name="local.getImages" >
+            SELECT 
+                fldProductImages_Id,
+                fldImageFileName,
+                fldDefaultImage,
+                fldProductId
+            FROM 
+                shoppingcart.tblproductimages
+            WHERE 
+                fldProductId = <cfqueryparam value="#arguments.productId#" cfsqltype="cf_sql_integer">
+                AND fldActive = 1
+        </cfquery>
 
+        <cfset var images = []>
+        <cfloop query="local.getImages">
+            <cfset arrayAppend(images, {
+                "fldProductImages_Id" = getImages.fldProductImages_Id,
+                "fldImageFileName" = getImages.fldImageFileName,
+                "fldDefaultImage" = getImages.fldDefaultImage,
+                "fldProductId" = getImages.fldProductId
+            })>
+        </cfloop>
+        
+        <cfreturn images>
+    </cffunction>
+
+    <cffunction name="setDefaultImage" access="remote" returntype="void">
+        <cfargument name="productId" >
+        <cfargument name="imageId" >
+
+        <!--- Set all other images for this product to non-default --->
+        <cfquery name="local.imageSetDefault">
+            UPDATE 
+                shoppingcart.tblproductimages
+            SET 
+                fldDefaultImage = 0
+            WHERE 
+                fldProductId = <cfqueryparam value="#arguments.productId#" cfsqltype="cf_sql_integer">
+        </cfquery>
+
+        <!--- Set the selected image as the default --->
+        <cfquery name="local.defaultImageSet">
+            UPDATE 
+                shoppingcart.tblproductimages
+            SET 
+                fldDefaultImage = 1
+            WHERE 
+                fldProductId = <cfqueryparam value="#arguments.productId#" cfsqltype="cf_sql_integer">
+                AND fldProductImages_Id = <cfqueryparam value="#arguments.imageId#" cfsqltype="cf_sql_integer">
+        </cfquery>
+    </cffunction>
+
+    <cffunction name="deleteImage" access="remote" returntype="void">
+        <cfargument name="productId">
+        <cfargument name="imageId">
+
+        <!--- Delete the image --->
+        <cfquery name="local.deleteImage">
+            UPDATE 
+                shoppingcart.tblproductimages
+            SET
+                fldActive = 0,
+                fldDeactivatedBy = <cfqueryparam value="#session.userId#" cfsqltype="cf_sql_integer">
+            WHERE
+                fldProductImages_Id = <cfqueryparam value="#arguments.imageId#" cfsqltype="cf_sql_integer">
+                AND fldProductId = <cfqueryparam value="#arguments.productId#" cfsqltype="cf_sql_integer">
+        </cfquery>
+
+    </cffunction>
 </cfcomponent>
