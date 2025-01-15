@@ -3,6 +3,7 @@
         <title>signUp page</title>
         <script src = "js/jquery.min.js"></script>
         <script src="js/cartDashboard.js"></script>
+        <script src="js/validate.js"></script>
         <link href="css/bootstrap.min.css" rel="stylesheet" >
         <script src="js/bootstrap.bundle.min.js"></script>
         <link href="css/style.css" rel="stylesheet">
@@ -16,12 +17,11 @@
             <div class="container-fluid">
                 <div class="header d-flex">
                     <div class="headerText ms-5 mt-2">PRODUCT PAGE</div>
-                    <div class="logIn d-flex">
-                        <a href="login.cfm" class="link d-flex">
-                            <i class="fa-solid fa-right-to-bracket mb-1 mt-1 ms-3" style="color:##fff"></i>
-                            <div class="text-white ms-2">LogIn</div>
-                        </a>
-                    </div>
+                    <button type="button" class="btn1">
+                        <div class="signUp d-flex">
+                            <i class="fa-solid fa-right-from-bracket mb-1 mt-1" style="color:##fff"></i><div class="text-white ms-2" onClick = "logoutUser()">SignOut</div>
+                        </div>
+                    </button>
                 </div>
                 <div class="mainSection mb-5 mt-5">
                     <div class="modal-content">
@@ -67,11 +67,9 @@
                 <div class="modal fade" id="imgDetails" tabindex="-1">
                     <div class="modal-dialog">
                         <div class="modal-content">
-                            <div class = "imgBox d-flex-column">
-                                
+                            <div class = "imgBox d-flex-column"> 
                                 <div class="imageShow" id="imageShow">
-                                    
-                                     <div id="carouselExampleIndicators" class="carousel slide" >
+                                    <div id="carouselExampleIndicators" class="carousel slide" >
                                         <div class="carousel-inner" id="carouselImages">
 
                                         </div>
@@ -96,7 +94,7 @@
 
                 <div class="modal fade" id="editProductDetails" tabindex="-1">
                     <div class="modal-dialog">
-                        <div class="modal-content">
+                        <div class="modal-content d-flex justify-content-center align-items-center">
                             <form method="post" name="form" enctype="multipart/form-data" id="createProductData">
                                 <input type = "hidden" value="" name="productId" id="productId">
                                 <div class="headEdit mt-1 ">
@@ -115,6 +113,7 @@
                                             <option value="#viewCategory.fldCategory_Id#">#viewCategory.fldCategoryName#</option>
                                         </cfloop>
                                     </select>
+                                    <div class="error text-danger ms-3" id="categoryError"></div>
                                 </div>
 
                                 <div class="d-flex-column" id = "multiSelect">
@@ -126,12 +125,13 @@
                                             <option value="#viewSubCategory.fldSubCategory_Id#">#viewSubCategory.fldSubCategoryName#</option>
                                         </cfloop>
                                     </select>
+                                    <div class="error text-danger ms-3" id="subCategoryError"></div>
                                 </div>
 
                                 <div class="d-flex-column">
                                     <div class="textHead">PRODUCT NAME</div>
                                     <input type="text" name="productName" class="editBtn2 ms-3" id="productName">
-                                    <div class="error text-danger" id="nameError"></div>
+                                    <div class="error text-danger ms-3" id="productNameError"></div>
                                 </div>
 
                                 <div class="d-flex-column">
@@ -143,37 +143,37 @@
                                             <option value="#brandName.fldBrand_Id#">#brandName.fldBrandName#</option>
                                         </cfloop>
                                     </select>
-                                    <div class="error text-danger" id="brandError"></div>
+                                    <div class="error text-danger ms-3" id="brandError"></div>
                                 </div>
 
                                 <div class="d-flex-column">
                                     <div class="textHead">PRODUCT DESCRIPTION</div>
                                     <input type="text" name="productDescrptn" class="editBtn2 ms-3" id="productDescrptn">
-                                    <div class="error text-danger" id="descriptionError"></div>
+                                    <div class="error text-danger ms-3" id="descriptionError"></div>
                                 </div>
 
                                 <div class="d-flex-column">
                                     <div class="textHead">PRODUCT PRICE</div>
                                     <input type="number" name="productPrice" class="editBtn2 ms-3" id="productPrice">
-                                    <div class="error text-danger" id="priceError"></div>
+                                    <div class="error text-danger ms-3" id="priceError"></div>
                                 </div>
 
                                 <div class="d-flex ">
                                     <div class="d-flex-column">
                                         <div class="textHead">UPLOAD PRODUCT IMAGE</div>
                                         <input type="file" class="editBtn1 ms-3 " name="productImg" id="productImg" multiple>
-                                        <div class="error text-danger" id="imgError"></div>
+                                        <div class="error text-danger ms-3" id="imgError"></div>
                                     </div>
                                 </div>
 
                                 <div class="d-flex-column">
                                     <div class="textHead">PRODUCT TAX</div>
                                     <input type="number" name="productTax" class="editBtn2 ms-3" id="productTax">
-                                    <div class="error text-danger" id="taxError"></div>
+                                    <div class="error text-danger ms-3" id="taxError"></div>
                                 </div>
 
-                                <button type="submit" value="submit" class="btn mt-3 mb-5 ms-5" name="submit" <!--- onClick="return validation()" --->>SUBMIT</button>
-                                <button type="button" class="btn2 btn-secondary ms-5" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" value="submit" class="btn mt-3 mb-5 ms-5" name="submit" onClick="return validation()" >SUBMIT</button>
+                                <button type="button" class="btn2 btn-secondary ms-5" data-bs-dismiss="modal" id="closeBtnId">Close</button>
                             </form>
                         </div>
                     </div>
@@ -190,6 +190,8 @@
                 productDescrptn = form.productDescrptn,
                 productImg = form.productImg,
                 productTax = form.productTax)>
+                <cflocation  url="productPage.cfm?categoryId=#categoryId#&subCategoryId=#subCategoryId#">
+                #resultProduct#
             </cfif>  
 
             <cfif structKeyExists(form,"submit") AND form.productId != "">
@@ -203,6 +205,8 @@
                 productDescrptn = form.productDescrptn,
                 productImg = form.productImg,
                 productTax = form.productTax)>
+                <cflocation  url="productPage.cfm?categoryId=#categoryId#&subCategoryId=#subCategoryId#">
+                #resultProduct#
             </cfif>
         </cfoutput>    
     </body>

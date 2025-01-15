@@ -72,8 +72,8 @@
                     phone = form.phone ,
                     password = form.userPassword1 ,
                     confirmPassword = form.userPassword2)>
-                    
             </cfif>
+            #result#
         </cfoutput>    
     </body>
 </html>
