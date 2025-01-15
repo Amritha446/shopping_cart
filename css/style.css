@@ -140,11 +140,20 @@ body{
     font-weight:bold;
 }
 .btn2{
-    border:1px solid white;
+    border:1px solid #1f6625;
     background-color:white;
     width:15vw;
     margin-left:5px;
     border-radius:20px;
+}
+.btn3{
+    width:10vw;
+    margin-left:15px;
+    border-radius:20px; 
+    border:1px solid #1f6625;
+}
+.btn3:hover{
+    background-color:#90b993;
 }
 .prdctImg{
      width:45px;
@@ -161,7 +170,7 @@ body{
     background-color: transparent;
 }
 .imgBox{
-    height:20vw;
+    height:auto;
     width:5vw;
 }
 .imageButtonDiv{
@@ -176,7 +185,7 @@ body{
 }
 .imageShow{
     width:200px;
-    height:200px; 
+    height:auto; 
     border:1px solid black;
     margin-left:9vw;
     margin-top:10px;

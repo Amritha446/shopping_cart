@@ -158,6 +158,7 @@ function editProductDetailsButton(event){
             document.getElementById('productDescrptn').value = formattedResult.DATA[0][4];
             document.getElementById('productPrice').value = formattedResult.DATA[0][5];
             document.getElementById('productTax').value = formattedResult.DATA[0][6];
+            
         }
     })
 }
@@ -224,10 +225,13 @@ function deleteProduct(event){
                     
                     <div class="carousel-item ${activeClass}">
                         <div class="d-flex imageButtonDiv">
-                            <button type="submit" class="ms-3 btnImg1 " onClick="setDefaultImage()" value="${image.fldProductImages_Id},${image.fldProductId}">Default</button>
-                            <button type="submit" class=" ms-3 btnImg2" onClick="deleteImage()" value="${image.fldProductImages_Id},${image.fldProductId}">Delete</button>
+                            <button type="submit" class="ms-3 btnImg1 " onClick="setDefaultImage()" 
+                            value="${image.fldProductImages_Id},${image.fldProductId}">Default Set</button>
+                            <button type="submit" class=" ms-3 btnImg2" onClick="deleteImage()" 
+                            value="${image.fldProductImages_Id},${image.fldProductId}">Delete</button>
                         </div>
                         <img src="assets/${image.fldImageFileName}" class="d-block w-100 ${defaultImageClass}" alt="Image ${i+1}">
+                        <button type="button" class="btn3 btn-secondary ms-4" data-bs-dismiss="modal" id="closeBtnId">Close</button>
                     </div>
                     
                     `;
@@ -236,6 +240,7 @@ function deleteProduct(event){
                 }
     
                 $('#carouselImages').html(carouselContent);
+                
             }
         });
     }
@@ -257,6 +262,7 @@ function deleteProduct(event){
             },
             success: function(response) {
                 alert('Default image updated successfully!');
+                
                 /* loadProductImages(currentProductId); */ // Refresh images
             }
         });
@@ -281,6 +287,7 @@ function deleteProduct(event){
                 },
                 success: function(response) {
                     alert('Image deleted successfully!');
+                    
                     /* loadProductImages(currentProductId); */ // Refresh images
                 }
             });

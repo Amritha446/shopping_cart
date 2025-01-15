@@ -1,7 +1,7 @@
 <cfcomponent>
     <cffunction name = "validateLogIn" access = "public" returnType = "boolean">
-        <cfargument name="userName">
-        <cfargument name="userPassword">
+        <cfargument name="userName" required="true">
+        <cfargument name="userPassword" required="true">
        <!---  <cfset saltString = generateSecretKey(("AES"),128)> --->
         
         <cfquery name = local.saltString>
@@ -39,12 +39,12 @@
     </cffunction>
 
     <cffunction name = "signUp" access = "public" returnType = "boolean">
-        <cfargument  name="firstName">
-        <cfargument  name="lastName">
-        <cfargument  name="mail">
-        <cfargument  name="phone">
-        <cfargument  name="password">
-        <cfargument  name="confirmPassword">
+        <cfargument  name="firstName" required="true">
+        <cfargument  name="lastName" required="true">
+        <cfargument  name="mail" required="true">
+        <cfargument  name="phone" required="true">
+        <cfargument  name="password" required="true">
+        <cfargument  name="confirmPassword" required="true">
         <cfset saltString = generateSecretKey(("AES"),128)>
         <cfset saltedPassword = #arguments.password# & local.saltString.fldUserSaltString>
         <cfset local.encrypted_pass = Hash(#saltedPassword#, 'SHA-256')/>
@@ -57,7 +57,7 @@
     </cffunction>
 
     <cffunction name = "addCategory" access="public" returnType = "string">
-        <cfargument  name="categoryName">
+        <cfargument  name="categoryName" required="true">
         <cfquery name = "local.checkCategory">
             SELECT 
                 fldCategoryName    
@@ -79,17 +79,7 @@
                     <cfqueryparam value="#session.userId#" cfsqltype="cf_sql_varchar">
                 )
             </cfquery>
-            <!---<cfreturn "Inserted successfully">
-            <cfelse>
-                 <cfquery name = "updateCategory">
-                    UPDATE 
-                        shoppingcart.tblcategory
-                    SET
-                        fldActive = 1
-                    WHERE
-                        fldCategoryName = <cfqueryparam value="#arguments.categoryName#" cfsqltype="cf_sql_varchar">
-                </cfquery> 
-            </cfif>--->
+            <cfreturn "Category addedd successfully">
         <cfelse>
             <cfreturn "Category should be unique">
         </cfif>
@@ -295,7 +285,6 @@
             </cfquery>
  
             <cfset local.path = expandPath("./assets")>
-           <!---  <cffile  action="upload" destination="#local.path#" nameConflict="makeUnique"> --->
             <cffile  action="uploadall" destination="#local.path#" nameConflict="makeUnique" result="uploadImg">
           
             <cfquery name = "local.prdctImg">
@@ -462,7 +451,6 @@
                 "fldProductId" = getImages.fldProductId
             })>
         </cfloop>
-        
         <cfreturn images>
     </cffunction>
 
@@ -496,7 +484,6 @@
         <cfargument name="productId">
         <cfargument name="imageId">
 
-        <!--- Delete the image --->
         <cfquery name="local.deleteImage">
             UPDATE 
                 shoppingcart.tblproductimages

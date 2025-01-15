@@ -39,7 +39,7 @@
             <cfif structKeyExists(form,"submit")>
                 <cfset loginObj=createObject("component","components.myCart")>
                 <cfset result=loginObj.validateLogin(userName = form.userName , userPassword  = form.userPassword )>
-                <cfif  result == "true">
+                <cfif result == "true">
                     <cflocation  url="cartDashboard.cfm">
                 <cfelse>
                     <div class="text-danger">Invalid Login attempt.</div>

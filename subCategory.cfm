@@ -90,9 +90,9 @@
                                                     </div>
                                                 </div>
                                                 <button type="button" name="editSubCategorySubmit" class="btn mt-5 ms-5" onClick ="editSubCategoryFormSubmit()"
-                                                    id="editSubCategorySubmit" value="">UPDATE</div></button>
+                                                    id="editSubCategorySubmit" value="">UPDATE</button>
                                                 <button type="submit" name="addSubCategorySubmit" class="btn mt-5 ms-5"
-                                                    id="addSubCategorySubmit" value="">ADD</div></button>
+                                                    id="addSubCategorySubmit" value="">ADD</button>
                                             </div>
                                         </form>
                                     </div>
@@ -105,7 +105,7 @@
                             <cfset result = obj.addSubCategory(categoryId=form.categoryFrmSubCategory,
                                 subCategoryName=form.subCategoryName)>
                             #result#
-                            <!--- <cflocation  url="subCategory.cfm?categoryId=#categoryId#"> --->
+                            <cflocation  url="subCategory.cfm?categoryId=#categoryId#">
                         </cfif>
                        
                     </div>
