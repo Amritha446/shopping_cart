@@ -31,7 +31,7 @@
                                 id="createNewProductBtn">Add</button> <!---  id="addProductBtn" ---> 
                         </div>
                         <cfset objCreate = createObject("component","components.myCart")>
-                        <cfset viewProduct = objCreate.viewProduct(subCategoryId = subCategoryId)>
+                        <cfset viewProduct = objCreate.viewProduct(subCategoryId = url.subCategoryId)>
                         <cfloop query = "#viewProduct#">
                             <div class = "contentBox h-50 d-flex mb-3 bg-success">
                                 
@@ -41,18 +41,21 @@
                                     <div class="ms-4 small">#viewProduct.fldPrice#</div>
                                 </div>
                                 
-                                <div class="prdctImg">
-                                    <img src="assets/#viewProduct.imageFileName#" alt="img" class = "ms-5 mt-e prdctImg">
+                                <div >
+                                    <button type="submit" class="imgBtn ms-2 mt-2" data-bs-toggle="modal" data-bs-target="##imgDetails"
+                                     value = "#viewProduct.fldProduct_Id#" onClick="loadProductImages()">
+                                        <img src="assets/#viewProduct.imageFileName#" alt="img" class = "pe-none prdctImg">
+                                    </butoon>
                                 </div>
                                 <div class = " p-1">
-                                    <button type="submit" class="dltProductButton ms-5 mt-3" id="dltProductBtn" value = "#viewProduct.fldProduct_Id#" onClick="deleteProduct(event)"  >
+                                    <button type="submit" class="dltProductButton ms-5 mt-3" id="dltProductBtn" value = "#viewProduct.fldProduct_Id#" onClick="deleteProduct(event)">
                                         <i class="fa-regular fa-trash-can pe-none"></i>
                                     </button>
                                     </div>
                                     <div class = " p-1">
                                     <button type="submit" class="editProductButton ms-3 mt-3" data-bs-toggle="modal" data-bs-target="##editProductDetails" 
                                         id="editProductBtn" value = "#viewProduct.fldProduct_Id#" onClick = "editProductDetailsButton(event)">
-                                        <i class="fa-solid fa-angle-right"></i>
+                                        <i class="fa-solid fa-angle-right pe-none"></i>
                                     </button>
 
                                 </div>
@@ -60,6 +63,37 @@
                         </cfloop>
                     </div>
                 </div>
+
+                <div class="modal fade" id="imgDetails" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class = "imgBox d-flex-column">
+                                
+                                <div class="imageShow" id="imageShow">
+                                    
+                                     <div id="carouselExampleIndicators" class="carousel slide" >
+                                        <div class="carousel-inner" id="carouselImages">
+
+                                        </div>
+                                        <button class="carousel-control-prev" type="button" data-bs-target="##carouselExampleIndicators" data-bs-slide="prev">
+                                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                            <span class="visually-hidden">Previous</span>
+                                        </button>
+                                        <button class="carousel-control-next" type="button" data-bs-target="##carouselExampleIndicators" data-bs-slide="next">
+                                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                            <span class="visually-hidden">Next</span>
+                                        </button>
+                                    </div> 
+                                </div> 
+                                
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+                
+                
+
                 <div class="modal fade" id="editProductDetails" tabindex="-1">
                     <div class="modal-dialog">
                         <div class="modal-content">
@@ -85,7 +119,7 @@
 
                                 <div class="d-flex-column" id = "multiSelect">
                                     <cfset objCreate = createObject("component","components.myCart")>
-                                    <cfset viewSubCategory = objCreate.viewSubCategoryData(categoryId=url.categoryId)>
+                                    <cfset viewSubCategory = objCreate.viewSubCategoryData(categoryId = categoryId)>
                                     <div class="textHead ">Sub-Category Name:</div>
                                     <select id="subCategoryIdProduct" name="subCategoryIdProduct" class="ms-3">
                                         <cfloop query = #viewSubCategory#>
@@ -156,7 +190,6 @@
                 productDescrptn = form.productDescrptn,
                 productImg = form.productImg,
                 productTax = form.productTax)>
-                <cflocation url="subCategory.cfm">
             </cfif>  
 
             <cfif structKeyExists(form,"submit") AND form.productId != "">
@@ -170,7 +203,6 @@
                 productDescrptn = form.productDescrptn,
                 productImg = form.productImg,
                 productTax = form.productTax)>
-                <cflocation  url="subCategory.cfm">
             </cfif>
         </cfoutput>    
     </body>
