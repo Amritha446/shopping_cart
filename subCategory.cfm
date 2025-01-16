@@ -1,21 +1,9 @@
-<html>
-    <head>
-        <title>Admin-dashboard</title>
-        <link href = "css/bootstrap.min.css" rel="stylesheet" >
-        <script src = "js/bootstrap.bundle.min.js"></script>
-        <script src = "js/jquery.min.js"></script>
-        <script src = "js/cartDashboard.js"></script>
-        <link href = "css/style.css" rel="stylesheet">
-        <link rel = "stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css"/>    
-    </head>
+ 
     <body>
         <cfoutput>
-             <cfset categoryId = URL.categoryId>
+            
             <div class = "container-fluid" id = "container">
                 <div class = "header d-flex col-12" id = "header">
-                    <!--- <div class = "logo">
-                        <img src="assets/logo.jpg" class="logoImg">
-                    </div> --->
                     <div class="mainHeading ">
                         <h5 class = "ms-5 mt-3">ADD SUB-CATEGORY</h5>
                     </div>
@@ -25,6 +13,7 @@
                         </div>
                     </button>
                 </div>
+                <cfset categoryId = URL.categoryId>
                 <div class = "mainContent d-flex justify-content-center align-items-center h-50" id = "content">
                     <input type="hidden" value="" name = "categoryId1" id = "categoryId1">
                     <div class="d-flex-column">
@@ -34,8 +23,7 @@
                         </div>
 
                         <cfset objCreate = createObject("component","components.myCart")>
-                        <cfset viewSubCategory = objCreate.viewSubCategoryData(categoryId=categoryId)>
-
+                        <cfset viewSubCategory = application.myCartObj.viewSubCategoryData(categoryId=categoryId)>
                         <cfloop query = "#viewSubCategory#"> 
                             <div class = "contentBox d-flex mb-3">
                                 <div class = "col-5 categoryName" id="subCategoryName">
@@ -74,7 +62,7 @@
                                                         <div class="text-secondary mt-4 ms-5"> Enter Category Name: </div>
                                                         <!--- <input type="text" class="inputs ms-5" value="" name = "categoryFrmSubCategory" id = "categoryFrmSubCategory"> --->
                                                         <cfset objCreate = createObject("component","components.myCart")>
-                                                        <cfset viewCategory = objCreate.viewCategoryData()>
+                                                        <cfset viewCategory = application.myCartObj.viewCategoryData()>
 
                                                         <select name="categoryFrmSubCategory" id="categoryFrmSubCategory" class="inputs ms-5">
                                                             <cfloop query="#viewCategory#">
@@ -102,7 +90,7 @@
 
                         <cfif structKeyExists(form, "addSubCategorySubmit")>
                             <cfset obj = createObject("component","components.myCart")>
-                            <cfset result = obj.addSubCategory(categoryId=form.categoryFrmSubCategory,
+                            <cfset result = application.myCartObj.addSubCategory(categoryId=form.categoryFrmSubCategory,
                                 subCategoryName=form.subCategoryName)>
                             #result#
                             <cflocation  url="subCategory.cfm?categoryId=#categoryId#">

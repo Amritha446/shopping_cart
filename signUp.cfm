@@ -1,11 +1,11 @@
-<html>
+<!--- <html>
     <head>
         <title>signUp page</title>
         <script src="js/validate.js"></script>
          <link href="css/bootstrap.min.css" rel="stylesheet" >
         <script src="js/bootstrap.bundle.min.js"></script>
         <link href="css/style.css" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/> --->
     </head>
     <body>
         <cfoutput>
@@ -66,14 +66,17 @@
             </div>
             <cfif structKeyExists(form, "submit")>
                 <cfset obj=createObject("component","components.myCart")>
-                <cfset result=obj.signUp(firstName = form.firstName ,
+                <cfset result=application.myCartObj.signUp(firstName = form.firstName ,
                     lastName = form.lastName ,
                     mail = form.mail ,
                     phone = form.phone ,
                     password = form.userPassword1 ,
                     confirmPassword = form.userPassword2)>
+                <cftry>
+                    #result#
+                </cftry>
             </cfif>
-            #result#
+            
         </cfoutput>    
     </body>
 </html>

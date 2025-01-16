@@ -1,17 +1,15 @@
-<html>
+<!--- <html>
     <head>
         <title>Login page</title>
-        <link href="css/bootstrap.min.css" rel="stylesheet" >
-        <script src="js/bootstrap.bundle.min.js"></script>
-        <link href="css/style.css" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"  />
-        <script src="js/validateLogIn.js"></script>
-    </head>
+        <cfinclude template="commonLink.cfm"> 
+        <script src="js/validateLogin.js"></script> 
+    </head>--->
+    
     <body>
         <cfoutput>
             <div class="container-fluid ">
                 <div class="header d-flex">
-                    <div class="headerText ms-5 mt-2">USER LOGIN</div>
+                    <div class="headerText ms-5 mt-2">MyCart</div>
                     <div class="logIn d-flex">
                         <a href="login.cfm" class="link d-flex">
                             <i class="fa-solid fa-user mb-1 mt-1" style="color:##fff"></i><div class="text-white ms-2">SignUp</div>
@@ -37,8 +35,8 @@
                 </div>
             </div>
             <cfif structKeyExists(form,"submit")>
-                <cfset loginObj=createObject("component","components.myCart")>
-                <cfset result=loginObj.validateLogin(userName = form.userName , userPassword  = form.userPassword )>
+                <!--- <cfset loginObj=createObject("component","components.myCart")> --->
+                <cfset result=application.myCartObj.validateLogin(userName = form.userName , userPassword  = form.userPassword )>
                 <cfif result == "true">
                     <cflocation  url="cartDashboard.cfm">
                 <cfelse>
