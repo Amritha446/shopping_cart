@@ -1,12 +1,7 @@
-<html>
+<!--- <html>
     <head>
         <title>Add Catgory</title>
-        <link href = "css/bootstrap.min.css" rel="stylesheet" >
-        <script src = "js/bootstrap.bundle.min.js"></script>
-        <script src = "js/jquery.min.js"></script>
-        <script src = "js/cartDashboard.js"></script>
-        <link href = "css/style.css" rel="stylesheet">
-        <link rel = "stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css"/>    
+        <cfinclude template="commonLink.cfm">    --->
     </head>
     <body>
         <cfoutput>
@@ -30,8 +25,12 @@
             </div>
              <cfif structKeyExists(form,"submit") >
                 <cfset objCreate = createObject("component","components.myCart")>
-                <cfset result = objCreate.addCategory(categoryName = form.categoryName)>
-                <cflocation url="cartDashBoard.cfm">
+                <cfset result = application.myCartObj.addCategory(categoryName = form.categoryName)>
+                <cfif result EQ "">
+                    <cflocation url="cartDashBoard.cfm">
+                <cfelse>
+                    #result#
+                </cfif>
             </cfif>
         </cfoutput>
     </body>

@@ -26,6 +26,7 @@ function deleteCategory(event){
             data:{categoryId:event.target.value},
             success:function(result){
                 event.target.parentNode.parentNode.remove()
+                location.reload()
             }
         })
     }
