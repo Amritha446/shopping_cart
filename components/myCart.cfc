@@ -3,12 +3,12 @@
         <cfargument name="userName" required="true" type="string">
         <cfargument name="userPassword" required="true" type="string">
         <cfset saltString = generateSecretKey(("AES"),128)> 
-        <cfset var emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$">
-        <cfif (NOT REFind(emailRegex, arguments.userName)) OR (len(trim(arguments.userName)) LT 10)>
+        <!---<cfset var emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$">
+         <cfif (NOT REFind(emailRegex, arguments.userName)) OR (len(trim(arguments.userName)) LT 10)>
             <cfreturn false>
         <cfelseif arguments.userPassword EQ "">
             <cfreturn false>
-        <cfelse> 
+        <cfelse>  --->
             <cfquery name = "local.saltString" datasource = "shoppingCart">
                 SELECT 
                     fldUserSaltString 
@@ -43,29 +43,30 @@
         <!--- </cfif> --->
     </cffunction>
 
-    <!--- <cffunction name = "signUp" access = "public" returnType = "boolean">
+    <cffunction name = "signUp" access = "public" returnType = "boolean">
         <cfargument  name="firstName" required="true" type="string">
         <cfargument  name="lastName" required="true" type="string">
         <cfargument  name="mail" required="true" type="string">
         <cfargument  name="phone" required="true" type="string">
         <cfargument  name="password" required="true" type="string">
-        <cfargument  name="confirmPassword" required="true" type="string">
 
         <cfif arguments.firstName EQ "">
             <cfreturn false>
-        <cfif arguments.lastName EQ "">
+        <cfelseif arguments.lastName EQ "">
             <cfreturn false>
-        <cfif NOT isValidEmail("email",arguments.mail)>
-            <cfthrow message="Invalid email address format." />
-        <cfif len(trim(arguments.phone)) LT 10>
-            <cfthrow message="Invalid phone number." />
-        <cfif arguments.password EQ "">
+        <cfelseif NOT isValidEmail("email",arguments.mail)>
+            <!--- <cfthrow message="Invalid email address format." /> --->
+            <cfreturn false>
+        <cfelseif len(trim(arguments.phone)) LT 10>
+            <!--- <cfthrow message="Invalid phone number." /> --->
+            <cfreturn false>
+        <cfelseif arguments.password EQ "">
             <cfreturn false>
         <cfelse>
             <cfset saltString = generateSecretKey(("AES"),128)>
             <cfset saltedPassword = #arguments.password# & #saltString#>
             <cfset local.encrypted_pass = Hash(#saltedPassword#, 'SHA-256')/>
-            <cfquery = "local.queryCheck" datasource = "shoppingCart">
+            <cfquery name= "local.queryCheck" datasource = "shoppingCart">
                 SELECT 
                     fldUser_Id,
                     fldEmail,
@@ -85,17 +86,15 @@
                         fldPhone, 
                         fldRoleId, 
                         fldHashedPassword, 
-                        fldUserSaltString, 
-                        fldActive     
+                        fldUserSaltString        
                     ) VALUES (
                         <cfqueryparam value="#arguments.firstName#" cfsqltype="varchar">,
                         <cfqueryparam value="#arguments.lastName#" cfsqltype="varchar">,
                         <cfqueryparam value="#arguments.mail#" cfsqltype="varchar">,
                         <cfqueryparam value="#arguments.phone#" cfsqltype="varchar">,
-                        0,
+                        2,
                         <cfqueryparam value="#local.encrypted_pass #" cfsqltype="varchar">,
-                        <cfqueryparam value="#saltString#" cfsqltype="varchar">,
-                        1
+                        <cfqueryparam value="#saltString#" cfsqltype="varchar">
                     )
                 </cfquery>
                 <cfreturn true>
@@ -103,9 +102,9 @@
                 <cfreturn false>
             </cfif>
         </cfif>
-    </cffunction> --->
+    </cffunction> 
 
-    <cffunction  name="logout" access="remote" return="void">
+    <cffunction  name="logout" access="remote" returnType="void">
         <cfset structClear(session)>
         <cfreturn true>
     </cffunction>
@@ -150,8 +149,7 @@
             FROM 
                 shoppingcart.tblcategory
             WHERE 
-                fldCreatedBy = <cfqueryparam value="#session.userId#" cfsqltype="varchar">
-                AND fldActive = 1
+                fldActive = 1
         </cfquery>
         <cfreturn local.viewCategory>
     </cffunction>
@@ -259,7 +257,6 @@
                     shoppingcart.tblsubcategory
                 WHERE 
                     fldCategoryId = <cfqueryparam value="#arguments.categoryId#" cfsqltype="integer">
-                    AND fldCreatedBy = <cfqueryparam value="#session.userId#" cfsqltype="integer">
                     AND fldActive = 1
             </cfquery>
             <cfreturn local.viewSubCategory>
@@ -428,14 +425,14 @@
         </cfif>
     </cffunction>
 
-    <cffunction name = "viewProduct" access = "remote" returnType = "struct" returnFormat = "json">
-        <cfargument name = "subCategoryId" required="true" type="numeric">
-        <cfargument name="productId" required="false" default="" type="string">
-        <cfif (len(trim(arguments.subCategoryId)) EQ 0) AND (len(trim(arguments.productId)) EQ 0)>
+    <cffunction name = "viewProduct" access = "remote" returnType = "query" returnFormat = "json">
+        <cfargument name = "subCategoryId" default=0 required="false" type="integer">
+        <cfargument name="productId" default="" required="false" type="string">
+        <!--- <cfif (len(trim(arguments.subCategoryId)) EQ 0) AND (len(trim(arguments.productId)) EQ 0)>
             <cfset resultQuery = queryNew("Error occured!")>
             <cfset queryAddRow(resultQuery)>
             <cfreturn resultQuery>
-        <cfelse>
+        <cfelse> --->
             <cfquery name="local.viewProductDetails" datasource = "shoppingCart">
                 SELECT 
                     p.fldProduct_Id, 
@@ -455,17 +452,19 @@
                 LEFT JOIN 
                     shoppingcart.tblproductimages i ON p.fldProduct_Id = i.fldProductId 
                 WHERE
-                    p.fldSubCategoryid = <cfqueryparam value="#arguments.subCategoryId#" cfsqltype="integer">
-                    AND p.fldActive = 1
-                    <cfif len(trim(arguments.productId))> 
+                    p.fldActive = 1
+                    AND i.fldDefaultImage = 1
+                    <cfif arguments.subCategoryId NEQ 0> 
+                        AND p.fldSubCategoryid = <cfqueryparam value="#arguments.subCategoryId#" cfsqltype="integer">
+                    </cfif>
+                    <cfif len(trim(arguments.productId)) AND isNumeric(arguments.productId)> 
                         AND p.fldProduct_Id = <cfqueryparam value="#arguments.productId#" cfsqltype="integer">
                     </cfif> 
-                    AND i.fldDefaultImage = 1
                 ORDER BY 
                     p.fldProduct_Id;
             </cfquery>
             <cfreturn local.viewProductDetails>
-        </cfif>
+        <!--- </cfif> --->
     </cffunction>
 
     <cffunction name="editProduct" access="remote" returnType="string" returnFormat="json">

@@ -181,125 +181,196 @@ function deleteProduct(event){
     }
 }
 
-    $(document).ready(function() {
-        $("#categoryIdProduct").change(function() {
-            let categoryId = this.value;
-            $.ajax({
-                type: "POST",
-                url: "./Components/myCart.cfc?method=viewSubCategoryData",
-                data: {
-                    categoryId: categoryId
-                },
-                success: function(response) {
-                    const data = JSON.parse(response);
-                    $("#subCategoryIdProduct").empty();
-                    for(let i=0; i<data.DATA.length; i++) {
-                        let subCategoryName = data.DATA[i][0];
-                        let  subCategoryId= data.DATA[i][1];
-                        let optionTag = `<option value="${subCategoryId}">${subCategoryId}</option>`;
-                        $("#subCategoryIdProduct").append(optionTag);
-                        console.log(subCategoryId)
-                    }
-                }
-            });	
-        });
-    });
-
-    function loadProductImages() {
-        let productId = event.target.value;
-        
+$(document).ready(function() {
+    $("#categoryIdProduct").change(function() {
+        let categoryId = this.value;
         $.ajax({
-            url: './Components/myCart.cfc?method=getProductImages', 
-            data: { productId: productId },
-            type: 'POST',
+            type: "POST",
+            url: "./Components/myCart.cfc?method=viewSubCategoryData",
+            data: {
+                categoryId: categoryId
+            },
             success: function(response) {
-                let images = JSON.parse(response);
-                let carouselContent = '';
-                let activeClass = 'active'; // To mark the first image as active
-                console.log(images)
-                for (let i = 0; i < images.length; i++) {
-                    let image = images[i];
-                    let defaultImageClass = image.fldDefaultImage == 1 ? 'default-image' : '';
-                    
-                    // Add carousel slide
-                    carouselContent += `
-                    
-                    <div class="carousel-item ${activeClass}">
-                        <div class="d-flex imageButtonDiv">
-                            <button type="submit" class="ms-3 btnImg1 " onClick="setDefaultImage()" 
-                            value="${image.fldProductImages_Id},${image.fldProductId}">Default Set</button>
-                            <button type="submit" class=" ms-3 btnImg2" onClick="deleteImage()" 
-                            value="${image.fldProductImages_Id},${image.fldProductId}">Delete</button>
-                        </div>
-                        <img src="assets/${image.fldImageFileName}" class="d-block w-100 ${defaultImageClass}" alt="Image ${i+1}">
-                        <button type="button" class="btn3 btn-secondary ms-4" data-bs-dismiss="modal" id="closeBtnId">Close</button>
-                    </div>
-                    
-                    `;
-                    
-                    activeClass = '';
+                const data = JSON.parse(response);
+                $("#subCategoryIdProduct").empty();
+                for(let i=0; i<data.DATA.length; i++) {
+                    let subCategoryName = data.DATA[i][0];
+                    let  subCategoryId= data.DATA[i][1];
+                    let optionTag = `<option value="${subCategoryId}">${subCategoryId}</option>`;
+                    $("#subCategoryIdProduct").append(optionTag);
+                    console.log(subCategoryId)
                 }
-    
-                $('#carouselImages').html(carouselContent);
-                
             }
-        });
-    }
-    
-    function setDefaultImage() {
-        let currentId = event.target.value;
-        let Id = currentId.split(",")
-        let currentImageId=Id[0]
-        let currentProductId = Id[1]
+        });	
+    });
+});
 
-        if (!currentImageId) return alert('No image selected');
+function loadProductImages() {
+    let productId = event.target.value;
     
+    $.ajax({
+        url: './Components/myCart.cfc?method=getProductImages', 
+        data: { productId: productId },
+        type: 'POST',
+        success: function(response) {
+            let images = JSON.parse(response);
+            let carouselContent = '';
+            let activeClass = 'active'; // To mark the first image as active
+            console.log(images)
+            for (let i = 0; i < images.length; i++) {
+                let image = images[i];
+                let defaultImageClass = image.fldDefaultImage == 1 ? 'default-image' : '';
+                
+                // Add carousel slide
+                carouselContent += `
+                
+                <div class="carousel-item ${activeClass}">
+                    <div class="d-flex imageButtonDiv">
+                        <button type="submit" class="ms-3 btnImg1 " onClick="setDefaultImage()" 
+                        value="${image.fldProductImages_Id},${image.fldProductId}">Default Set</button>
+                        <button type="submit" class=" ms-3 btnImg2" onClick="deleteImage()" 
+                        value="${image.fldProductImages_Id},${image.fldProductId}">Delete</button>
+                    </div>
+                    <img src="assets/${image.fldImageFileName}" class="d-block w-100 ${defaultImageClass}" alt="Image ${i+1}">
+                    <button type="button" class="btn3 btn-secondary ms-4" data-bs-dismiss="modal" id="closeBtnId">Close</button>
+                </div>
+                
+                `;
+                
+                activeClass = '';
+            }
+
+            $('#carouselImages').html(carouselContent);
+            
+        }
+    });
+}
+    
+function setDefaultImage() {
+    let currentId = event.target.value;
+    let Id = currentId.split(",")
+    let currentImageId=Id[0]
+    let currentProductId = Id[1]
+
+    if (!currentImageId) return alert('No image selected');
+
+    $.ajax({
+        url: './Components/myCart.cfc?method=setDefaultImage',
+        type: 'POST',
+        data: { 
+            productId: currentProductId,
+            imageId: currentImageId
+        },
+        success: function(response) {
+            alert('Default image updated successfully!');
+            
+            /* loadProductImages(currentProductId); */ // Refresh images
+        }
+    });
+}
+    
+function deleteImage() {
+    let currentId = event.target.value;
+    let Id = currentId.split(",")
+    let currentImageId=Id[0]
+    let currentProductId = Id[1]
+    console.log(currentImageId)
+    console.log(currentProductId)
+    if (!currentImageId) return alert('No image selected');
+
+    if (confirm('Are you sure you want to delete this image?')) {
         $.ajax({
-            url: './Components/myCart.cfc?method=setDefaultImage',
+            url: './Components/myCart.cfc?method=deleteImage',
             type: 'POST',
             data: { 
                 productId: currentProductId,
                 imageId: currentImageId
             },
             success: function(response) {
-                alert('Default image updated successfully!');
+                alert('Image deleted successfully!');
                 
                 /* loadProductImages(currentProductId); */ // Refresh images
             }
         });
     }
+}
     
-    function deleteImage() {
-        let currentId = event.target.value;
-        let Id = currentId.split(",")
-        let currentImageId=Id[0]
-        let currentProductId = Id[1]
-        console.log(currentImageId)
-        console.log(currentProductId)
-        if (!currentImageId) return alert('No image selected');
-    
-        if (confirm('Are you sure you want to delete this image?')) {
+
+$(document).ready(function() {
+    // Hover to show subcategory
+    $('.categoryNameNavBar').hover(
+        function() {
+            var categoryId = $(this).data('category-id');
+            var subcategoryList = $('#subcategoryList_' + categoryId);
+            
+            // Fetch subcategories if not already loaded
+            if (subcategoryList.is(':empty')) {
+                $.ajax({
+                    url: './Components/myCart.cfc?method=viewSubCategoryData', 
+                    data: { categoryId: categoryId },
+                    type: 'POST', 
+                    dataType: 'json',
+                    success: function(data) {
+                        for (let i = 0; i < 5; i++) {
+                            subcategoryList.append('<div class="subcategoryItem" subcategory-id="data.DATA[i][0]">' + data.DATA[i][1]+ '</div>');
+                           
+                        }
+                    },
+                    error: function( error) {
+                        console.error('Error fetching subcategories:', error);
+                    }
+                });
+            }
+
+            subcategoryList.stop(true, true).slideDown(300);
+        },
+        function() {
+            var categoryId = $(this).data('category-id');
+            var subcategoryList = $('#subcategoryList_' + categoryId);
+            subcategoryList.stop(true, true).slideUp(300);
+        }
+)});
+
+    /* $(document).on('mouseenter click', '.subcategoryItem', function() {
+        var subcategoryId = $(this).data('subcategory-id');
+        console.log(subcategoryId)
+        var productList = $(this).next('.productList');  // This will be the adjacent product list container
+
+        // Fetch products if not already loaded
+        if (productList.length === 0) {
+            productList = $('<div class="productList"></div>').insertAfter(this); // Create and insert the product list
+        }
+
+        // Fetch the products if the product list is empty
+        if (productList.is(':empty')) {
             $.ajax({
-                url: './Components/myCart.cfc?method=deleteImage',
+                url: './Components/myCart.cfc?method=viewProduct',
+                data: { subCategoryId: subcategoryId },
                 type: 'POST',
-                data: { 
-                    productId: currentProductId,
-                    imageId: currentImageId
+                dataType: 'json',
+                success: function(data) {
+                    if (Array.isArray(data) && data.length > 0) {
+                        data.forEach(function(product) {
+                            // Append products under the subcategory
+                            productList.append('<div class="productItem">' + product.fldProductName + '</div>');
+                        });
+                    } else {
+                        productList.append('<div class="productItem">No products available.</div>');
+                    }
                 },
-                success: function(response) {
-                    alert('Image deleted successfully!');
-                    
-                    /* loadProductImages(currentProductId); */ // Refresh images
+                error: function(error) {
+                    console.error('Error fetching products:', error);
                 }
             });
         }
-    }
-    
-    /* // Event listener for image clicks to set the current image ID
-    $(document).on('click', '.image-item', function() {
-        currentImageId = $(this).data('id');
-        // Highlight the selected image (optional)
-        $('.image-item').removeClass('selected');
-        $(this).addClass('selected');
-    }); */
-        
+
+        productList.stop(true, true).slideDown(300); // Show the products list
+    });
+
+    // Hide product list when mouse leaves the subcategory
+    $(document).on('mouseleave', '.subcategoryItem', function() {
+        var productList = $(this).next('.productList');
+        productList.stop(true, true).slideUp(300); // Hide product list when hover ends
+    });
+});  */
+            

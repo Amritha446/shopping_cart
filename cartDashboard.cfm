@@ -21,7 +21,6 @@
                             </form>
                         </div>
 
-                        <cfset objCreate = createObject("component","components.myCart")>
                         <cfset viewCategory = application.myCartObj.viewCategoryData()>
 
                         <cfloop query = "#viewCategory#">

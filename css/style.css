@@ -190,3 +190,82 @@ body{
     margin-left:9vw;
     margin-top:10px;
 }
+.navBar{
+    height:40px;
+    width:100%;
+    background-color:white;
+    text-align: center;
+}
+.categoryDisplay{
+    color:white;
+    font-weight: bold;
+}
+.categoryNameNavBar {
+    cursor: pointer;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    color:#1f6625;
+}
+.subcategoryList {
+    display: none;
+    margin-left: 20px;
+    background-color: #f3eeee;
+    padding: 5px;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+.categoryDisplay:hover .subcategoryList {
+    display: block;
+}
+ /* .subcategoryList {
+    transition: all 0.3s ease;
+}  */
+.subcategoryList.show {
+    display: block;
+    max-height: 500px; 
+    overflow: hidden;
+}
+.homeImg{
+    width:100%;
+    height:25vw;
+}
+.productListing{
+    width:100%;
+    height:auto;
+    color:#1f6625;
+}
+.productContainer {
+    display: flex;
+    flex-direction: column;
+}
+.productRow {
+    display: flex;
+    /* justify-content: space-between; */
+    margin-bottom: 20px; 
+}
+.productBox {
+    width: 200px; 
+    margin: 0 10px;
+    border:1px solid rgb(82, 67, 49)
+}
+.productBoxImage {
+    width: 100%;
+    height:150px;
+
+}
+.footerSection{
+    width: 100%;
+    height: 5vw;
+    background-color: rgb(18, 32, 32);
+}
+.footer{
+    width: 100%;
+    height: 15vw;
+    background-color: rgb(41, 77, 77);
+}
+.footerHeading{
+    font-size:15px;
+    color:white;
+    margin-left:20px;
+    
+}
