@@ -199,6 +199,7 @@ body{
 .categoryDisplay{
     color:white;
     font-weight: bold;
+    position: relative;
 }
 .categoryNameNavBar {
     cursor: pointer;
@@ -206,18 +207,48 @@ body{
     margin-bottom: 10px;
     color:#1f6625;
 }
-.subcategoryList {
+.subCategoryMenu {
     display: none;
-    margin-left: 20px;
-    background-color: #f3eeee;
-    padding: 5px;
-    border-radius: 5px;
-    margin-top: 10px;
+    position: absolute;
+    background-color: #f9f9f9;
+    z-index: 1000;
+    padding: 10px;
+    width: 200px;
 }
-.categoryDisplay:hover .subcategoryList {
+.categoryNameNavBar:hover + .subCategoryMenu {
     display: block;
 }
- /* .subcategoryList {
+.navBarButton{
+    background-color:white;
+    border:1px solid white;
+    color:#1f6625;
+    text-decoration:none;
+}
+/* .subCategoryMenu a {
+    display: block;
+    padding: 5px;
+    text-decoration: none;
+    color: #591bca;
+} 
+.subCategoryMenu a:hover {
+    background-color: #8fdf99;
+} */
+.subcategory-item {
+    padding: 10px;
+    margin: 5px 0;
+    background-color: #1f6625;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.subcategory-item:hover {
+    background-color: #b33434;
+} 
+/*.categoryDisplay:hover .subcategoryList {
+    display: block;
+}
+  .subcategoryList {
     transition: all 0.3s ease;
 }  */
 .subcategoryList.show {
@@ -238,9 +269,11 @@ body{
     display: flex;
     flex-direction: column;
 }
+.productBox:hover{
+    box-shadow: 5px 5px 2px 2px #cee4c8;
+}
 .productRow {
     display: flex;
-    /* justify-content: space-between; */
     margin-bottom: 20px; 
 }
 .productBox {
@@ -268,4 +301,28 @@ body{
     color:white;
     margin-left:20px;
     
+}
+/* .subcategoryList {
+    display: none;
+    margin-left: 20px;
+    background-color: #f3eeee;
+    padding: 5px;
+    border-radius: 5px;
+    margin-top: 10px;
+} */
+.filterButton{
+    margin-left:60vw;
+    border:1px solid white;
+    color:#1f6625;
+    padding:10px;
+    border-radius:10px;
+}
+/* .modal-dialog{
+    margin-right:1%;
+    margin-top:10%;
+    width:20vw;
+} */
+.imageLink{
+    text-decoration:none;
+    color:#1f6625;
 }

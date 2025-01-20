@@ -294,26 +294,26 @@ function deleteImage() {
         });
     }
 }
-    
-
-$(document).ready(function() {
+/*$(document).ready(function() {
     // Hover to show subcategory
     $('.categoryNameNavBar').hover(
         function() {
             var categoryId = $(this).data('category-id');
             var subcategoryList = $('#subcategoryList_' + categoryId);
-            
+           
             // Fetch subcategories if not already loaded
             if (subcategoryList.is(':empty')) {
+                
                 $.ajax({
                     url: './Components/myCart.cfc?method=viewSubCategoryData', 
                     data: { categoryId: categoryId },
                     type: 'POST', 
                     dataType: 'json',
                     success: function(data) {
+                        console.log(categoryId)
                         for (let i = 0; i < 5; i++) {
                             subcategoryList.append('<div class="subcategoryItem" subcategory-id="data.DATA[i][0]">' + data.DATA[i][1]+ '</div>');
-                           
+                           console.log(data.DATA[i][1])
                         }
                     },
                     error: function( error) {
@@ -331,7 +331,7 @@ $(document).ready(function() {
         }
 )});
 
-    /* $(document).on('mouseenter click', '.subcategoryItem', function() {
+     $(document).on('mouseenter click', '.subcategoryItem', function() {
         var subcategoryId = $(this).data('subcategory-id');
         console.log(subcategoryId)
         var productList = $(this).next('.productList');  // This will be the adjacent product list container

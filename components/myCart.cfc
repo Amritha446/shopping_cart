@@ -428,6 +428,11 @@
     <cffunction name = "viewProduct" access = "remote" returnType = "query" returnFormat = "json">
         <cfargument name = "subCategoryId" default=0 required="false" type="integer">
         <cfargument name="productId" default="" required="false" type="string">
+        <cfargument name="sort" type="numeric" required="false" default=0>
+        <cfargument name="min" type="numeric" required="false" default="0">
+        <cfargument name="max" type="numeric" required="false" default="0">
+        <cfargument name="minRange" type="numeric" required="false" default="0">
+        <cfargument name="maxRange" type="numeric" required="false" default="0">
         <!--- <cfif (len(trim(arguments.subCategoryId)) EQ 0) AND (len(trim(arguments.productId)) EQ 0)>
             <cfset resultQuery = queryNew("Error occured!")>
             <cfset queryAddRow(resultQuery)>
@@ -459,9 +464,23 @@
                     </cfif>
                     <cfif len(trim(arguments.productId)) AND isNumeric(arguments.productId)> 
                         AND p.fldProduct_Id = <cfqueryparam value="#arguments.productId#" cfsqltype="integer">
-                    </cfif> 
+                    </cfif>
+                    <cfif arguments.max NEQ 0> 
+                        AND p.fldPrice 
+                            BETWEEN #arguments.min# AND #arguments.max#
+                    </cfif>
+                    <cfif arguments.maxRange NEQ 0> 
+                        AND p.fldPrice 
+                            BETWEEN #arguments.minRange# AND #arguments.maxRange#
+                    </cfif>
                 ORDER BY 
-                    p.fldProduct_Id;
+                    <cfif arguments.sort EQ 2>
+                        p.fldPrice ASC
+                    <cfelseif arguments.sort EQ 1>
+                        p.fldPrice DESC
+                    <cfelse>
+                        p.fldProduct_Id
+                    </cfif>
             </cfquery>
             <cfreturn local.viewProductDetails>
         <!--- </cfif> --->
