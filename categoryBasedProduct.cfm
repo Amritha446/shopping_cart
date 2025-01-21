@@ -14,17 +14,16 @@
                     <cfset viewCategory = application.myCartObj.viewCategoryData()>
                     <cfloop query="#viewCategory#">
                         <div class="categoryDisplay ms-5 me-5 d-flex">
-                            <div class="categoryNameNavBar p-1" data-category-id="#viewCategory.fldCategory_Id#" id="categoryNameNavBar">
+                            <div class="categoryNameNavBar p-1" data-category-id="#viewCategory.fldCategory_Id#">
                                 <a href="categoryBasedProduct.cfm?categoryId=#viewCategory.fldCategory_Id#" class="navBarButton">#viewCategory.fldCategoryName#</a>
-                            </div>
-                            <div class="subCategoryMenu" id="subCategoryMenu-#viewCategory.fldCategory_Id#" 
-                                data-category-id="#viewCategory.fldCategory_Id#">
-                                <cfset subCategories = application.myCartObj.viewSubCategoryData(viewCategory.fldCategory_Id)>
-                                <cfloop query="#subCategories#">
-                                    <div class="subcategory-item" data-subcategory-id="#fldSubCategory_Id#">
-                                        #fldSubCategoryName#
-                                    </div>
-                                </cfloop>
+                                <div class="subCategoryMenu">
+                                    <cfset subCategories = application.myCartObj.viewSubCategoryData(categoryId = viewCategory.fldCategory_Id)>
+                                    <cfloop query="#subCategories#">
+                                        <a href="filterProduct.cfm?subCategoryId=#subCategories.fldSubCategory_Id#" class="subcategory-item">
+                                            #subCategories.fldSubCategoryName#
+                                        </a>
+                                    </cfloop>
+                                </div>
                             </div>
                         </div>
                     </cfloop>

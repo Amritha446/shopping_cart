@@ -294,83 +294,34 @@ function deleteImage() {
         });
     }
 }
-/*$(document).ready(function() {
-    // Hover to show subcategory
-    $('.categoryNameNavBar').hover(
-        function() {
-            var categoryId = $(this).data('category-id');
-            var subcategoryList = $('#subcategoryList_' + categoryId);
-           
-            // Fetch subcategories if not already loaded
-            if (subcategoryList.is(':empty')) {
-                
-                $.ajax({
-                    url: './Components/myCart.cfc?method=viewSubCategoryData', 
-                    data: { categoryId: categoryId },
-                    type: 'POST', 
-                    dataType: 'json',
-                    success: function(data) {
-                        console.log(categoryId)
-                        for (let i = 0; i < 5; i++) {
-                            subcategoryList.append('<div class="subcategoryItem" subcategory-id="data.DATA[i][0]">' + data.DATA[i][1]+ '</div>');
-                           console.log(data.DATA[i][1])
-                        }
-                    },
-                    error: function( error) {
-                        console.error('Error fetching subcategories:', error);
-                    }
-                });
-            }
 
-            subcategoryList.stop(true, true).slideDown(300);
-        },
-        function() {
-            var categoryId = $(this).data('category-id');
-            var subcategoryList = $('#subcategoryList_' + categoryId);
-            subcategoryList.stop(true, true).slideUp(300);
+let currentIndex = 0;
+let images = []; 
+let mainImage = document.getElementById('main-image');
+let thumbnailImages = document.querySelectorAll('.thumbnail');
+
+// Function to change the main image when a thumbnail is clicked
+function changeMainImage(thumbnail) {
+    let mainImage = document.getElementById('main-image');
+    let newImageSrc = thumbnail.src; 
+    mainImage.src = newImageSrc; 
+    
+    images.forEach((img, index) => {
+        if (img === newImageSrc) {
+            currentIndex = index;
         }
-)});
-
-     $(document).on('mouseenter click', '.subcategoryItem', function() {
-        var subcategoryId = $(this).data('subcategory-id');
-        console.log(subcategoryId)
-        var productList = $(this).next('.productList');  // This will be the adjacent product list container
-
-        // Fetch products if not already loaded
-        if (productList.length === 0) {
-            productList = $('<div class="productList"></div>').insertAfter(this); // Create and insert the product list
-        }
-
-        // Fetch the products if the product list is empty
-        if (productList.is(':empty')) {
-            $.ajax({
-                url: './Components/myCart.cfc?method=viewProduct',
-                data: { subCategoryId: subcategoryId },
-                type: 'POST',
-                dataType: 'json',
-                success: function(data) {
-                    if (Array.isArray(data) && data.length > 0) {
-                        data.forEach(function(product) {
-                            // Append products under the subcategory
-                            productList.append('<div class="productItem">' + product.fldProductName + '</div>');
-                        });
-                    } else {
-                        productList.append('<div class="productItem">No products available.</div>');
-                    }
-                },
-                error: function(error) {
-                    console.error('Error fetching products:', error);
-                }
-            });
-        }
-
-        productList.stop(true, true).slideDown(300); // Show the products list
     });
+}
 
-    // Hide product list when mouse leaves the subcategory
-    $(document).on('mouseleave', '.subcategoryItem', function() {
-        var productList = $(this).next('.productList');
-        productList.stop(true, true).slideUp(300); // Hide product list when hover ends
+window.onload = function() {
+    thumbnailImages = document.querySelectorAll('.thumbnail');
+    thumbnailImages.forEach(thumbnail => {
+        thumbnail.addEventListener('click', function() {
+            changeMainImage(thumbnail);
+        });
     });
-});  */
+};
+
+
+
             

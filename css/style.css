@@ -173,8 +173,7 @@ body{
     height:auto;
     width:5vw;
 }
-.imageButtonDiv{
-    
+.imageButtonDiv{  
     margin-top:30px;
 }
 .btnImg2{
@@ -190,22 +189,26 @@ body{
     margin-left:9vw;
     margin-top:10px;
 }
-.navBar{
-    height:40px;
-    width:100%;
-    background-color:white;
+.navBar {
+    height: 40px;
+    width: 100%;
+    background-color: white;
     text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
-.categoryDisplay{
-    color:white;
+.categoryDisplay {
+    color: white;
     font-weight: bold;
-    position: relative;
+    position:relative;
 }
 .categoryNameNavBar {
     cursor: pointer;
     border-radius: 5px;
     margin-bottom: 10px;
-    color:#1f6625;
+    color: #1f6625;
+    position: relative; 
 }
 .subCategoryMenu {
     display: none;
@@ -214,25 +217,27 @@ body{
     z-index: 1000;
     padding: 10px;
     width: 200px;
+    border: 1px solid #ddd;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
-.categoryNameNavBar:hover + .subCategoryMenu {
+.categoryNameNavBar:hover .subCategoryMenu {
     display: block;
 }
-.navBarButton{
-    background-color:white;
-    border:1px solid white;
-    color:#1f6625;
-    text-decoration:none;
+.navBarButton {
+    background-color: white;
+    border: 1px solid white;
+    color: #1f6625;
+    text-decoration: none;
 }
-/* .subCategoryMenu a {
+.subCategoryMenu a {
     display: block;
     padding: 5px;
     text-decoration: none;
-    color: #591bca;
-} 
+    color: #f6f5f8;
+}
 .subCategoryMenu a:hover {
     background-color: #8fdf99;
-} */
+}
 .subcategory-item {
     padding: 10px;
     margin: 5px 0;
@@ -241,20 +246,8 @@ body{
     border-radius: 5px;
     cursor: pointer;
 }
-
 .subcategory-item:hover {
-    background-color: #b33434;
-} 
-/*.categoryDisplay:hover .subcategoryList {
-    display: block;
-}
-  .subcategoryList {
-    transition: all 0.3s ease;
-}  */
-.subcategoryList.show {
-    display: block;
-    max-height: 500px; 
-    overflow: hidden;
+    background-color: #58c75e;
 }
 .homeImg{
     width:100%;
@@ -302,14 +295,6 @@ body{
     margin-left:20px;
     
 }
-/* .subcategoryList {
-    display: none;
-    margin-left: 20px;
-    background-color: #f3eeee;
-    padding: 5px;
-    border-radius: 5px;
-    margin-top: 10px;
-} */
 .filterButton{
     margin-left:60vw;
     border:1px solid white;
@@ -317,12 +302,79 @@ body{
     padding:10px;
     border-radius:10px;
 }
-/* .modal-dialog{
-    margin-right:1%;
-    margin-top:10%;
-    width:20vw;
-} */
 .imageLink{
     text-decoration:none;
     color:#1f6625;
 }
+
+.product-container { 
+    text-align: center;
+    margin-left:70px;
+    height:30vw;
+    width:30vw;
+}
+
+.main-image-container {
+    overflow: hidden;
+    width:30vw;
+}
+
+#main-image {
+    width: 80%;
+    display: block;
+}
+.thumbnails {
+    display: flex;
+    justify-content:inherit;
+    gap: 10px;
+}
+.thumbnail {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+.thumbnail:hover {
+    transform: scale(1.1);
+}
+.buyProduct{
+    width:80px;
+    background-color:#1f6625;
+    border-radius:8px;
+    margin:10px;
+    font-weight: 600;
+    color:#ddd;
+}
+.addToCart{
+    width:80px;
+    background-color:#3327dd;
+    border-radius:8px;
+    margin:10px;
+    font-weight: 600;
+    color:#ddd;
+}
+.productDetails{
+    margin-left:20vw;
+    margin-top:2vw;
+}
+.productName{
+    color:#1f6625;
+    font-weight: 500;
+    font-size:25px;
+}
+.productBrandName{
+    color:#1f6625;
+} 
+.productDescription{
+    font-size:17px;
+    font-weight: 300;
+    color:#1f6625;
+}  
+.productPrice{
+    font-size: 15px;
+    color:#1f6625;
+    font-weight: 500;
+}  
+
+

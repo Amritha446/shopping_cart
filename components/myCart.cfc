@@ -426,13 +426,15 @@
     </cffunction>
 
     <cffunction name = "viewProduct" access = "remote" returnType = "query" returnFormat = "json">
-        <cfargument name = "subCategoryId" default=0 required="false" type="integer">
+        <cfargument name ="subCategoryId" default=0 required="false" type="integer">
         <cfargument name="productId" default="" required="false" type="string">
         <cfargument name="sort" type="numeric" required="false" default=0>
-        <cfargument name="min" type="numeric" required="false" default="0">
-        <cfargument name="max" type="numeric" required="false" default="0">
-        <cfargument name="minRange" type="numeric" required="false" default="0">
-        <cfargument name="maxRange" type="numeric" required="false" default="0">
+        <cfargument name="min" type="numeric" required="false" default=0>
+        <cfargument name="max" type="numeric" required="false" default=0>
+        <cfargument name="minRange" type="numeric" required="false" default=0>
+        <cfargument name="maxRange" type="numeric" required="false" default=0>
+        <cfargument name="random" type="numeric" required="false" default=0>
+        <cfargument name="searchTerm" type="string" required="false" default="">
         <!--- <cfif (len(trim(arguments.subCategoryId)) EQ 0) AND (len(trim(arguments.productId)) EQ 0)>
             <cfset resultQuery = queryNew("Error occured!")>
             <cfset queryAddRow(resultQuery)>
@@ -458,20 +460,26 @@
                     shoppingcart.tblproductimages i ON p.fldProduct_Id = i.fldProductId 
                 WHERE
                     p.fldActive = 1
-                    AND i.fldDefaultImage = 1
+                    <cfif arguments.random EQ 0>
+                        AND i.fldDefaultImage = 1
+                    </cfif>
                     <cfif arguments.subCategoryId NEQ 0> 
                         AND p.fldSubCategoryid = <cfqueryparam value="#arguments.subCategoryId#" cfsqltype="integer">
                     </cfif>
                     <cfif len(trim(arguments.productId)) AND isNumeric(arguments.productId)> 
                         AND p.fldProduct_Id = <cfqueryparam value="#arguments.productId#" cfsqltype="integer">
                     </cfif>
-                    <cfif arguments.max NEQ 0> 
-                        AND p.fldPrice 
-                            BETWEEN #arguments.min# AND #arguments.max#
+                    <cfif arguments.max NEQ 0 AND arguments.min NEQ 0> 
+                        AND p.fldPrice >= <cfqueryparam value="#arguments.min#" cfsqltype="integer"> 
+                            AND p.fldPrice <= <cfqueryparam value="#arguments.max#" cfsqltype="integer">
                     </cfif>
-                    <cfif arguments.maxRange NEQ 0> 
-                        AND p.fldPrice 
-                            BETWEEN #arguments.minRange# AND #arguments.maxRange#
+                    <cfif arguments.maxRange NEQ 0 AND arguments.minRange NEQ 0> 
+                        AND p.fldPrice >= <cfqueryparam value="#arguments.minRange#" cfsqltype="integer">       
+                            AND p.fldPrice <= <cfqueryparam value="#arguments.maxRange#" cfsqltype="integer">
+                    </cfif>
+                    <cfif len(trim(arguments.searchTerm))> 
+                        AND (p.fldProductName LIKE <cfqueryparam value="%#arguments.searchTerm#%" cfsqltype="varchar">
+                        OR p.fldDescription LIKE <cfqueryparam value="%#arguments.searchTerm#%" cfsqltype="varchar">)
                     </cfif>
                 ORDER BY 
                     <cfif arguments.sort EQ 2>
@@ -481,6 +489,8 @@
                     <cfelse>
                         p.fldProduct_Id
                     </cfif>
+                    ,i.fldDefaultImage DESC,
+                    i.fldProductImages_Id ASC
             </cfquery>
             <cfreturn local.viewProductDetails>
         <!--- </cfif> --->
