@@ -20,7 +20,8 @@
 
         <cfargument  name="requestPage" required="true"> 
         <cfset onApplicationStart()>
-        <cfset local.excludePages = ["/Amritha_CF/testTask/myCart/shopping_cart/login.cfm","/Amritha_CF/testTask/myCart/shopping_cart/signUp.cfm","/Amritha_CF/testTask/myCart/shopping_cart/homePage.cfm","/Amritha_CF/testTask/myCart/shopping_cart/categoryBasedProduct.cfm"]>
+        <cfset local.excludePages = ["/Amritha_CF/testTask/myCart/shopping_cart/login.cfm","/Amritha_CF/testTask/myCart/shopping_cart/signUp.cfm","/Amritha_CF/testTask/myCart/shopping_cart/homePage.cfm",
+        "/Amritha_CF/testTask/myCart/shopping_cart/categoryBasedProduct.cfm","/Amritha_CF/testTask/myCart/shopping_cart/productDetails.cfm"]>
         <cfset local.adminPages = ["/Amritha_CF/testTask/myCart/shopping_cart/cartDashboard.cfm","/Amritha_CF/testTask/myCart/shopping_cart/addCategory.cfm",
         "/Amritha_CF/testTask/myCart/shopping_cart/productPage.cfm","/Amritha_CF/testTask/myCart/shopping_cart/subCategory.cfm"]>
         <cfif ArrayContains(local.excludePages,arguments.requestPage)>

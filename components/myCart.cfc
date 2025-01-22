@@ -462,6 +462,8 @@
                     p.fldActive = 1
                     <cfif arguments.random EQ 0>
                         AND i.fldDefaultImage = 1
+                    <cfelse>
+                        AND i.fldActive = 1
                     </cfif>
                     <cfif arguments.subCategoryId NEQ 0> 
                         AND p.fldSubCategoryid = <cfqueryparam value="#arguments.subCategoryId#" cfsqltype="integer">

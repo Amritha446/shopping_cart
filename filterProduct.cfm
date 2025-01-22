@@ -1,12 +1,23 @@
 </head>
     <body>
         <cfoutput>
+            <cfparam name="url.searchTerm" default="">
             <div class="container-fluid ">
-                <div class="header d-flex">
-                    <div class="headerText ms-5 mt-2">MyCart</div>
-                    <button type="button" class="btn1">
-                        <div class="signUp d-flex ms-5">
-                            <i class="fa-solid fa-right-from-bracket mb-1 mt-1 pe-none ms-5" style="color:##fff"></i><div class="text-white ms-2" onClick = "logoutUser()">SignOut</div>
+                <div class="header d-flex text-align-center">
+                    <div class="headerText ms-5 mt-2 col-6">MyCart</div>
+                    <div class="input-group mt-2 ms-5 ">
+                        <form action="homePage.cfm?searchTerm=#url.searchTerm#" method="get">
+                            <input class="form-control border rounded-pill" type="search" name="searchTerm" value="#url.searchTerm#" id="example-search-input" placeholder="Serach..">
+                        </form>
+                    </div>
+                    <div><i class="fa-solid fa-cart-shopping me-2 mt-2 p-2" style="color: ##fff"></i></div>
+                    <div class="profile d-flex me-5 mt-1 text-light p-2">
+                        <div class="me-1 ">Profile</div>
+                        <i class="fa-regular fa-user mt-1"></i>
+                    </div>
+                    <button type="button" class="logOutBtn p-1 col-1">
+                        <div class="signUp d-flex">
+                            <i class="fa-solid fa-right-from-bracket mb-1 mt-2" style="color:##fff"></i><div class="text-white footerContent mt-2 ms-1" onClick = "logoutUser()">LOGOUT</div>
                         </div>
                     </button>
                 </div>
@@ -35,15 +46,19 @@
                         </div>
                     </cfloop>
                 </div>
-
                 <div class="productListingBasedCategory"> 
                     <cfset viewCategory = application.myCartObj.viewCategoryData()>
+                    <cfset viewData = application.myCartObj.viewSubCategoryData(categoryId = #viewCategory.fldCategory_Id#)>
                     <cfloop query="#viewCategory#">
                         <cfset viewData = application.myCartObj.viewSubCategoryData(categoryId = #viewCategory.fldCategory_Id#)>
                         <cfloop query="#viewData#">
                             <cfif viewData.fldSubCategory_Id EQ subCategoryId>
+                                <div class="productPath">
+                                    <a href="homePage.cfm" class="navBarButton ms-2">home</a>
+                                    ><a href="categoryBasedProduct.cfm?categoryId=#viewCategory.fldCategory_Id#" class="navBarButton ms-2">#viewCategory.fldCategoryName#</a>
+                                    ><a href="filterProduct.cfm?subCategoryId=#subCategoryId#" class="navBarButton ms-2">#viewData.fldSubCategoryName#</a>
+                                </div> 
                                 <h5 class="navBarButton ms-5 mt-2">#viewData.fldSubCategoryName#</h5>
-                                
                                 <div class="filterProduct d-flex ms-5">
                                     <div class="filterLink ms-2">
                                         <a href="filterProduct.cfm?subCategoryId=#viewData.fldSubCategory_Id#&sort=1" class="navBarButton">Price High To Low</a>
@@ -62,19 +77,19 @@
                                                     <label for="selectedValue">Select min value:</label>
                                                     <select name="min" id="selectedValueMin" class="mb-1">
                                                         <option value="0" default>0</option>
-                                                        <option value="1000">1000</option>
                                                         <option value="5000">5000</option>
-                                                        <option value="10000">10000</option>
                                                         <option value="15000">15000</option>
+                                                        <option value="35000">35000</option>
+                                                        <option value="50000">50000</option>
                                                     </select>
                                                     <label for="selectedValue">Select max value:</label>
                                                     <select name="max" id="selectedValueMax" class="mt-1 mb-2">
                                                         <option value="0" default>0</option>
-                                                        <option value="1000">1000</option>
-                                                        <option value="5000">5000</option>
                                                         <option value="10000">10000</option>
-                                                        <option value="15000">15000</option>
                                                         <option value="20000">20000</option>
+                                                        <option value="40000">40000</option>
+                                                        <option value="80000">80000</option>
+                                                        <option value="150000">150000</option>
                                                     </select>
                                                     <input type="number" name="minRange" placeholder="Min" class="ms-2" value="0">
                                                     <div class="ms-5 filterText"> To </div>
@@ -85,7 +100,7 @@
                                                     <button type="submit" class="mt-2 " name="filterSubmit">Submit</button>
                                                 </div>
                                             </form>
-                                        </div>
+                                        </div>  
                                     </div>
                                 </div>
                                <cfif structKeyExists(form, "filterSubmit")> 
@@ -98,7 +113,9 @@
                                     <cfset viewProduct = application.myCartObj.viewProduct(subCategoryId = #viewData.fldSubCategory_Id#,
                                                                                             sort = url.sort)>
                                 </cfif>
-
+                                <cfif url.searchTerm NEQ "">
+                                    <cfset viewProduct = application.myCartObj.viewProduct(searchTerm=url.searchTerm)>
+                                </cfif>
                                 <div class="productContainer mt-2 ms-5">
                                     <cfset currentRow = 1>
                                     <cfloop query="viewProduct">
@@ -111,18 +128,88 @@
                                         <div class="productBox d-flex-column">
                                             <a href="productDetails.cfm?productId=#viewProduct.fldProduct_Id#&random=1" class="imageLink">
                                                 <img src="assets/#viewProduct.imageFileName#" alt="img" class="productBoxImage">
+                                                <div class="ms-4 font-weight-bold h5">#viewProduct.fldProductName#</div>
+                                                <div class="ms-4 h6 ">#viewProduct.fldBrandName#</div>
+                                                <div class="ms-4 small">$#viewProduct.fldPrice#</div>
                                             </a>
-                                            <div class="ms-4 font-weight-bold h5">#viewProduct.fldProductName#</div>
-                                            <div class="ms-4 h6">#viewProduct.fldBrandName#</div>
-                                            <div class="ms-4 small">$#viewProduct.fldPrice#</div>
                                         </div>
                                         <cfset currentRow = currentRow + 1>
                                     </cfloop>
                                 </div>
-
                             </cfif>
                         </cfloop>
                     </cfloop>
+                </div>
+                <div class="footerSection D-FLEX mt-5">
+                    <div class="footerHeading ms-5 mt-4">
+                        <a href="logIn.cfm" class="footerHeading">BECOME A SELLER</a>
+                    </div>
+                    <div class="footerHeading ms-5 mt-4">
+                        ADVERTISE
+                    </div>
+                    <div class="footerHeading ms-5 mt-4">
+                        GIFT CARD
+                    </div>
+                    <div class="footerHeading ms-5 mt-4">
+                        HELP CENTER
+                    </div>
+                    <div class="footerHeading ms-5 mt-4">
+                       <img src="assets1/6.PNG" class="ms-5" alt="img">
+                    </div>
+                </div>
+                <div class="footer d-flex">
+                    <div class="d-flex-column footerBlock mt-3 ms-5 me-3">
+                        <div class="footerHeading mb-3"> ABOUT</div>
+                        <div class="footerContent mb-3">CONTACT US</div>
+                        <div class="footerContent mb-3">ABOUT US</div>
+                        <div class="footerContent mb-3"> CAREERS</div>
+                        <div class="footerContent mb-3">FLIPKART STORIES</div>
+                        <div class="footerContent mb-3">PRESS</div>
+                    </div>
+                    <div class="d-flex-column footerBlock mt-3 ms-5 me-3">
+                        <div class="footerHeading mb-3"> GROUP COMPANIES</div>
+                        <div class="footerContent mb-3">MYNTRAA</div>
+                        <div class="footerContent mb-3">SHOPSY</div>
+                    </div>
+                    <div class="d-flex-column footerBlock mt-3 ms-5 me-3">
+                        <div class="footerHeading mb-3"> CONSUMER POLICY</div>
+                        <div class="footerContent mb-3">CONTACT US</div>
+                        <div class="footerContent mb-3">ABOUT US</div>
+                        <div class="footerContent mb-3"> CAREERS</div>
+                        <div class="footerContent mb-3">FLIPKART STORIES</div>
+                        <div class="footerContent mb-3">PRESS</div>
+                    </div>
+                    <div class="d-flex-column footerBlock mt-3 ms-5 me-3">
+                        <div class="footerHeading mb-3"> HELP</div>
+                        <div class="footerContent mb-3">PAYMENTS</div>
+                        <div class="footerContent mb-3">SHIPPING</div>
+                        <div class="footerContent mb-3">CANCELLATION</div>
+                        <div class="footerContent mb-3">RETURNS</div>
+                        <div class="footerContent mb-3">FAQ</div>
+                    </div>
+                    <div class="d-flex-column footerBlock mt-3 ms-5 me-3">
+                        <div class="footerHeading mb-3">SOCIAL</div>
+                        <div class="footerContent mb-3">CONTACT US</div>
+                        <div class="footerContent mb-3">ABOUT US</div>
+                        <div class="footerContent mb-3"> CAREERS</div>
+                        <div class="footerContent mb-3">FLIPKART STORIES</div>
+                        <div class="footerContent mb-3">PRESS</div>
+                    </div>
+                    <div class="d-flex-column footerBlock mt-3 ms-5 me-3">
+                        <div class="footerHeading mb-3"> OTHER APPS</div>
+                        <div class="footerContent mb-3">FLIPKART</div>
+                        <div class="footerContent mb-3">AMAZON</div>
+                        <div class="footerContent mb-3">MYNTRAA</div>
+                        <div class="footerContent mb-3">SHOPSY</div>
+                    </div>
+                    <div class="d-flex-column footerBlock mt-3 ms-5 me-3">
+                        <div class="footerHeading mb-3"> POLICY DETAILS</div>
+                        <div class="footerContent mb-3">CONTACT US</div>
+                        <div class="footerContent mb-3">ABOUT US</div>
+                        <div class="footerContent mb-3"> CAREERS</div>
+                        <div class="footerContent mb-3">FLIPKART STORIES</div>
+                        <div class="footerContent mb-3">PRESS</div>
+                    </div>
                 </div>
             </div>
         </cfoutput>

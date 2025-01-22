@@ -1,11 +1,28 @@
 </head>
     <body>
         <cfoutput>
+            <cfparam name="url.searchTerm" default="">
             <cfset productId = url.productId>
+
             <cfparam name="url.random" default=0>
             <div class="container-fluid ">
-                <div class="header d-flex">
-                    <div class="headerText ms-5 mt-2">MyCart</div>
+                <div class="header d-flex text-align-center">
+                    <div class="headerText ms-5 mt-2 col-6">MyCart</div>
+                    <div class="input-group mt-2 ms-5 ">
+                        <form action="homePage.cfm?searchTerm=#url.searchTerm#" method="get">
+                            <input class="form-control border rounded-pill" type="search" name="searchTerm" value="#url.searchTerm#" id="example-search-input" placeholder="Serach..">
+                        </form>
+                    </div>
+                    <div><i class="fa-solid fa-cart-shopping me-2 mt-2 p-2" style="color: ##fff"></i></div>
+                    <div class="profile d-flex me-5 mt-1 text-light p-2">
+                        <div class="me-1 ">Profile</div>
+                        <i class="fa-regular fa-user mt-1"></i>
+                    </div>
+                    <button type="button" class="logOutBtn p-1 col-1">
+                        <div class="signUp d-flex">
+                            <i class="fa-solid fa-right-from-bracket mb-1 mt-2" style="color:##fff"></i><div class="text-white footerContent mt-2 ms-1" onClick = "logoutUser()">LOGOUT</div>
+                        </div>
+                    </button>
                 </div>
                 <div class="navBar">
                     <cfset viewCategory = application.myCartObj.viewCategoryData()>
@@ -28,31 +45,116 @@
                 
                 <cfset viewProduct = application.myCartObj.viewProduct(productId = #url.ProductId#,
                                                                           random = url.random)>
-                <div class="d-flex">
-                <div class="product-container d-flex">
-                    <div class="d-flex-column">
-                        <div class="main-image-container">
-                            <img src="assets/#viewProduct.imageFileName#" alt="Main Product Image" id="main-image">
-                        </div>
+                <cfif url.searchTerm NEQ "">
+                    <cfset viewProduct = application.myCartObj.viewProduct(searchTerm=url.searchTerm)>
+                </cfif>
+                <cfset subCategories = application.myCartObj.viewSubCategoryData(categoryId = viewCategory.fldCategory_Id)>
+                
+                <div class="d-flex productSection">
+                    <div class="product-container d-flex">
+                        <div class="d-flex-column">
+                            <div class="main-image-container">
+                                <img src="assets/#viewProduct.imageFileName#" alt="Main Product Image" id="main-image">
+                            </div>
 
-                        <div class="thumbnails">
-                            <cfloop query="#viewProduct#">
-                                <img class="thumbnail" src="assets/#viewProduct.imageFileName#" alt="Thumbnail Image" onclick="changeMainImage(this)">
-                            </cfloop>
-                        </div>
-                        <div class="d-flex">
-                            <button type="submit" class="buyProduct">BUY NOW</button>
-                            <button type="submit" class="addToCart">ADD TO CART</button>
-                        </div>
+                            <div class="thumbnails p-2 ms-4">
+                                <cfloop query="#viewProduct#">
+                                    <img class="thumbnail" src="assets/#viewProduct.imageFileName#" alt="Thumbnail Image" onclick="changeMainImage(this)">
+                                </cfloop>
+                            </div>
+                            <div class="d-flex ms-4">
+                                <button type="submit" class="buyProduct">BUY NOW</button>
+                                <button type="submit" class="addToCart">ADD TO CART</button>
+                            </div>
+                        </div>   
                     </div>
                     
-                </div>
-                <div class="d-flex-column productDetails">
+                    <div class="d-flex-column productDetails">
+
+                        <div class="productPath p-1 ">
+                            <a href="homePage.cfm" class="navBarButton ms-2">home</a>
+                            ><a href="categoryBasedProduct.cfm?categoryId=#viewCategory.fldCategory_Id#" class="navBarButton ms-2">#viewCategory.fldCategoryName#</a>
+                            ><a href="filterProduct.cfm?subCategoryId=#subCategories.fldSubCategory_Id#" class="navBarButton ms-2">#subCategories.fldSubCategoryName#</a>
+                            ><a href="productDetails.cfm?productId=#productId#" class="navBarButton ms-2">#viewProduct.fldBrandName#</a>
+                        </div>   
+
                         <div class="productName">#viewProduct.fldProductName#</div>
                         <div class="productBrandName">#viewProduct.fldBrandName#</div>
                         <div class="productDescription">About Product:#viewProduct.fldDescription#</div>
-                        <div class="productPrice">#viewProduct.fldPrice#</div>
+                        <div class="productPrice">Product Price:#viewProduct.fldPrice#</div>
+                        <div class="productDescription">Product Tax:#viewProduct.fldTax#%</div>
+                    </div>
                 </div>
+                <div class="footerSection d-flex mt-5">
+                    <div class="footerHeading ms-5 mt-4">
+                        <a href="logIn.cfm" class="footerHeading">BECOME A SELLER</a>
+                    </div>
+                    <div class="footerHeading ms-5 mt-4">
+                        ADVERTISE
+                    </div>
+                    <div class="footerHeading ms-5 mt-4">
+                        GIFT CARD
+                    </div>
+                    <div class="footerHeading ms-5 mt-4">
+                        HELP CENTER
+                    </div>
+                    <div class="footerHeading ms-5 mt-4">
+                       <img src="assets1/6.PNG" class="ms-5" alt="img">
+                    </div>
+                </div>
+                <div class="footer d-flex">
+                    <div class="d-flex-column footerBlock mt-3 ms-5 me-3">
+                        <div class="footerHeading mb-3"> ABOUT</div>
+                        <div class="footerContent mb-3">CONTACT US</div>
+                        <div class="footerContent mb-3">ABOUT US</div>
+                        <div class="footerContent mb-3"> CAREERS</div>
+                        <div class="footerContent mb-3">FLIPKART STORIES</div>
+                        <div class="footerContent mb-3">PRESS</div>
+                    </div>
+                    <div class="d-flex-column footerBlock mt-3 ms-5 me-3">
+                        <div class="footerHeading mb-3"> GROUP COMPANIES</div>
+                        <div class="footerContent mb-3">MYNTRAA</div>
+                        <div class="footerContent mb-3">SHOPSY</div>
+                    </div>
+                    <div class="d-flex-column footerBlock mt-3 ms-5 me-3">
+                        <div class="footerHeading mb-3"> CONSUMER POLICY</div>
+                        <div class="footerContent mb-3">CONTACT US</div>
+                        <div class="footerContent mb-3">ABOUT US</div>
+                        <div class="footerContent mb-3"> CAREERS</div>
+                        <div class="footerContent mb-3">FLIPKART STORIES</div>
+                        <div class="footerContent mb-3">PRESS</div>
+                    </div>
+                    <div class="d-flex-column footerBlock mt-3 ms-5 me-3">
+                        <div class="footerHeading mb-3"> HELP</div>
+                        <div class="footerContent mb-3">PAYMENTS</div>
+                        <div class="footerContent mb-3">SHIPPING</div>
+                        <div class="footerContent mb-3">CANCELLATION</div>
+                        <div class="footerContent mb-3">RETURNS</div>
+                        <div class="footerContent mb-3">FAQ</div>
+                    </div>
+                    <div class="d-flex-column footerBlock mt-3 ms-5 me-3">
+                        <div class="footerHeading mb-3">SOCIAL</div>
+                        <div class="footerContent mb-3">CONTACT US</div>
+                        <div class="footerContent mb-3">ABOUT US</div>
+                        <div class="footerContent mb-3"> CAREERS</div>
+                        <div class="footerContent mb-3">FLIPKART STORIES</div>
+                        <div class="footerContent mb-3">PRESS</div>
+                    </div>
+                    <div class="d-flex-column footerBlock mt-3 ms-5 me-3">
+                        <div class="footerHeading mb-3"> OTHER APPS</div>
+                        <div class="footerContent mb-3">FLIPKART</div>
+                        <div class="footerContent mb-3">AMAZON</div>
+                        <div class="footerContent mb-3">MYNTRAA</div>
+                        <div class="footerContent mb-3">SHOPSY</div>
+                    </div>
+                    <div class="d-flex-column footerBlock mt-3 ms-5 me-3">
+                        <div class="footerHeading mb-3"> POLICY DETAILS</div>
+                        <div class="footerContent mb-3">CONTACT US</div>
+                        <div class="footerContent mb-3">ABOUT US</div>
+                        <div class="footerContent mb-3"> CAREERS</div>
+                        <div class="footerContent mb-3">FLIPKART STORIES</div>
+                        <div class="footerContent mb-3">PRESS</div>
+                    </div>
                 </div>
             </div>
         </cfoutput>
