@@ -3,17 +3,17 @@
         <cfoutput>
             <cfparam name="url.searchTerm" default="">
             <cfset productId = url.productId>
-
             <cfparam name="url.random" default=0>
             <div class="container-fluid ">
                 <div class="header d-flex text-align-center">
+                    <cfset cartData = application.myCartObj.viewCartData()>
                     <div class="headerText ms-5 mt-2 col-6">MyCart</div>
                     <div class="input-group mt-2 ms-5 ">
                         <form action="homePage.cfm?searchTerm=#url.searchTerm#" method="get">
                             <input class="form-control border rounded-pill" type="search" name="searchTerm" value="#url.searchTerm#" id="example-search-input" placeholder="Serach..">
                         </form>
                     </div>
-                    <div><i class="fa-solid fa-cart-shopping me-2 mt-2 p-2" style="color: ##fff"></i></div>
+                   <div><i class="fa badge fa-lg mt-3" value=#cartData.recordCount#>&##xf07a;</i></div>
                     <div class="profile d-flex me-5 mt-1 text-light p-2">
                         <div class="me-1 ">Profile</div>
                         <i class="fa-regular fa-user mt-1"></i>
@@ -64,20 +64,21 @@
                             </div>
                             <div class="d-flex ms-4">
                                 <button type="submit" class="buyProduct">BUY NOW</button>
-                                <button type="submit" class="addToCart">ADD TO CART</button>
+                                <button type="submit" class="addToCart" value=#url.productId# onClick="addProductToCart(event)" >ADD TO CART</button>
                             </div>
                         </div>   
                     </div>
                     
+                    
                     <div class="d-flex-column productDetails">
-
+                    <cfset subCategoryFetching = application.myCartObj.subCategoryFetching(subCategoryId = #viewProduct.fldSubCategoryId#)>
+                    <cfset categoryFetching = application.myCartObj.categoryFetching(categoryId = #subCategoryFetching.fldCategoryId#)>
                         <div class="productPath p-1 ">
                             <a href="homePage.cfm" class="navBarButton ms-2">home</a>
-                            ><a href="categoryBasedProduct.cfm?categoryId=#viewCategory.fldCategory_Id#" class="navBarButton ms-2">#viewCategory.fldCategoryName#</a>
-                            ><a href="filterProduct.cfm?subCategoryId=#subCategories.fldSubCategory_Id#" class="navBarButton ms-2">#subCategories.fldSubCategoryName#</a>
+                            ><a href="categoryBasedProduct.cfm?categoryId=#categoryFetching.fldCategory_Id#" class="navBarButton ms-2">#categoryFetching.fldCategoryName#</a>
+                            ><a href="filterProduct.cfm?subCategoryId=#viewProduct.fldSubCategoryId#" class="navBarButton ms-2">#subCategoryFetching.fldSubCategoryName#</a>
                             ><a href="productDetails.cfm?productId=#productId#" class="navBarButton ms-2">#viewProduct.fldBrandName#</a>
-                        </div>   
-
+                        </div>
                         <div class="productName">#viewProduct.fldProductName#</div>
                         <div class="productBrandName">#viewProduct.fldBrandName#</div>
                         <div class="productDescription">About Product:#viewProduct.fldDescription#</div>
@@ -85,6 +86,7 @@
                         <div class="productDescription">Product Tax:#viewProduct.fldTax#%</div>
                     </div>
                 </div>
+                
                 <div class="footerSection d-flex mt-5">
                     <div class="footerHeading ms-5 mt-4">
                         <a href="logIn.cfm" class="footerHeading">BECOME A SELLER</a>

@@ -1,23 +1,19 @@
-    
-    
-    </head>
+</head>
     <body>
         <cfoutput>
             <cfparam name="url.searchTerm" default="">
             <div class="container-fluid ">
+                <cfset cartData = application.myCartObj.viewCartData()>
                 <div class="header d-flex text-align-center">
-                    <cfset cartData = application.myCartObj.viewCartData()>
                     <div class="headerText ms-5 mt-2 col-6">MyCart</div>
                     <div class="input-group mt-2 ms-5 ">
                         <form action="homePage.cfm?searchTerm=#url.searchTerm#" method="get">
                             <input class="form-control border rounded-pill" type="search" name="searchTerm" value="#url.searchTerm#" id="example-search-input" placeholder="Serach..">
                         </form>
                     </div>
-                    <cfif session.isAuthenticated EQ true>
-                        <div><i class="fa badge fa-lg mt-3" value=#cartData.recordCount#>&##xf07a;</i></div>
-                    <cfelse>
-                         <div><i class="fa-solid fa-cart-shopping me-2 mt-2 p-2" style="color: ##fff"></i></div>
-                    </cfif>
+
+                    <div><i class="fa badge fa-lg mt-3" value=#cartData.recordCount#>&##xf07a;</i></div>
+
                     <div class="profile d-flex me-5 mt-1 text-light p-2">
                         <div class="me-1 ">Profile</div>
                         <i class="fa-regular fa-user mt-1"></i>
@@ -28,7 +24,6 @@
                         </div>
                     </button>
                 </div>
-                
                 <div class="navBar">
                     <cfset viewCategory = application.myCartObj.viewCategoryData()>
                     <cfloop query="#viewCategory#">
@@ -47,89 +42,35 @@
                         </div>
                     </cfloop>
                 </div>
-
-                <!--- <div class="homeImg">
-                    <img src="assets1/home.jpeg" alt="img" class="homeImg">
-                </div> --->
-
-                <div id="homeCarousel" class="carousel slide">
-                    <div class="carousel-indicators">
-                        <button type="button" data-bs-target="##homeCarousel" data-bs-slide-to="0" class="active" aria-current="true"></button>
-                        <button type="button" data-bs-target="##homeCarousel" data-bs-slide-to="1"></button>
-                        <button type="button" data-bs-target="##homeCarousel" data-bs-slide-to="2"></button>
-                    </div>
-                    <div class="carouselMainBox">
-                        <div class="carousel-item active">
-                            <img src="assets1/home.jpeg" class="d-block w-100" alt="Image 1">
-                        </div>
-                        <div class="carousel-item">
-                            <img src="assets1/home1.jpg" class="d-block w-100" alt="Image 2">
-                        </div>
-                        <div class="carousel-item">
-                            <img src="assets1/form2.jpg" class="d-block w-100" alt="Image 3">
-                        </div>
-                    </div>
-
-                    <button class="carousel-control-prev" type="button" data-bs-target="##homeCarousel" data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Previous</span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="##homeCarousel" data-bs-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Next</span>
-                    </button>
-                </div>
-
-                <div class="productListing d-flex-column">
-                    <h6 class="mt-3 ms-3">RANDOM PRODUCTS</h6>
-                    <cfset viewProduct = application.myCartObj.viewProduct()>
-                    <cfif url.searchTerm NEQ "">
-                        <cfset viewProduct = application.myCartObj.viewProduct(searchTerm=url.searchTerm)>
-                    </cfif>
-                    <cfif viewProduct.recordCount GT 0>
-                        <div class="productContainer">
-                            <cfloop query="viewProduct"> 
-                                <cfif currentRow LTE 5>
-                                    <cfif (currentRow mod 5) EQ 1>
-                                        <cfif currentRow GT 1>
-                                            </div>
-                                        </cfif>
-                                        <div class="productRow d-flex"> 
-                                    </cfif>
-                                    
-                                    <div class="productBox d-flex-column">
-                                        <a href="productDetails.cfm?productId=#viewProduct.fldProduct_Id#&random=1" class="imageLink">
-                                            <img src="assets/#viewProduct.imageFileName#" alt="img" class="productBoxImage">
-                                            <div class="ms-4 font-weight-bold h5">#viewProduct.fldProductName#</div>
-                                            <div class="ms-4 h6 ">#viewProduct.fldBrandName#</div>
-                                            <div class="ms-4 small">$#viewProduct.fldPrice#</div>
-                                        </a>
+                <div class="d-flex">
+                    <!--- <h5 class="m-4 text-success pb-3 ms-5">CART ITEMS</h5> --->
+                    <cfset cartData = application.myCartObj.viewCartData()>
+                    <div class="cartContainer d-flex-column">
+                        <!--- <cfdump  var="#cartData#"> --->
+                        <cfloop query="#cartData#">
+                            <div class="cart-item d-flex ms-5">
+                                <div class="d-flex-column">
+                                    <img src="assets/#cartData.fldImageFileName#" alt="img" class="productBoxImage"> 
+                                    <div class="ms-4 font-weight-bold h5">#cartData.fldProductName#</div>
+                                    <div class="quantity ms-5">
+                                        <button class="decrement" onClick="decrementQuantity(event)">-</button>
+                                        <span class="quantity-number">1</span>
+                                        <button class="increment" onClick="incrementQuantity(event)">+</button>
                                     </div>
-                                </cfif>
-
-                                <!-- hidden products -->
-                                <cfif currentRow GT 5>
-                                    <div class="productBox d-flex-column hiddenProduct">
-                                        <a href="productDetails.cfm?productId=#viewProduct.fldProduct_Id#&random=1" class="imageLink">
-                                            <img src="assets/#viewProduct.imageFileName#" alt="img" class="productBoxImage">
-                                            <div class="ms-4 font-weight-bold h5">#viewProduct.fldProductName#</div>
-                                            <div class="ms-4 h6 ">#viewProduct.fldBrandName#</div>
-                                            <div class="ms-4 small">$#viewProduct.fldPrice#</div>
-                                        </a>
-                                    </div>
-                                </cfif>
-                                <cfset currentRow = currentRow + 1>
-                            </cfloop>
-                            <cfif currentRow GT 6>
-                                <button type="button" class="viewMoreButton" onclick="toggleProducts()">View</button>
-                            </cfif>
-                        </div> 
-                    <cfelse>
-                        <h6 class="mt-3 ms-3 text-danger">NO RESULT'S FOUND WITH #url.searchTerm#..</h6>
-                    </cfif>
+                                    <div class="productPrice ms-3">Product Price:$#cartData.fldPrice#</div>
+                                    <div class="totalPrice ms-3 text-success">Total Price:$#cartData.fldPrice#</div>
+                                    <button type="submit" class="buyProduct" value=#cartData.fldCart_Id# onClick="removeCartProduct(event)" >REMOVE</button>
+                                </div>
+                            </div>
+                        </cfloop>  
+                    </div>
+                    <div class="priceDetails">
+                        <h6 class="text-success ms-5">Bought Together</h6>
+                        <div class="priceDetailsHeading ms-3">Total Price:</div>
+                        <button type="submit" class="placeOrder">PLACE ORDER</button> 
+                    </div>
                 </div>
-
-                <div class="footerSection D-FLEX">
+                <div class="footerSection d-flex mt-5">
                     <div class="footerHeading ms-5 mt-4">
                         <a href="logIn.cfm" class="footerHeading">BECOME A SELLER</a>
                     </div>

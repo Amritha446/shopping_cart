@@ -4,13 +4,14 @@
             <cfparam name="url.searchTerm" default="">
             <div class="container-fluid ">
                 <div class="header d-flex text-align-center">
+                    <cfset cartData = application.myCartObj.viewCartData()>
                     <div class="headerText ms-5 mt-2 col-6">MyCart</div>
                     <div class="input-group mt-2 ms-5 ">
                         <form action="homePage.cfm?searchTerm=#url.searchTerm#" method="get">
                             <input class="form-control border rounded-pill" type="search" name="searchTerm" value="#url.searchTerm#" id="example-search-input" placeholder="Serach..">
                         </form>
                     </div>
-                    <div><i class="fa-solid fa-cart-shopping me-2 mt-2 p-2" style="color: ##fff"></i></div>
+                    <div><i class="fa badge fa-lg mt-3" value=#cartData.recordCount#>&##xf07a;</i></div>
                     <div class="profile d-flex me-5 mt-1 text-light p-2">
                         <div class="me-1 ">Profile</div>
                         <i class="fa-regular fa-user mt-1"></i>

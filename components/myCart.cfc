@@ -443,7 +443,7 @@
             <cfquery name="local.viewProductDetails" datasource = "shoppingCart">
                 SELECT 
                     p.fldProduct_Id, 
-                    p.fldSubCategoryid, 
+                    p.fldSubCategoryId, 
                     p.fldProductName, 
                     b.fldBrandName,
                     p.fldDescription, 
@@ -496,6 +496,34 @@
             </cfquery>
             <cfreturn local.viewProductDetails>
         <!--- </cfif> --->
+    </cffunction>
+
+    <cffunction name="subCategoryFetching" access = "remote" returnType = "query" returnFormat = "json">
+        <cfargument name="subCategoryId" type="string" required="true">
+        <cfquery name="local.checkProduct" datasource = "shoppingCart">
+            SELECT 
+                fldCategoryId,
+                fldSubCategoryName
+            FROM 
+                shoppingcart.tblsubcategory
+            WHERE 
+                fldSubCategory_Id = <cfqueryparam value="#arguments.subCategoryId#" cfsqltype="integer">
+            </cfquery>
+            <cfreturn local.checkProduct>
+    </cffunction>
+
+    <cffunction name="categoryFetching" access = "remote" returnType = "query" returnFormat = "json">
+        <cfargument name="categoryId" type="string" required="true">
+        <cfquery name="local.checkProduct" datasource = "shoppingCart">
+            SELECT 
+                fldCategory_Id,
+                fldCategoryName
+            FROM 
+                shoppingcart.tblcategory
+            WHERE 
+                fldCategory_Id = <cfqueryparam value="#arguments.categoryId#" cfsqltype="integer">
+            </cfquery>
+            <cfreturn local.checkProduct>
     </cffunction>
 
     <cffunction name="editProduct" access="remote" returnType="string" returnFormat="json">
@@ -677,5 +705,62 @@
             </cfquery>
             <cfreturn void>
         </cfif>
+    </cffunction>
+
+    <cffunction name="addToCart" access="remote" returnType="string" returnFormat="json">
+        <cfargument name="productId" required="true" type="numeric">
+        <cfif session.isAuthenticated EQ true>
+            <cfquery name="addProductToCart" datasource = "shoppingCart">
+                INSERT INTO `shoppingcart`.`tblcart`(
+                    `fldUserId`,
+                    `fldProductId`,
+                    `fldQuantity`
+                    ) 
+                VALUES (
+                    <cfqueryparam value="#session.userId#" cfsqltype="varchar">,
+                    <cfqueryparam value="#arguments.productId#" cfsqltype="integer">,
+                    1
+                )
+            </cfquery>
+        <cfelse>
+            <cflocation url="logIn.cfm">
+        </cfif>
+    </cffunction>
+
+    <cffunction name="viewCartData" access="remote" returnType="query" returnFormat="json">
+        <cfquery name="viewCart" datasource = "shoppingCart">
+            SELECT 
+                c.fldCart_Id,
+                c.fldQuantity,
+                p.fldProduct_Id,
+                p.fldProductName,
+                p.fldDescription,
+                p.fldPrice,
+                p.fldTax,
+                pi.fldDefaultImage,
+                pi.fldImageFileName
+            FROM 
+                shoppingcart.tblcart c
+            LEFT JOIN 
+                shoppingcart.tblproduct p 
+                ON c.fldProductId = p.fldProduct_Id
+            LEFT JOIN 
+                shoppingcart.tblproductimages pi 
+                ON p.fldProduct_Id = pi.fldProductId
+            WHERE 
+                c.fldUserId = <cfqueryparam value="#session.userId#" cfsqltype="varchar">
+                AND  pi.fldDefaultImage = 1
+        </cfquery>
+        <cfreturn viewCart>
+    </cffunction>
+
+    <cffunction name ="removeCartProduct" access="remote" returnType = "void" returnFormat="json">
+        <cfargument name="cartId" required="true" type="numeric">
+        <cfquery name="removeCartData" datasource = "shoppingCart">
+            DELETE
+                FROM shoppingcart.tblcart 
+            WHERE
+                fldCart_Id = <cfqueryparam value="#arguments.cartId#" cfsqltype="integer">
+        </cfquery>
     </cffunction>
 </cfcomponent>
