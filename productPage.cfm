@@ -1,18 +1,10 @@
-<html>
+<!--- <html>
     <head>
         <title>signUp page</title>
-        <script src = "js/jquery.min.js"></script>
-        <script src="js/cartDashboard.js"></script>
-        <script src="js/validate.js"></script>
-        <link href="css/bootstrap.min.css" rel="stylesheet" >
-        <script src="js/bootstrap.bundle.min.js"></script>
-        <link href="css/style.css" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
-    </head>
+        <cfinclude template="commonLink.cfm">
+    </head> --->
     <body>
         <cfoutput>
-            <cfset categoryId = URL.categoryId> 
-            <cfset subCategoryId = URL.subCategoryId>
             
             <div class="container-fluid">
                 <div class="header d-flex">
@@ -23,6 +15,9 @@
                         </div>
                     </button>
                 </div>
+                <cfset categoryId = URL.categoryId> 
+                <cfset subCategoryId = URL.subCategoryId>
+            
                 <div class="mainSection mb-5 mt-5">
                     <div class="modal-content">
                         <div class = "categorySection d-flex">
@@ -33,15 +28,14 @@
                         <cfset objCreate = createObject("component","components.myCart")>
                         <cfset viewProduct = objCreate.viewProduct(subCategoryId = url.subCategoryId)>
                         <cfloop query = "#viewProduct#">
-                            <div class = "contentBox h-50 d-flex mb-3 bg-success">
-                                
+                            <div class = "contentBox h-50 d-flex mb-3 bg-success"> 
                                 <div class = "d-flex-column productData">
                                     <div class="ms-4 font-weight-bold h5">#viewProduct.fldProductName#</div>
                                     <div class="ms-4 h6 ">#viewProduct.fldBrandName#</div>
                                     <div class="ms-4 small">#viewProduct.fldPrice#</div>
                                 </div>
                                 
-                                <div >
+                                <div>
                                     <button type="submit" class="imgBtn ms-2 mt-2" data-bs-toggle="modal" data-bs-target="##imgDetails"
                                      value = "#viewProduct.fldProduct_Id#" onClick="loadProductImages()">
                                         <img src="assets/#viewProduct.imageFileName#" alt="img" class = "pe-none prdctImg">
@@ -51,16 +45,15 @@
                                     <button type="submit" class="dltProductButton ms-5 mt-3" id="dltProductBtn" value = "#viewProduct.fldProduct_Id#" onClick="deleteProduct(event)">
                                         <i class="fa-regular fa-trash-can pe-none"></i>
                                     </button>
-                                    </div>
-                                    <div class = " p-1">
+                                </div>
+                                <div class = " p-1">
                                     <button type="submit" class="editProductButton ms-3 mt-3" data-bs-toggle="modal" data-bs-target="##editProductDetails" 
                                         id="editProductBtn" value = "#viewProduct.fldProduct_Id#" onClick = "editProductDetailsButton(event)">
                                         <i class="fa-solid fa-angle-right pe-none"></i>
                                     </button>
-
                                 </div>
                             </div>
-                        </cfloop>
+                        </cfloop>   
                     </div>
                 </div>
 
@@ -90,8 +83,6 @@
                     </div>
                 </div>
                 
-                
-
                 <div class="modal fade" id="editProductDetails" tabindex="-1">
                     <div class="modal-dialog">
                         <div class="modal-content d-flex justify-content-center align-items-center">
@@ -105,8 +96,8 @@
                                 </div><hr class="horizontalLine1 mt-1">                                                
                                 
                                 <div class="d-flex-column" id = "multiSelect">
-                                    <cfset objCreate = createObject("component","components.myCart")>
-                                    <cfset viewCategory = objCreate.viewCategoryData()>
+                                    <!--- <cfset objCreate = createObject("component","components.myCart")> --->
+                                    <cfset viewCategory = application.myCartObj.viewCategoryData()>
                                     <div class="textHead ">Category Name:</div>
                                     <select id="categoryIdProduct" name="categoryIdProduct" class="ms-3" >
                                         <cfloop query = #viewCategory#>
@@ -117,8 +108,8 @@
                                 </div>
 
                                 <div class="d-flex-column" id = "multiSelect">
-                                    <cfset objCreate = createObject("component","components.myCart")>
-                                    <cfset viewSubCategory = objCreate.viewSubCategoryData(categoryId = categoryId)>
+                                    <!--- <cfset objCreate = createObject("component","components.myCart")> --->
+                                    <cfset viewSubCategory = application.myCartObj.viewSubCategoryData(categoryId = categoryId)>
                                     <div class="textHead ">Sub-Category Name:</div>
                                     <select id="subCategoryIdProduct" name="subCategoryIdProduct" class="ms-3">
                                         <cfloop query = #viewSubCategory#>
@@ -182,7 +173,7 @@
             
             <cfif structKeyExists(form,"submit") AND form.productId == "">
                 <cfset obj=createObject("component","components.myCart")>
-                <cfset resultProduct=obj.createProduct(categoryId = form.categoryIdProduct,
+                <cfset resultProduct=application.myCartObj.createProduct(categoryId = form.categoryIdProduct,
                 subCategoryId = form.subCategoryIdProduct,
                 productName = form.productName,
                 productBrandId = form.productBrand,
@@ -190,13 +181,16 @@
                 productDescrptn = form.productDescrptn,
                 productImg = form.productImg,
                 productTax = form.productTax)>
-                <cflocation  url="productPage.cfm?categoryId=#categoryId#&subCategoryId=#subCategoryId#">
-                #resultProduct#
+                <cfif len(trim(resultProduct)) EQ 0>
+                    <cflocation  url="productPage.cfm?categoryId=#categoryId#&subCategoryId=#subCategoryId#">
+                <cfelse>
+                    #resultProduct#
+                </cfif>
             </cfif>  
 
             <cfif structKeyExists(form,"submit") AND form.productId != "">
                 <cfset obj=createObject("component","components.myCart")>
-                <cfset resultProduct=obj.EditProduct(categoryId = form.categoryIdProduct,
+                <cfset resultProduct=application.myCartObj.EditProduct(categoryId = form.categoryIdProduct,
                 subCategoryId = form.subCategoryIdProduct,
                 productId = form.productId,
                 productName = form.productName,
@@ -205,8 +199,11 @@
                 productDescrptn = form.productDescrptn,
                 productImg = form.productImg,
                 productTax = form.productTax)>
-                <cflocation  url="productPage.cfm?categoryId=#categoryId#&subCategoryId=#subCategoryId#">
-                #resultProduct#
+                <cfif len(trim(resultProduct)) EQ 0>
+                    <cflocation  url="productPage.cfm?categoryId=#categoryId#&subCategoryId=#subCategoryId#">
+                <cfelse>
+                    #resultProduct#
+                </cfif>
             </cfif>
         </cfoutput>    
     </body>

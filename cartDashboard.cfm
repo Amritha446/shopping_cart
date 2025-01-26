@@ -1,41 +1,27 @@
-<html>
+<!--- <html>
     <head>
         <title>Admin-dashboard</title>
-        <link href = "css/bootstrap.min.css" rel="stylesheet" >
-        <script src = "js/bootstrap.bundle.min.js"></script>
-        <script src = "js/jquery.min.js"></script>
-        <script src = "js/cartDashboard.js"></script>
-        <link href = "css/style.css" rel="stylesheet">
-        <link rel = "stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css"/>    
-    </head>
+        <cfinclude template="commonLink.cfm">   
+    </head>  --->
     <body>
         <cfoutput>
             <div class = "container-fluid" id = "container">
                 <div class = "header d-flex col-12" id = "header">
-                    <!--- <div class = "logo">
-                        <img src="assets/logo.jpg" class="logoImg">
-                    </div> --->
                     <div class="mainHeading ">
-                        <h5 class = "ms-5 mt-3">ADD CATAGORY</h5>
+                        <h5 class = "ms-5 mt-3">MyCart</h5>
                     </div>
-                    <!--- <button type="button" class="btn1">
-                        <div class="signUp d-flex">
-                            <i class="fa-solid fa-right-from-bracket mb-1 mt-1" style="color:##fff"></i><div class="text-white ms-2" onClick = "logoutUser()">SignOut</div>
-                        </div>
-                    </button> --->
                 </div>
                 <div class = "mainContent d-flex justify-content-center align-items-center h-50" id = "content">
                     <input type="hidden" value="" name = "categoryId1" id = "categoryId1">
                     <div class="d-flex-column">
                         <div class = "categorySection d-flex">
                             <h5 id= "modalHeading">Catagory List</h5>
-                            <form action = "add.cfm">
+                            <form action = "addCategory.cfm">
                                 <button type="submit" class="addCategoryBtn ms-4 mb-3" id="addCategoryBtn">Add</button>
                             </form>
                         </div>
 
-                        <cfset objCreate = createObject("component","components.myCart")>
-                        <cfset viewCategory = objCreate.viewCategoryData()>
+                        <cfset viewCategory = application.myCartObj.viewCategoryData()>
 
                         <cfloop query = "#viewCategory#">
                             <div class = "contentBox d-flex mb-3">
@@ -65,8 +51,6 @@
                                     <div class="modalData">
                                         <form method="post" name="form" enctype="multipart/form-data" id="createCategory">
                                             <div class="input d-flex-column">
-                                                <!--- <cfset objCreate = createObject("component","components.myCart")>
-                                                <cfset viewCategory = objCreate.viewEachCategory()> --->
                                                 <div class="d-flex">
                                                     <div class="text-secondary mt-4 ms-5"> Enter Category Name: </div>
                                                     <input type="hidden" value="" name = "categoryId" id = "categoryId">
@@ -84,6 +68,5 @@
                 </div>
             </div>
         </cfoutput>
-        
     </body>
 </html>

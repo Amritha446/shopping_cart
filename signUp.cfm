@@ -1,11 +1,11 @@
-<html>
+<!--- <html>
     <head>
         <title>signUp page</title>
         <script src="js/validate.js"></script>
          <link href="css/bootstrap.min.css" rel="stylesheet" >
         <script src="js/bootstrap.bundle.min.js"></script>
         <link href="css/style.css" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/> --->
     </head>
     <body>
         <cfoutput>
@@ -49,7 +49,7 @@
                             <div class = "d-flex">
                                 <div class="input">
                                 <div class="text-secondary mt-3 ms-2"> Password </div>
-                                    <input type="password" name="userPassword1" class="inputs me-2">
+                                    <input type="password" name="userPassword" class="inputs me-2">
                                     <div class="error text-danger" id="pass1Error"></div>
                                 </div>
                                 <div class="input d-flex-column">
@@ -70,10 +70,13 @@
                     lastName = form.lastName ,
                     mail = form.mail ,
                     phone = form.phone ,
-                    password = form.userPassword1 ,
-                    confirmPassword = form.userPassword2)>
+                    password = form.userPassword)>
+                    <cflocation  url="homePage.cfm">
+                <!--- <cftry>
+                    #result#
+                </cftry> --->
             </cfif>
-            #result#
+            
         </cfoutput>    
     </body>
 </html>

@@ -26,6 +26,7 @@ function deleteCategory(event){
             data:{categoryId:event.target.value},
             success:function(result){
                 event.target.parentNode.parentNode.remove()
+                location.reload()
             }
         })
     }
@@ -180,125 +181,231 @@ function deleteProduct(event){
     }
 }
 
-    $(document).ready(function() {
-        $("#categoryIdProduct").change(function() {
-            let categoryId = this.value;
-            $.ajax({
-                type: "POST",
-                url: "./Components/myCart.cfc?method=viewSubCategoryData",
-                data: {
-                    categoryId: categoryId
-                },
-                success: function(response) {
-                    const data = JSON.parse(response);
-                    $("#subCategoryIdProduct").empty();
-                    for(let i=0; i<data.DATA.length; i++) {
-                        let subCategoryName = data.DATA[i][0];
-                        let  subCategoryId= data.DATA[i][1];
-                        let optionTag = `<option value="${subCategoryId}">${subCategoryId}</option>`;
-                        $("#subCategoryIdProduct").append(optionTag);
-                        console.log(subCategoryId)
-                    }
-                }
-            });	
-        });
-    });
-
-    function loadProductImages() {
-        let productId = event.target.value;
-        
+$(document).ready(function() {
+    $("#categoryIdProduct").change(function() {
+        let categoryId = this.value;
         $.ajax({
-            url: './Components/myCart.cfc?method=getProductImages', 
-            data: { productId: productId },
-            type: 'POST',
+            type: "POST",
+            url: "./Components/myCart.cfc?method=viewSubCategoryData",
+            data: {
+                categoryId: categoryId
+            },
             success: function(response) {
-                let images = JSON.parse(response);
-                let carouselContent = '';
-                let activeClass = 'active'; // To mark the first image as active
-                console.log(images)
-                for (let i = 0; i < images.length; i++) {
-                    let image = images[i];
-                    let defaultImageClass = image.fldDefaultImage == 1 ? 'default-image' : '';
-                    
-                    // Add carousel slide
-                    carouselContent += `
-                    
-                    <div class="carousel-item ${activeClass}">
-                        <div class="d-flex imageButtonDiv">
-                            <button type="submit" class="ms-3 btnImg1 " onClick="setDefaultImage()" 
-                            value="${image.fldProductImages_Id},${image.fldProductId}">Default Set</button>
-                            <button type="submit" class=" ms-3 btnImg2" onClick="deleteImage()" 
-                            value="${image.fldProductImages_Id},${image.fldProductId}">Delete</button>
-                        </div>
-                        <img src="assets/${image.fldImageFileName}" class="d-block w-100 ${defaultImageClass}" alt="Image ${i+1}">
-                        <button type="button" class="btn3 btn-secondary ms-4" data-bs-dismiss="modal" id="closeBtnId">Close</button>
-                    </div>
-                    
-                    `;
-                    
-                    activeClass = '';
+                const data = JSON.parse(response);
+                $("#subCategoryIdProduct").empty();
+                for(let i=0; i<data.DATA.length; i++) {
+                    let subCategoryName = data.DATA[i][0];
+                    let  subCategoryId= data.DATA[i][1];
+                    let optionTag = `<option value="${subCategoryId}">${subCategoryId}</option>`;
+                    $("#subCategoryIdProduct").append(optionTag);
+                    console.log(subCategoryId)
                 }
-    
-                $('#carouselImages').html(carouselContent);
-                
             }
-        });
-    }
-    
-    function setDefaultImage() {
-        let currentId = event.target.value;
-        let Id = currentId.split(",")
-        let currentImageId=Id[0]
-        let currentProductId = Id[1]
+        });	
+    });
+});
 
-        if (!currentImageId) return alert('No image selected');
+function loadProductImages() {
+    let productId = event.target.value;
     
+    $.ajax({
+        url: './Components/myCart.cfc?method=getProductImages', 
+        data: { productId: productId },
+        type: 'POST',
+        success: function(response) {
+            let images = JSON.parse(response);
+            let carouselContent = '';
+            let activeClass = 'active'; // To mark the first image as active
+            console.log(images)
+            for (let i = 0; i < images.length; i++) {
+                let image = images[i];
+                let defaultImageClass = image.fldDefaultImage == 1 ? 'default-image' : '';
+                
+                carouselContent += `
+                
+                <div class="carousel-item ${activeClass}">
+                    <div class="d-flex imageButtonDiv">
+                        <button type="submit" class="ms-3 btnImg1 " onClick="setDefaultImage()" 
+                        value="${image.fldProductImages_Id},${image.fldProductId}">Default Set</button>
+                        <button type="submit" class=" ms-3 btnImg2" onClick="deleteImage()" 
+                        value="${image.fldProductImages_Id},${image.fldProductId}">Delete</button>
+                    </div>
+                    <img src="assets/${image.fldImageFileName}" class="d-block w-100 ${defaultImageClass}" alt="Image ${i+1}">
+                    <button type="button" class="btn3 btn-secondary ms-4" data-bs-dismiss="modal" id="closeBtnId">Close</button>
+                </div>
+                
+                `;
+                
+                activeClass = '';
+            }
+
+            $('#carouselImages').html(carouselContent);
+            
+        }
+    });
+}
+    
+function setDefaultImage() {
+    let currentId = event.target.value;
+    let Id = currentId.split(",")
+    let currentImageId=Id[0]
+    let currentProductId = Id[1]
+
+    if (!currentImageId) return alert('No image selected');
+
+    $.ajax({
+        url: './Components/myCart.cfc?method=setDefaultImage',
+        type: 'POST',
+        data: { 
+            productId: currentProductId,
+            imageId: currentImageId
+        },
+        success: function(response) {
+            alert('Default image updated successfully!');
+            
+        }
+    });
+}
+    
+function deleteImage() {
+    let currentId = event.target.value;
+    let Id = currentId.split(",")
+    let currentImageId=Id[0]
+    let currentProductId = Id[1]
+    console.log(currentImageId)
+    console.log(currentProductId)
+    if (!currentImageId) return alert('No image selected');
+
+    if (confirm('Are you sure you want to delete this image?')) {
         $.ajax({
-            url: './Components/myCart.cfc?method=setDefaultImage',
+            url: './Components/myCart.cfc?method=deleteImage',
             type: 'POST',
             data: { 
                 productId: currentProductId,
                 imageId: currentImageId
             },
             success: function(response) {
-                alert('Default image updated successfully!');
+                alert('Image deleted successfully!');
                 
-                /* loadProductImages(currentProductId); */ // Refresh images
             }
         });
     }
+}
+
+let currentIndex = 0;
+let images = []; 
+let mainImage = document.getElementById('main-image');
+let thumbnailImages = document.querySelectorAll('.thumbnail');
+
+// Function to change the main image when a thumbnail is clicked
+function changeMainImage(thumbnail) {
+    let mainImage = document.getElementById('main-image');
+    let newImageSrc = thumbnail.src; 
+    mainImage.src = newImageSrc; 
     
-    function deleteImage() {
-        let currentId = event.target.value;
-        let Id = currentId.split(",")
-        let currentImageId=Id[0]
-        let currentProductId = Id[1]
-        console.log(currentImageId)
-        console.log(currentProductId)
-        if (!currentImageId) return alert('No image selected');
-    
-        if (confirm('Are you sure you want to delete this image?')) {
-            $.ajax({
-                url: './Components/myCart.cfc?method=deleteImage',
-                type: 'POST',
-                data: { 
-                    productId: currentProductId,
-                    imageId: currentImageId
-                },
-                success: function(response) {
-                    alert('Image deleted successfully!');
-                    
-                    /* loadProductImages(currentProductId); */ // Refresh images
-                }
-            });
+    images.forEach((img, index) => {
+        if (img === newImageSrc) {
+            currentIndex = index;
         }
+    });
+}
+
+window.onload = function() {
+    thumbnailImages = document.querySelectorAll('.thumbnail');
+    thumbnailImages.forEach(thumbnail => {
+        thumbnail.addEventListener('click', function() {
+            changeMainImage(thumbnail);
+        });
+    });
+};
+
+function toggleProducts() {
+    // Get all elements with the class "hiddenProduct"
+    var hiddenProducts = document.querySelectorAll('.hiddenProduct');
+
+    hiddenProducts.forEach(function(product) {
+        if (product.style.display === "none") {
+            product.style.display = "block";
+        } else {
+            product.style.display = "none";
+        }
+    });
+
+    /* let button = document.querySelector('.viewMoreButton');
+    if (button.innerHTML === "View More") {
+        button.innerHTML = "View Less";
+    } else{
+        button.innerHTML = "View More";
+    } */
+}
+//  hiding extra products 
+document.querySelectorAll('.hiddenProduct').forEach(function(product) {
+    product.style.display = "none";
+});
+
+function addProductToCart(event){
+    console.log(event.target.value)
+    $.ajax({
+        type:"GET",
+        url:"Components/myCart.cfc?method=addToCart", 
+        data:{productId:event.target.value},
+        success:function(){
+           window.location.href = "cartPage.cfm";
+        }
+    })
+}
+
+function updatePrice(element) {
+    const quantity = parseInt(element.querySelector('.quantity-number').textContent);
+    const price = parseFloat(element.querySelector('.product-price').textContent.replace('$', ''));
+    const totalPriceElement = element.querySelector('.total-price');
+    
+    totalPriceElement.textContent = '$' + (quantity * price).toFixed(2);
+  }
+  
+  function incrementQuantity(event) {
+    const cartItem = event.target.closest('.cart-item');
+    const quantityElement = cartItem.querySelector('.quantity-number');
+    let currentQuantity = parseInt(quantityElement.textContent);
+    
+    if (currentQuantity < 10) {
+      quantityElement.textContent = currentQuantity + 1;
+      updatePrice(cartItem);
+    }
+  }
+  
+  function decrementQuantity(event) {
+    const cartItem = event.target.closest('.cart-item');
+    const quantityElement = cartItem.querySelector('.quantity-number');
+    let currentQuantity = parseInt(quantityElement.textContent);
+    
+    if (currentQuantity > 1) {
+      quantityElement.textContent = currentQuantity - 1;
+      updatePrice(cartItem);
+    }
+  }
+  
+  document.querySelectorAll('.increment').forEach(button => {
+    button.addEventListener('click', incrementQuantity);
+  });
+  
+  document.querySelectorAll('.decrement').forEach(button => {
+    button.addEventListener('click', decrementQuantity);
+  });
+  
+function removeCartProduct(event) {
+    if(confirm("Confirm delete?")){
+        $.ajax({
+            type:"POST",
+            url:"Components/myCart.cfc?method=removeCartProduct", 
+            data:{CartId:event.target.value},
+            success:function(result){
+                if(result){
+                    location.reload();
+                    return true; 
+                }
+            }     
+        })
     }
     
-    /* // Event listener for image clicks to set the current image ID
-    $(document).on('click', '.image-item', function() {
-        currentImageId = $(this).data('id');
-        // Highlight the selected image (optional)
-        $('.image-item').removeClass('selected');
-        $(this).addClass('selected');
-    }); */
-        
+}      
