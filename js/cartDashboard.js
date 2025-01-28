@@ -309,7 +309,6 @@ function changeMainImage(thumbnail) {
         }
     });
 }
-
 window.onload = function() {
     thumbnailImages = document.querySelectorAll('.thumbnail');
     thumbnailImages.forEach(thumbnail => {
@@ -327,16 +326,16 @@ function toggleProducts() {
         if (product.style.display === "none") {
             product.style.display = "block";
         } else {
-            product.style.display = "none";
+            product.style.display = "block";
         }
     });
 
-    /* let button = document.querySelector('.viewMoreButton');
+    let button = document.querySelector('.viewMoreButton');
     if (button.innerHTML === "View More") {
         button.innerHTML = "View Less";
     } else{
         button.innerHTML = "View More";
-    } */
+    }
 }
 //  hiding extra products 
 document.querySelectorAll('.hiddenProduct').forEach(function(product) {
@@ -354,44 +353,6 @@ function addProductToCart(event){
         }
     })
 }
-
-function updatePrice(element) {
-    const quantity = parseInt(element.querySelector('.quantity-number').textContent);
-    const price = parseFloat(element.querySelector('.product-price').textContent.replace('$', ''));
-    const totalPriceElement = element.querySelector('.total-price');
-    
-    totalPriceElement.textContent = '$' + (quantity * price).toFixed(2);
-  }
-  
-  function incrementQuantity(event) {
-    const cartItem = event.target.closest('.cart-item');
-    const quantityElement = cartItem.querySelector('.quantity-number');
-    let currentQuantity = parseInt(quantityElement.textContent);
-    
-    if (currentQuantity < 10) {
-      quantityElement.textContent = currentQuantity + 1;
-      updatePrice(cartItem);
-    }
-  }
-  
-  function decrementQuantity(event) {
-    const cartItem = event.target.closest('.cart-item');
-    const quantityElement = cartItem.querySelector('.quantity-number');
-    let currentQuantity = parseInt(quantityElement.textContent);
-    
-    if (currentQuantity > 1) {
-      quantityElement.textContent = currentQuantity - 1;
-      updatePrice(cartItem);
-    }
-  }
-  
-  document.querySelectorAll('.increment').forEach(button => {
-    button.addEventListener('click', incrementQuantity);
-  });
-  
-  document.querySelectorAll('.decrement').forEach(button => {
-    button.addEventListener('click', decrementQuantity);
-  });
   
 function removeCartProduct(event) {
     if(confirm("Confirm delete?")){
@@ -401,11 +362,112 @@ function removeCartProduct(event) {
             data:{CartId:event.target.value},
             success:function(result){
                 if(result){
-                    location.reload();
+                    event.target.parentNode.parentNode.parentNode.remove()
                     return true; 
                 }
             }     
         })
-    }
-    
+    } 
 }      
+
+function updateTotalPrice() {
+    let totalPrice = 0;
+  
+    document.querySelectorAll('.cartItem').forEach(cartItem => {
+      const quantityElement = cartItem.querySelector('.quantityNumber');
+      const priceElement = cartItem.querySelector('.productPrice');
+      
+      const quantity = parseInt(quantityElement.textContent);
+      const price = parseFloat(priceElement.textContent.replace('Product Price:$', '').trim());
+      
+      const totalPriceForItem = quantity * price;
+      
+      totalPrice += totalPriceForItem;
+      
+      const totalPriceElement = cartItem.querySelector('.totalPrice');
+      totalPriceElement.textContent = 'Total Price:$' + totalPriceForItem.toFixed(2);
+    });
+  
+    const totalPriceElement = document.querySelector('.priceDetailsHeading');
+    totalPriceElement.textContent = 'Total Price: $' + totalPrice.toFixed(2);
+  }
+  
+  function incrementQuantity(event) {
+    const cartItem = event.target.closest('.cartItem');
+    const quantityElement = cartItem.querySelector('.quantityNumber');
+    let currentQuantity = parseInt(quantityElement.textContent);
+    
+    if (currentQuantity < 10) {
+      quantityElement.textContent = currentQuantity + 1;
+      updateTotalPrice();
+    }
+  }
+  
+  function decrementQuantity(event) {
+    const cartItem = event.target.closest('.cartItem');
+    const quantityElement = cartItem.querySelector('.quantityNumber');
+    let currentQuantity = parseInt(quantityElement.textContent);
+    
+    if (currentQuantity > 1) {
+      quantityElement.textContent = currentQuantity - 1;
+      updateTotalPrice();
+    }
+  }
+  
+  document.addEventListener('DOMContentLoaded', updateTotalPrice);
+  
+  document.querySelectorAll('.increment').forEach(button => {
+    button.addEventListener('click', incrementQuantity);
+  });
+  
+  document.querySelectorAll('.decrement').forEach(button => {
+    button.addEventListener('click', decrementQuantity);
+  });
+  
+  function editUser(){
+    $.ajax({
+        type:"POST",
+        url:"Components/myCart.cfc?method=userDetailsFetching", 
+        success:function(result){
+            let formattedResult=JSON.parse(result);
+            document.getElementById('userFirstNameProfile').value = formattedResult.DATA[0][0]; 
+            document.getElementById('userLastNameProfile').value = formattedResult.DATA[0][1];
+            document.getElementById('userPhoneNumberProfile').value = formattedResult.DATA[0][2];
+            document.getElementById('userEmailProfile').value = formattedResult.DATA[0][3];
+        }
+    })
+}
+function editUserSubmit(){
+    event.preventDefault()
+    $.ajax({
+        type:"POST",
+        url:"Components/myCart.cfc?method=userDetailsUpdating", 
+        data:{userFirstName:document.getElementById('userFirstNameProfile').value,
+            userLastName:document.getElementById('userLastNameProfile').value,
+            userPhoneNumber:document.getElementById('userPhoneNumberProfile').value,
+            userEmail:document.getElementById('userEmailProfile').value  
+        },
+        success:function(){
+           location.reload(); 
+        }
+    })
+}
+function editUserAddress(){
+    event.preventDefault()
+    $.ajax({
+        type:"POST",
+        url:"Components/myCart.cfc?method=addUserAddress", 
+        data:{userFirstName:document.getElementById('addressFirstName').value,
+            userLastName:document.getElementById('addressLastName').value,
+            addressLine1:document.getElementById('addressLine1').value,
+            addressLine2:document.getElementById('addressLine2').value,
+            userCity:document.getElementById('userCity').value,
+            userState:document.getElementById('userState').value,
+            userPincode:document.getElementById('userPincode').value,
+            userPhoneNumber:document.getElementById('userPhoneNumber').value,
+        },
+        success:function(){
+           location.reload(); 
+        }
+    })
+}

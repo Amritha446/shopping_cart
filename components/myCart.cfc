@@ -1,7 +1,7 @@
 <cfcomponent>
     <cffunction name = "validateLogIn" access = "public" returnType = "boolean">
-        <cfargument name="userName" required="true" type="string">
-        <cfargument name="userPassword" required="true" type="string">
+        <cfargument name = "userName" required = "true" type = "string">
+        <cfargument name = "userPassword" required = "true" type = "string">
         <cfset saltString = generateSecretKey(("AES"),128)> 
         <!---<cfset var emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$">
          <cfif (NOT REFind(emailRegex, arguments.userName)) OR (len(trim(arguments.userName)) LT 10)>
@@ -9,7 +9,7 @@
         <cfelseif arguments.userPassword EQ "">
             <cfreturn false>
         <cfelse>  --->
-            <cfquery name = "local.saltString" datasource = "shoppingCart">
+            <cfquery name = "local.saltString" datasource = "#application.datasource#">
                 SELECT 
                     fldUserSaltString 
                 FROM 
@@ -20,7 +20,7 @@
             </cfquery>
             <cfset saltedPassword = #arguments.userName# & local.saltString.fldUserSaltString>
             <cfset local.encrypted_pass = Hash(#saltedPassword#, 'SHA-256')/>
-            <cfquery name = "local.queryCheck" datasource = "shoppingCart">
+            <cfquery name = "local.queryCheck" datasource = "#application.datasource#">
                 SELECT fldUser_Id,
                     fldEmail,
                     fldPhone,
@@ -44,11 +44,11 @@
     </cffunction>
 
     <cffunction name = "signUp" access = "public" returnType = "boolean">
-        <cfargument  name="firstName" required="true" type="string">
-        <cfargument  name="lastName" required="true" type="string">
-        <cfargument  name="mail" required="true" type="string">
-        <cfargument  name="phone" required="true" type="string">
-        <cfargument  name="password" required="true" type="string">
+        <cfargument  name = "firstName" required = "true" type = "string">
+        <cfargument  name = "lastName" required = "true" type = "string">
+        <cfargument  name = "mail" required = "true" type = "string">
+        <cfargument  name = "phone" required = "true" type = "string">
+        <cfargument  name = "password" required = "true" type = "string">
 
         <cfif arguments.firstName EQ "">
             <cfreturn false>
@@ -66,7 +66,7 @@
             <cfset saltString = generateSecretKey(("AES"),128)>
             <cfset saltedPassword = #arguments.password# & #saltString#>
             <cfset local.encrypted_pass = Hash(#saltedPassword#, 'SHA-256')/>
-            <cfquery name= "local.queryCheck" datasource = "shoppingCart">
+            <cfquery name= "local.queryCheck" datasource = "#application.datasource#">
                 SELECT 
                     fldUser_Id,
                     fldEmail,
@@ -78,7 +78,7 @@
                     OR fldPhone = <cfqueryparam value="#arguments.phone#" cfsqltype="varchar">
             </cfquery>
             <cfif local.queryCheck.recordCount EQ 0>
-                <cfquery name = "insertUser" datasource = "shoppingCart">
+                <cfquery name = "insertUser" datasource = "#application.datasource#">
                     INSERT INTO shoppingcart.tbluser (
                         fldFirstName, 
                         fldLastName, 
@@ -110,11 +110,11 @@
     </cffunction>
 
     <cffunction name = "addCategory" access="public" returnType = "string">
-        <cfargument  name="categoryName" required="true" type="string">
+        <cfargument  name = "categoryName" required = "true" type = "string">
         <cfif arguments.categoryName EQ "">
             <cfreturn "Category name should be filled.">
         <cfelse>
-            <cfquery name = "local.checkCategory" datasource = "shoppingCart">
+            <cfquery name = "local.checkCategory" datasource = "#application.datasource#">
                 SELECT 
                     fldCategoryName    
                 FROM 
@@ -125,7 +125,7 @@
                     AND fldActive = 1
             </cfquery>
             <cfif local.checkCategory.recordCount EQ 0> 
-                <cfquery name = "local.addCategory" datasource = "shoppingCart">
+                <cfquery name = "local.addCategory" datasource = "#application.datasource#">
                     INSERT INTO shoppingcart.tblcategory(
                         fldCategoryName,
                         fldCreatedBy
@@ -142,8 +142,8 @@
         </cfif>
     </cffunction>
 
-    <cffunction name = "viewCategoryData" access="public" returnType = "query" returnFormat = "json">
-        <cfquery name = "local.viewCategory" datasource = "shoppingCart">
+    <cffunction name = "viewCategoryData" access = "public" returnType = "query" returnFormat = "json">
+        <cfquery name = "local.viewCategory" datasource = "#application.datasource#">
             SELECT fldCategory_Id,
                 fldCategoryName
             FROM 
@@ -155,11 +155,11 @@
     </cffunction>
 
     <cffunction name = "viewEachCategory" access = "remote" returnType = "string" returnFormat = "json">
-        <cfargument name="categoryId" required="true" type="numeric">
+        <cfargument name = "categoryId" required = "true" type = "numeric">
         <cfif len(trim(arguments.categoryId)) EQ 0>
             <cfreturn "Invalid Category id.Can't fetch category name.">
         <cfelse>
-            <cfquery name = "local.viewData" datasource = "shoppingCart">
+            <cfquery name = "local.viewData" datasource = "#application.datasource#">
                 SELECT
                     fldCategoryName
                 FROM
@@ -172,12 +172,12 @@
     </cffunction>
 
     <cffunction name = "updateCategory" access = "remote" returnType = "string" returnFormat = "json">
-        <cfargument name="categoryId" required="true" type="numeric">
-        <cfargument  name="categoryName" required="true" type="string">
+        <cfargument name = "categoryId" required = "true" type = "numeric">
+        <cfargument  name = "categoryName" required = "true" type = "string">
         <cfif (len(trim(arguments.categoryId)) EQ 0) AND (arguments.categoryName EQ "")>
             <cfreturn "Category updation failed">
         <cfelse>
-            <cfquery name = "local.updateCategory" datasource = "shoppingCart">
+            <cfquery name = "local.updateCategory" datasource = "#application.datasource#">
                 UPDATE
                     shoppingcart.tblcategory
                 SET
@@ -190,12 +190,12 @@
     </cffunction>
 
     <cffunction name = "delCategory" access = "remote" returnType = "void" returnFormat = "json">
-        <cfargument name="categoryId" required="true" type="numeric">
+        <cfargument name = "categoryId" required = "true" type = "numeric">
         <cfif len(trim(arguments.categoryId)) EQ 0>
             <cfreturn "Category deactivation failed">
         <cfelse>
             <cfset removedTime = "#Now()#">
-            <cfquery name = "local.removeCategory" datasource = "shoppingCart">
+            <cfquery name = "local.removeCategory" datasource = "#application.datasource#">
                 UPDATE 
                     shoppingcart.tblcategory
                 SET
@@ -208,13 +208,13 @@
         </cfif>
     </cffunction>
 
-    <cffunction name = "addSubCategory" access="public" returnType = "string">
-        <cfargument name = "categoryId" required="true" type="numeric">
-        <cfargument  name="subCategoryName" required="true" type="string">
+    <cffunction name = "addSubCategory" access = "public" returnType = "string">
+        <cfargument name = "categoryId" required = "true" type = "numeric">
+        <cfargument  name = "subCategoryName" required = "true" type = "string">
         <cfif (len(trim(arguments.categoryId)) EQ 0) AND (arguments.subCategoryName EQ "")>
             <cfreturn "Failed to add sub-category">
         <cfelse>
-            <cfquery name = "local.checkSubCategory" datasource = "shoppingCart">
+            <cfquery name = "local.checkSubCategory" datasource = "#application.datasource#">
                 SELECT 
                     fldSubCategoryName   
                 FROM 
@@ -224,7 +224,7 @@
                     AND fldActive = 1
             </cfquery>
             <cfif local.checkSubCategory.recordCount EQ 0> 
-                <cfquery name = "local.addSubCategory" datasource = "shoppingCart">
+                <cfquery name = "local.addSubCategory" datasource = "#application.datasource#">
                     INSERT INTO shoppingcart.tblsubcategory(
                         fldCategoryId,
                         fldSubCategoryName,
@@ -243,14 +243,14 @@
         </cfif>
     </cffunction>
 
-    <cffunction name = "viewSubCategoryData" access="remote" returnType = "query" returnFormat = "json">
-        <cfargument name = "categoryId" required="true" type="numeric">
+    <cffunction name = "viewSubCategoryData" access = "remote" returnType = "query" returnFormat = "json">
+        <cfargument name = "categoryId" required = "true" type = "numeric">
         <cfif len(trim(arguments.categoryId)) EQ 0>
             <cfset resultQuery = queryNew("Invalid attempt")>
             <cfset queryAddRow(resultQuery)>
             <cfreturn resultQuery>
         <cfelse>
-            <cfquery name = "local.viewSubCategory" datasource = "shoppingCart">
+            <cfquery name = "local.viewSubCategory" datasource = "#application.datasource#">
                 SELECT fldSubCategory_Id,
                     fldSubCategoryName
                 FROM 
@@ -264,11 +264,11 @@
     </cffunction>
 
     <cffunction name = "viewEachSubCategory" access = "remote" returnType = "string" returnFormat = "json">
-        <cfargument name="subCategoryId" required="true" type="numeric">
+        <cfargument name = "subCategoryId" required = "true" type = "numeric">
         <cfif len(trim(arguments.subCategoryId)) EQ 0>
             <cfreturn "Invalid attempt">
         <cfelse>
-            <cfquery name = "local.viewData" datasource = "shoppingCart">
+            <cfquery name = "local.viewData" datasource = "#application.datasource#">
                 SELECT
                     fldSubCategoryName
                 FROM
@@ -281,12 +281,12 @@
     </cffunction>
 
     <cffunction name = "delSubCategory" access = "remote" returnType = "void" returnFormat = "json">
-        <cfargument name="subCategoryId" required="true" type="numeric">
+        <cfargument name = "subCategoryId" required = "true" type = "numeric">
         <cfif len(trim(arguments.subCategoryId)) EQ 0>
             <cfreturn void>
         <cfelse>
             <cfset removedTime = "#Now()#">
-            <cfquery name = "local.removeSubCategory" datasource = "shoppingCart">
+            <cfquery name = "local.removeSubCategory" datasource = "#application.datasource#">
                 UPDATE 
                     shoppingcart.tblsubcategory
                 SET
@@ -300,13 +300,13 @@
     </cffunction>
 
     <cffunction name="updateSubCategory" access="remote" returnType="string" returnFormat="json">
-        <cfargument name="subCategoryName" required="true" type="string">
-        <cfargument name="subCategoryId" required="true" type="numeric">
-        <cfargument name="categoryId" required="true" type="numeric">
+        <cfargument name = "subCategoryName" required = "true" type = "string">
+        <cfargument name = "subCategoryId" required = "true" type = "numeric">
+        <cfargument name = "categoryId" required = "true" type = "numeric">
         <cfif (len(trim(arguments.subCategoryId)) EQ 0) AND (arguments.subCategoryName EQ "")>
             <cfreturn "Invalid Updation attempt">
         <cfelse>
-            <cfquery name = "local.updateSubCategory" datasource = "shoppingCart">
+            <cfquery name = "local.updateSubCategory" datasource = "#application.datasource#">
                 UPDATE
                     shoppingcart.tblsubcategory
                 SET
@@ -320,7 +320,7 @@
     </cffunction>
     
     <cffunction name = "viewBrands" access = "remote" returnType = "query">
-        <cfquery name = "local.viewProductBrands" datasource = "shoppingCart">
+        <cfquery name = "local.viewProductBrands" datasource = "#application.datasource#">
             SELECT 
                 fldBrand_Id,
                 fldBrandName
@@ -331,14 +331,14 @@
     </cffunction>
 
     <cffunction  name="createProduct" access="remote" returnType="string" returnFormat = "json">
-        <cfargument  name="categoryId" required="true" type="numeric">
-        <cfargument  name="subCategoryId" required="true" type="numeric">
-        <cfargument  name="productName" required="true" type="string">
-        <cfargument  name="productBrand" required="true" type="numeric" default="0">
-        <cfargument  name="productPrice" required="true" type="numeric">
-        <cfargument  name="productDescrptn" required="true" type="string">
-        <cfargument  name="productImg" required="true" type="string">
-        <cfargument  name="productTax" required="true" type="numeric"> 
+        <cfargument  name = "categoryId" required = "true" type = "numeric">
+        <cfargument  name = "subCategoryId" required = "true" type = "numeric">
+        <cfargument  name = "productName" required = "true" type = "string">
+        <cfargument  name = "productBrand" required = "true" type = "numeric" default = "0">
+        <cfargument  name = "productPrice" required = "true" type = "numeric">
+        <cfargument  name = "productDescrptn" required = "true" type = "string">
+        <cfargument  name = "productImg" required = "true" type = "string">
+        <cfargument  name = "productTax" required = "true" type = "numeric"> 
         
         <cfif len(trim(arguments.categoryId)) EQ 0>
             <cfreturn "Invalid Category id">
@@ -357,7 +357,7 @@
         <cfelseif arguments.productTax NEQ int(arguments.productTax)>
             <cfreturn "Invalid Tax">
         <cfelse>
-            <cfquery name="local.checkProduct" datasource = "shoppingCart">
+            <cfquery name="local.checkProduct" datasource = "#application.datasource#">
                 SELECT 
                     fldProduct_Id,
                     fldProductName
@@ -369,7 +369,7 @@
             </cfquery>
 
             <cfif local.checkProduct.recordCount EQ 0>
-                <cfquery name="local.dataAdd" result = "keyValue" datasource = "shoppingCart">
+                <cfquery name="local.dataAdd" result = "keyValue" datasource = "#application.datasource#">
                     INSERT INTO 
                         shoppingcart.tblproduct(
                             fldSubCategoryId,
@@ -394,7 +394,7 @@
                 <cfset local.path = expandPath("./assets")>
                 <cffile  action="uploadall" destination="#local.path#" nameConflict="makeUnique" result="uploadImg">
             
-                <cfquery name = "local.prdctImg" datasource = "shoppingCart">
+                <cfquery name = "local.prdctImg" datasource = "#application.datasource#">
                     INSERT INTO shoppingcart.tblproductimages (
                         fldProductId, 
                         fldImageFileName, 
@@ -426,21 +426,21 @@
     </cffunction>
 
     <cffunction name = "viewProduct" access = "remote" returnType = "query" returnFormat = "json">
-        <cfargument name ="subCategoryId" default=0 required="false" type="integer">
-        <cfargument name="productId" default="" required="false" type="string">
-        <cfargument name="sort" type="numeric" required="false" default=0>
-        <cfargument name="min" type="numeric" required="false" default=0>
-        <cfargument name="max" type="numeric" required="false" default=0>
-        <cfargument name="minRange" type="numeric" required="false" default=0>
-        <cfargument name="maxRange" type="numeric" required="false" default=0>
-        <cfargument name="random" type="numeric" required="false" default=0>
-        <cfargument name="searchTerm" type="string" required="false" default="">
+        <cfargument name = "subCategoryId" default = 0 required = "false" type = "integer">
+        <cfargument name = "productId" default = "" required = "false" type = "string">
+        <cfargument name = "sort" type = "numeric" required = "false" default = 0>
+        <cfargument name = "min" type = "numeric" required = "false" default = 0>
+        <cfargument name = "max" type = "numeric" required = "false" default = 0>
+        <cfargument name = "minRange" type = "numeric" required = "false" default = 0>
+        <cfargument name = "maxRange" type = "numeric" required = "false" default = 0>
+        <cfargument name = "random" type = "numeric" required = "false" default = 0>
+        <cfargument name = "searchTerm" type = "string" required = "false" default = "">
         <!--- <cfif (len(trim(arguments.subCategoryId)) EQ 0) AND (len(trim(arguments.productId)) EQ 0)>
             <cfset resultQuery = queryNew("Error occured!")>
             <cfset queryAddRow(resultQuery)>
             <cfreturn resultQuery>
         <cfelse> --->
-            <cfquery name="local.viewProductDetails" datasource = "shoppingCart">
+            <cfquery name="local.viewProductDetails" datasource = "#application.datasource#">
                 SELECT 
                     p.fldProduct_Id, 
                     p.fldSubCategoryId, 
@@ -466,22 +466,22 @@
                         AND i.fldActive = 1
                     </cfif>
                     <cfif arguments.subCategoryId NEQ 0> 
-                        AND p.fldSubCategoryid = <cfqueryparam value="#arguments.subCategoryId#" cfsqltype="integer">
+                        AND p.fldSubCategoryid = <cfqueryparam value = "#arguments.subCategoryId#" cfsqltype = "integer">
                     </cfif>
                     <cfif len(trim(arguments.productId)) AND isNumeric(arguments.productId)> 
-                        AND p.fldProduct_Id = <cfqueryparam value="#arguments.productId#" cfsqltype="integer">
+                        AND p.fldProduct_Id = <cfqueryparam value="#arguments.productId#" cfsqltype = "integer">
                     </cfif>
                     <cfif arguments.max NEQ 0 AND arguments.min NEQ 0> 
-                        AND p.fldPrice >= <cfqueryparam value="#arguments.min#" cfsqltype="integer"> 
-                            AND p.fldPrice <= <cfqueryparam value="#arguments.max#" cfsqltype="integer">
+                        AND p.fldPrice >= <cfqueryparam value = "#arguments.min#" cfsqltype = "integer"> 
+                            AND p.fldPrice <= <cfqueryparam value = "#arguments.max#" cfsqltype = "integer">
                     </cfif>
                     <cfif arguments.maxRange NEQ 0 AND arguments.minRange NEQ 0> 
-                        AND p.fldPrice >= <cfqueryparam value="#arguments.minRange#" cfsqltype="integer">       
-                            AND p.fldPrice <= <cfqueryparam value="#arguments.maxRange#" cfsqltype="integer">
+                        AND p.fldPrice >= <cfqueryparam value = "#arguments.minRange#" cfsqltype = "integer">       
+                            AND p.fldPrice <= <cfqueryparam value = "#arguments.maxRange#" cfsqltype = "integer">
                     </cfif>
                     <cfif len(trim(arguments.searchTerm))> 
-                        AND (p.fldProductName LIKE <cfqueryparam value="%#arguments.searchTerm#%" cfsqltype="varchar">
-                        OR p.fldDescription LIKE <cfqueryparam value="%#arguments.searchTerm#%" cfsqltype="varchar">)
+                        AND (p.fldProductName LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">
+                        OR p.fldDescription LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">)
                     </cfif>
                 ORDER BY 
                     <cfif arguments.sort EQ 2>
@@ -498,9 +498,9 @@
         <!--- </cfif> --->
     </cffunction>
 
-    <cffunction name="subCategoryFetching" access = "remote" returnType = "query" returnFormat = "json">
-        <cfargument name="subCategoryId" type="string" required="true">
-        <cfquery name="local.checkProduct" datasource = "shoppingCart">
+    <cffunction name = "subCategoryFetching" access = "remote" returnType = "query" returnFormat = "json">
+        <cfargument name = "subCategoryId" type = "string" required = "true">
+        <cfquery name = "local.checkProduct" datasource = "#application.datasource#">
             SELECT 
                 fldCategoryId,
                 fldSubCategoryName
@@ -513,28 +513,28 @@
     </cffunction>
 
     <cffunction name="categoryFetching" access = "remote" returnType = "query" returnFormat = "json">
-        <cfargument name="categoryId" type="string" required="true">
-        <cfquery name="local.checkProduct" datasource = "shoppingCart">
+        <cfargument name = "categoryId" type = "string" required = "true">
+        <cfquery name = "local.checkProduct" datasource = "#application.datasource#">
             SELECT 
                 fldCategory_Id,
                 fldCategoryName
             FROM 
                 shoppingcart.tblcategory
             WHERE 
-                fldCategory_Id = <cfqueryparam value="#arguments.categoryId#" cfsqltype="integer">
+                fldCategory_Id = <cfqueryparam value = "#arguments.categoryId#" cfsqltype = "integer">
             </cfquery>
             <cfreturn local.checkProduct>
     </cffunction>
 
-    <cffunction name="editProduct" access="remote" returnType="string" returnFormat="json">
-        <cfargument name="productId" required="true" type="numeric">
-        <cfargument name="subCategoryId" required="true" type="numeric">
-        <cfargument name="productName" required="true" type="string">
-        <cfargument name="productBrand" required="true" default="0" type="numeric">
-        <cfargument name="productPrice" required="true" type="numeric">
-        <cfargument name="productDescrptn" required="true" type="string">
-        <cfargument name="productImg" required="true" type="string">
-        <cfargument name="productTax" required="true" type="numeric">
+    <cffunction name = "editProduct" access = "remote" returnType = "string" returnFormat = "json">
+        <cfargument name = "productId" required = "true" type = "numeric">
+        <cfargument name = "subCategoryId" required = "true" type = "numeric">
+        <cfargument name = "productName" required = "true" type = "string">
+        <cfargument name = "productBrand" required = "true" default = "0" type = "numeric">
+        <cfargument name = "productPrice" required = "true" type = "numeric">
+        <cfargument name = "productDescrptn" required = "true" type = "string">
+        <cfargument name = "productImg" required = "true" type = "string">
+        <cfargument name = "productTax" required = "true" type = "numeric">
         
         <cfif len(trim(arguments.productId)) EQ 0>
             <cfreturn "Invalid Category id">
@@ -558,7 +558,7 @@
             <cfset local.path = expandPath("./assets")>
             <cffile  action="uploadall" destination="#local.path#" nameConflict="makeUnique" result="uploadImg">
 
-            <cfquery name="local.checkProduct" datasource = "shoppingCart">
+            <cfquery name="local.checkProduct" datasource = "#application.datasource#">
                 SELECT 
                     fldProduct_Id,
                     fldProductName 
@@ -570,22 +570,22 @@
             </cfquery>
         
             <cfif local.checkProduct.recordCount GT 0>
-                <cfquery name="local.updateProduct" datasource = "shoppingCart">
+                <cfquery name="local.updateProduct" datasource = "#application.datasource#">
                     UPDATE 
                         shoppingcart.tblproduct
                     SET 
-                        fldSubCategoryId = <cfqueryparam value="#arguments.subCategoryId#" cfsqltype="integer">,
-                        fldProductName = <cfqueryparam value="#arguments.productName#" cfsqltype="varchar">,
-                        fldBrandId = <cfqueryparam value="#arguments.productBrandId#" cfsqltype="integer">,
-                        fldDescription = <cfqueryparam value="#arguments.productDescrptn#" cfsqltype="varchar">,
-                        fldPrice = <cfqueryparam value="#arguments.productPrice#" cfsqltype="decimal">,
-                        fldTax = <cfqueryparam value="#arguments.productTax#" cfsqltype="decimal">,
-                        fldUpdatedBy = <cfqueryparam value="#session.userId#" cfsqltype="integer">
+                        fldSubCategoryId = <cfqueryparam value="#arguments.subCategoryId#" cfsqltype = "integer">,
+                        fldProductName = <cfqueryparam value="#arguments.productName#" cfsqltype = "varchar">,
+                        fldBrandId = <cfqueryparam value="#arguments.productBrandId#" cfsqltype = "integer">,
+                        fldDescription = <cfqueryparam value="#arguments.productDescrptn#" cfsqltype = "varchar">,
+                        fldPrice = <cfqueryparam value="#arguments.productPrice#" cfsqltype = "decimal">,
+                        fldTax = <cfqueryparam value="#arguments.productTax#" cfsqltype = "decimal">,
+                        fldUpdatedBy = <cfqueryparam value="#session.userId#" cfsqltype = "integer">
                     WHERE 
-                        fldProduct_Id = <cfqueryparam value="#arguments.productId#" cfsqltype="integer">
+                        fldProduct_Id = <cfqueryparam value = "#arguments.productId#" cfsqltype = "integer">
                 </cfquery>
                 <cfloop array="#uploadImg#" item="item" index="i">
-                    <cfquery name="local.insertProductImage" datasource = "shoppingCart">
+                    <cfquery name="local.insertProductImage" datasource = "#application.datasource#">
                         INSERT INTO shoppingcart.tblproductimages (
                             fldProductId, 
                             fldImageFileName, 
@@ -593,10 +593,10 @@
                             fldDeactivatedBy
                         )
                         VALUES (
-                            <cfqueryparam value="#arguments.productId#" cfsqltype="integer">,
-                            <cfqueryparam value="#item.serverFile#" cfsqltype="varchar">,
+                            <cfqueryparam value = "#arguments.productId#" cfsqltype = "integer">,
+                            <cfqueryparam value = "#item.serverFile#" cfsqltype = "varchar">,
                             0,
-                            <cfqueryparam value="#session.userId#" cfsqltype="integer">
+                            <cfqueryparam value = "#session.userId#" cfsqltype = "integer">
                         )
                     </cfquery>
                 </cfloop>
@@ -608,30 +608,30 @@
     </cffunction>
 
     <cffunction name = "delProduct" access = "remote" returnType = "void" returnFormat = "json">
-        <cfargument name="productId" required="true" type="numeric">
+        <cfargument name = "productId" required = "true" type = "numeric">
         <cfif len(trim(arguments.productId)) EQ 0>
             
         <cfelse>
             <cfset removedTime = "#Now()#">
-            <cfquery name = "local.removeProduct" datasource = "shoppingCart">
+            <cfquery name = "local.removeProduct" datasource = "#application.datasource#">
                 UPDATE 
                     shoppingcart.tblproduct
                 SET
                     fldActive = 0,
-                    fldUpdatedBy = <cfqueryparam value="#session.userId#" cfsqltype="integer">
+                    fldUpdatedBy = <cfqueryparam value="#session.userId#" cfsqltype = "integer">
                 WHERE
-                    fldProduct_Id = <cfqueryparam value="#arguments.productId#" cfsqltype="integer">
+                    fldProduct_Id = <cfqueryparam value="#arguments.productId#" cfsqltype = "integer">
             </cfquery>
             <cfreturn void>
         </cfif>
     </cffunction>
 
-    <cffunction name="getProductImages" returnType="array" access="remote" returnFormat="json">
-        <cfargument name="productId" required="true" type="numeric">
+    <cffunction name = "getProductImages" returnType = "array" access = "remote" returnFormat = "json">
+        <cfargument name = "productId" required = "true" type = "numeric">
         <cfif len(trim(arguments.productId)) EQ 0>
             <cfreturn "Can't load images">
         <cfelse>
-            <cfquery name="local.getImages" datasource = "shoppingCart">
+            <cfquery name="local.getImages" datasource = "#application.datasource#">
                 SELECT 
                     fldProductImages_Id,
                     fldImageFileName,
@@ -657,78 +657,102 @@
         </cfif>
     </cffunction>
 
-    <cffunction name="setDefaultImage" access="remote" returntype="string">
-        <cfargument name="productId" required="true" type="numeric">
-        <cfargument name="imageId" required="true" type="numeric">
+    <cffunction name = "setDefaultImage" access = "remote" returntype = "string">
+        <cfargument name = "productId" required = "true" type = "numeric">
+        <cfargument name =  "imageId" required = "true" type = "numeric">
         <cfif (len(trim(arguments.productId)) EQ 0) AND (len(trim(arguments.imageId)) EQ 0)>
             <cfreturn "Can't set the selected image as default.">
         <cfelse>
             <!--- Set all other images for this product to non-default --->
-            <cfquery name="local.imageSetDefault" datasource = "shoppingCart">
+            <cfquery name = "local.imageSetDefault" datasource = "#application.datasource#">
                 UPDATE 
                     shoppingcart.tblproductimages
                 SET 
                     fldDefaultImage = 0
                 WHERE 
-                    fldProductId = <cfqueryparam value="#arguments.productId#" cfsqltype="integer">
+                    fldProductId = <cfqueryparam value = "#arguments.productId#" cfsqltype = "integer">
             </cfquery>
 
             <!--- Set the selected image as the default --->
-            <cfquery name="local.defaultImageSet" datasource = "shoppingCart">
+            <cfquery name="local.defaultImageSet" datasource = "#application.datasource#">
                 UPDATE 
                     shoppingcart.tblproductimages
                 SET 
                     fldDefaultImage = 1
                 WHERE 
-                    fldProductId = <cfqueryparam value="#arguments.productId#" cfsqltype="integer">
-                    AND fldProductImages_Id = <cfqueryparam value="#arguments.imageId#" cfsqltype="integer">
+                    fldProductId = <cfqueryparam value = "#arguments.productId#" cfsqltype = "integer">
+                    AND fldProductImages_Id = <cfqueryparam value = "#arguments.imageId#" cfsqltype = "integer">
             </cfquery>
             <cfreturn "Default image updated.">
         </cfif>
     </cffunction>
 
-    <cffunction name="deleteImage" access="remote" returntype="void">
-        <cfargument name="productId" required="true" type="numeric">
-        <cfargument name="imageId" required="true" type="numeric">
+    <cffunction name = "deleteImage" access = "remote" returntype = "string">
+        <cfargument name = "productId" required = "true" type = "numeric">
+        <cfargument name = "imageId" required = "true" type = "numeric">
         <cfif (len(trim(arguments.productId)) EQ 0) AND (len(trim(arguments.imageId)) EQ 0)>
             <cfreturn "Can't set the selected image as default.">
         <cfelse>
-            <cfquery name="local.deleteImage" datasource = "shoppingCart">
+            <cfquery name = "local.deleteImage" datasource = "#application.datasource#">
                 UPDATE 
                     shoppingcart.tblproductimages
                 SET
                     fldActive = 0,
-                    fldDeactivatedBy = <cfqueryparam value="#session.userId#" cfsqltype="integer">
+                    fldDeactivatedBy = <cfqueryparam value = "#session.userId#" cfsqltype="integer">
                 WHERE
-                    fldProductImages_Id = <cfqueryparam value="#arguments.imageId#" cfsqltype="integer">
-                    AND fldProductId = <cfqueryparam value="#arguments.productId#" cfsqltype="integer">
+                    fldProductImages_Id = <cfqueryparam value = "#arguments.imageId#" cfsqltype="integer">
+                    AND fldProductId = <cfqueryparam value = "#arguments.productId#" cfsqltype="integer">
             </cfquery>
-            <cfreturn void>
+            <cfreturn "">
         </cfif>
     </cffunction>
 
-    <cffunction name="addToCart" access="remote" returnType="string" returnFormat="json">
-        <cfargument name="productId" required="true" type="numeric">
+    <cffunction name="addToCart" access = "remote" returnType = "string" returnFormat = "json">
+        <cfargument name = "productId" required = "true" type = "numeric">
+        <cfquery name = "local.selectCartItem" datasource = "#application.datasource#">
+            SELECT 
+                fldUserId,
+                fldProductId,
+                fldQuantity
+            FROM
+                shoppingcart.tblcart
+            WHERE
+                fldProductId = <cfqueryparam value = "#arguments.productId#" cfsqltype="integer">
+        </cfquery>
+
         <cfif session.isAuthenticated EQ true>
-            <cfquery name="addProductToCart" datasource = "shoppingCart">
-                INSERT INTO `shoppingcart`.`tblcart`(
-                    `fldUserId`,
-                    `fldProductId`,
-                    `fldQuantity`
-                    ) 
-                VALUES (
-                    <cfqueryparam value="#session.userId#" cfsqltype="varchar">,
-                    <cfqueryparam value="#arguments.productId#" cfsqltype="integer">,
-                    1
-                )
-            </cfquery>
+            <cfif local.selectCartItem.recordCount EQ 0>
+                <cfquery name="local.addProductToCart" datasource = "#application.datasource#">
+                    INSERT INTO shoppingcart.tblcart(
+                        fldUserId,
+                        fldProductId,
+                        fldQuantity
+                        ) 
+                    VALUES (
+                        <cfqueryparam value = "#session.userId#" cfsqltype="varchar">,
+                        <cfqueryparam value = "#arguments.productId#" cfsqltype="integer">,
+                        1
+                    )
+                </cfquery>
+            <cfelse>
+                <cfquery name="local.updateProductToCart" datasource = "#application.datasource#">
+                    UPDATE
+                        shoppingcart.tblcart
+                    SET
+                       fldQuantity =  #local.selectCartItem.fldQuantity# + 1
+                    WHERE 
+                        fldUserId = <cfqueryparam value="#session.userId#" cfsqltype="varchar">
+                        AND  fldProductId = <cfqueryparam value="#arguments.productId#" cfsqltype="integer">
+                </cfquery>
+            </cfif>
+            <cfreturn "Product Added Successfully">
         <cfelse>
-            <cflocation url="logIn.cfm">
+            <cflocation url="logIn.cfm?productId = #arguments.productId#">
         </cfif>
     </cffunction>
 
-    <cffunction name="viewCartData" access="remote" returnType="query" returnFormat="json">
-        <cfquery name="viewCart" datasource = "shoppingCart">
+    <cffunction name = "viewCartData" access = "remote" returnType = "query" returnFormat = "json">
+        <cfquery name = "local.viewCart" datasource = "#application.datasource#">
             SELECT 
                 c.fldCart_Id,
                 c.fldQuantity,
@@ -748,19 +772,113 @@
                 shoppingcart.tblproductimages pi 
                 ON p.fldProduct_Id = pi.fldProductId
             WHERE 
-                c.fldUserId = <cfqueryparam value="#session.userId#" cfsqltype="varchar">
+                c.fldUserId = <cfqueryparam value = "#session.userId#" cfsqltype = "varchar">
                 AND  pi.fldDefaultImage = 1
         </cfquery>
-        <cfreturn viewCart>
+        <cfreturn local.viewCart>
     </cffunction>
 
-    <cffunction name ="removeCartProduct" access="remote" returnType = "void" returnFormat="json">
-        <cfargument name="cartId" required="true" type="numeric">
-        <cfquery name="removeCartData" datasource = "shoppingCart">
+    <cffunction name ="removeCartProduct" access = "remote" returnType = "void" returnFormat = "json">
+        <cfargument name = "cartId" required = "true" type = "numeric">
+        <cfquery name = "local.removeCartData" datasource = "#application.datasource#">
             DELETE
                 FROM shoppingcart.tblcart 
             WHERE
-                fldCart_Id = <cfqueryparam value="#arguments.cartId#" cfsqltype="integer">
+                fldCart_Id = <cfqueryparam value = "#arguments.cartId#" cfsqltype = "integer">
         </cfquery>
+        <cfreturn void>
+    </cffunction>
+
+    <cffunction  name = "userDetailsFetching" access = "remote" returnType = "query" returnFormat = "json">
+        <cfquery name = "local.userDetails" datasource = "#application.datasource#">
+            SELECT 
+                fldFirstName,
+                fldLastName,
+                fldEmail,
+                fldPhone
+            FROM 
+                shoppingcart.tbluser 
+            WHERE 
+                fldUser_Id = <cfqueryparam value="#session.userId#" cfsqltype="varchar">
+        </cfquery>
+        <cfreturn local.userDetails>
+    </cffunction>
+
+    <cffunction name = "userDetailsUpdating" access = "remote" returnType = "string" returnFormat = "json">
+        <cfargument  name = "userFirstName" required = "true" type = "string">
+        <cfargument  name = "userLastName" required = "true" type = "string">
+        <cfargument  name = "userEmail" required = "true" type = "string">
+        <cfargument  name = "userPhoneNumber" required = "true" type = "string">
+        
+        <cfquery name="local.userDetailsUpdate" datasource = "#application.datasource#">
+            UPDATE
+                shoppingcart.tbluser 
+            SET 
+                fldFirstName = <cfqueryparam value = "#arguments.userFirstName#" cfsqltype = "varchar">,
+                fldLastName = <cfqueryparam value = "#arguments.userLastName#" cfsqltype = "varchar">,
+                fldEmail = <cfqueryparam value = "#arguments.userEmail#" cfsqltype = "varchar">,
+                fldPhone = <cfqueryparam value = "#arguments.userPhoneNumber#" cfsqltype = "varchar">
+            WHERE 
+                fldUser_Id = <cfqueryparam value="#session.userId#" cfsqltype="varchar">
+        </cfquery>
+        <cfreturn "Updated User details successfully">
+    </cffunction>
+
+    <cffunction  name="addUserAddress" access = "remote" returnType = "string" returnFormat = "json">
+        <cfargument  name = "userFirstName" required = "true" type = "string">
+        <cfargument  name = "userLastName" required = "true" type = "string">
+        <cfargument  name = "addressLine1" required = "true" type = "string">
+        <cfargument  name = "addressLine2" required = "true" type = "string">
+        <cfargument  name = "userCity" required = "true" type = "string">
+        <cfargument  name = "userState" required = "true" type = "string">
+        <cfargument  name = "userPincode" required = "true" type = "string">
+        <cfargument  name = "userPhoneNumber" required = "true" type = "string">
+
+        <cfquery name = "addAddress" datasource = "#application.datasource#">
+            INSERT INTO shoppingcart.tbladdress(
+                fldUserId,
+                fldFirstName,
+                fldLastName,
+                fldAdressLine1,
+                fldAdressLine2,
+                fldCity,
+                fldState,
+                fldPincode,
+                fldPhoneNumber
+                ) 
+            VALUES (
+                <cfqueryparam value="#session.userId#" cfsqltype="varchar">,
+                <cfqueryparam value="#arguments.userFirstName#" cfsqltype="varchar">,
+                <cfqueryparam value="#arguments.userLastName#" cfsqltype="varchar">,
+                <cfqueryparam value="#arguments.addressLine1#" cfsqltype="varchar">,
+                <cfqueryparam value="#arguments.addressLine2#" cfsqltype="varchar">,
+                <cfqueryparam value="#arguments.userCity#" cfsqltype="varchar">,
+                <cfqueryparam value="#arguments.userState#" cfsqltype="varchar">,
+                <cfqueryparam value="#arguments.userPincode#" cfsqltype="varchar">,
+                <cfqueryparam value="#arguments.userPhoneNumber#" cfsqltype="varchar">
+                );
+
+        </cfquery>
+        <cfreturn "Address addedd successfully.">
+    </cffunction>
+
+    <cffunction  name = "fetchUserAddress" access = "public" returnType = "query">
+        <cfquery name = "local.addressFetching" datasource = "#application.datasource#">
+            SELECT
+                fldFirstName,
+                fldLastName,
+                fldAdressLine1,
+                fldAdressLine2,
+                fldCity,
+                fldState,
+                fldPincode,
+                fldPhoneNumber
+            FROM 
+                shoppingcart.tbladdress
+            WHERE
+                fldUserId = <cfqueryparam value="#session.userId#" cfsqltype="varchar">
+                AND fldActive = 1
+        </cfquery>
+        <cfreturn local.addressFetching>
     </cffunction>
 </cfcomponent>

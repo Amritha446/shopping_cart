@@ -2,11 +2,10 @@
     <cfset this.name = 'shoppingCart'>
     <cfset this.sessionManagement = true>
     <cfset this.sessionTimeout=createTimespan(0, 2, 0, 0)>
-    <cfset this.datasource = "shoppingCart">
     
     <cffunction name = "onApplicationStart" access="public" returnType="boolean">
         <cfset application.myCartObj = createObject("component", "components.myCart")>
-
+        <cfset application.datasource = "shoppingCart">
         <cfreturn true>
     </cffunction>
 

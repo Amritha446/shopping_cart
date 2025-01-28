@@ -8,16 +8,16 @@
                     <div class="headerText ms-5 mt-2 col-6">MyCart</div>
                     <div class="input-group mt-2 ms-5 ">
                         <form action="homePage.cfm?searchTerm=#url.searchTerm#" method="get">
-                            <input class="form-control border rounded-pill" type="search" name="searchTerm" value="#url.searchTerm#" id="example-search-input" placeholder="Serach..">
+                            <input class="form-control border rounded-pill" type="search" name="searchTerm" value="#(structKeyExists(url, 'searchTerm') ? url.searchTerm : '')#" id="example-search-input" placeholder="Serach..">
                         </form>
                     </div>
 
                     <div><i class="fa badge fa-lg mt-3" value=#cartData.recordCount#>&##xf07a;</i></div>
 
-                    <div class="profile d-flex me-5 mt-1 text-light p-2">
+                    <a href="userProfile.cfm" class="profileButton"><div class="profile d-flex me-5 mt-1 text-light p-2">
                         <div class="me-1 ">Profile</div>
                         <i class="fa-regular fa-user mt-1"></i>
-                    </div>
+                    </div></a>
                     <button type="button" class="logOutBtn p-1 col-1">
                         <div class="signUp d-flex">
                             <i class="fa-solid fa-right-from-bracket mb-1 mt-2" style="color:##fff"></i><div class="text-white footerContent mt-2 ms-1" onClick = "logoutUser()">LOGOUT</div>
@@ -48,14 +48,14 @@
                     <div class="cartContainer d-flex-column">
                         <!--- <cfdump  var="#cartData#"> --->
                         <cfloop query="#cartData#">
-                            <div class="cart-item d-flex ms-5">
+                            <div class="cartItem d-flex ms-5">
                                 <div class="d-flex-column">
                                     <img src="assets/#cartData.fldImageFileName#" alt="img" class="productBoxImage"> 
                                     <div class="ms-4 font-weight-bold h5">#cartData.fldProductName#</div>
-                                    <div class="quantity ms-5">
-                                        <button class="decrement" onClick="decrementQuantity(event)">-</button>
-                                        <span class="quantity-number">1</span>
-                                        <button class="increment" onClick="incrementQuantity(event)">+</button>
+                                    <div class="quantityBlock ms-5">
+                                        <button class="decrement me-2" onClick="decrementQuantity(event)">-</button>
+                                        <span class="quantityNumber">#cartData.fldQuantity#</span>
+                                        <button class="increment ms-2" onClick="incrementQuantity(event)">+</button>
                                     </div>
                                     <div class="productPrice ms-3">Product Price:$#cartData.fldPrice#</div>
                                     <div class="totalPrice ms-3 text-success">Total Price:$#cartData.fldPrice#</div>

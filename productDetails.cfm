@@ -10,10 +10,12 @@
                     <div class="headerText ms-5 mt-2 col-6">MyCart</div>
                     <div class="input-group mt-2 ms-5 ">
                         <form action="homePage.cfm?searchTerm=#url.searchTerm#" method="get">
-                            <input class="form-control border rounded-pill" type="search" name="searchTerm" value="#url.searchTerm#" id="example-search-input" placeholder="Serach..">
+                            <input class="form-control border rounded-pill" type="search" name="searchTerm" value="#(structKeyExists(url, 'searchTerm') ? url.searchTerm : '')#" id="example-search-input" placeholder="Serach..">
                         </form>
                     </div>
-                   <div><i class="fa badge fa-lg mt-3" value=#cartData.recordCount#>&##xf07a;</i></div>
+                    <div>
+                        <a href="cartPage.cfm"><i class="fa badge fa-lg mt-3" value=#cartData.recordCount#>&##xf07a;</i></a>
+                    </div>
                     <div class="profile d-flex me-5 mt-1 text-light p-2">
                         <div class="me-1 ">Profile</div>
                         <i class="fa-regular fa-user mt-1"></i>

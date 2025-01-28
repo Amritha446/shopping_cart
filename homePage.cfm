@@ -10,11 +10,11 @@
                     <div class="headerText ms-5 mt-2 col-6">MyCart</div>
                     <div class="input-group mt-2 ms-5 ">
                         <form action="homePage.cfm?searchTerm=#url.searchTerm#" method="get">
-                            <input class="form-control border rounded-pill" type="search" name="searchTerm" value="#url.searchTerm#" id="example-search-input" placeholder="Serach..">
+                            <input class="form-control border rounded-pill" type="search" name="searchTerm" value="#(structKeyExists(url, 'searchTerm') ? url.searchTerm : '')#" id="example-search-input" placeholder="Serach..">
                         </form>
                     </div>
                     <cfif session.isAuthenticated EQ true>
-                        <div><i class="fa badge fa-lg mt-3" value=#cartData.recordCount#>&##xf07a;</i></div>
+                        <div><a href="cartPage.cfm"><i class="fa badge fa-lg mt-3" value=#cartData.recordCount#>&##xf07a;</i></a></div>
                     <cfelse>
                          <div><i class="fa-solid fa-cart-shopping me-2 mt-2 p-2" style="color: ##fff"></i></div>
                     </cfif>
@@ -120,8 +120,8 @@
                                 </cfif>
                                 <cfset currentRow = currentRow + 1>
                             </cfloop>
-                            <cfif currentRow GT 6>
-                                <button type="button" class="viewMoreButton" onclick="toggleProducts()">View</button>
+                            <cfif currentRow GT 5>
+                                <button type="button" class="viewMoreButton" onclick="toggleProducts()">View More</button>
                             </cfif>
                         </div> 
                     <cfelse>
