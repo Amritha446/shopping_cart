@@ -12,7 +12,11 @@
                         </form>
                     </div>
 
-                    <div><i class="fa badge fa-lg mt-3" value=#cartData.recordCount#>&##xf07a;</i></div>
+                    <cfif session.isAuthenticated EQ true>
+                        <div><a href="cartPage.cfm"><i class="fa badge fa-lg mt-3" value=#cartData.recordCount#>&##xf07a;</i></a></div>
+                    <cfelse>
+                         <div><i class="fa-solid fa-cart-shopping me-2 mt-2 p-2" style="color: ##fff"></i></div>
+                    </cfif>
 
                     <a href="userProfile.cfm" class="profileButton"><div class="profile d-flex me-5 mt-1 text-light p-2">
                         <div class="me-1 ">Profile</div>
@@ -47,7 +51,7 @@
                     <cfset viewUserDetails = application.myCartObj.userDetailsFetching()>
                     <div class="userImage">
                         <button type="submit" class="profileButton" data-bs-toggle="modal" data-bs-target="##editUserDetails" id="userDetailedBtn" onClick="editUser()">
-                            <img src="assets1/user.JPG" alt="img" class="mt-3 me=3 userImg">
+                            <img src="assets1/user.JPG" alt="img" class="mt-3 userImg pe-none">
                         </button>
                     </div>
                     <div class="userDetails ms-2 mt-3">
@@ -59,13 +63,16 @@
                     <div class="text-light ms-5 mt-1 fw-bold">SELECT ADDRESS</div>
                     <cfset viewUserAddress = application.myCartObj.fetchUserAddress()>
                     <cfloop query="#viewUserAddress#">
-                        <div class="addressAddSection d-flex-column ms-4 mt-2 ">
-                            <input type="radio" name="userAddress" value="#viewUserAddress.fldAdressLine1#" 
-                            class="userAddressRadio ms-1 mt-1" id="address_#currentRow#">
-                            <div class="d-flex ms-4">#viewUserAddress.fldFirstName#  #viewUserAddress.fldLastName#  </div>
-                            <div class="d-flex ms-4">#viewUserAddress.fldAdressLine1# , #viewUserAddress.fldAdressLine2# ,
-                            #viewUserAddress.fldCity# , #viewUserAddress.fldState#</div>
-                            <div class="d-flex ms-4">#viewUserAddress.fldPincode# #viewUserAddress.fldPhoneNumber#</div>
+                        <div class="addressAddSection d-flex ms-4 mt-2 ">
+                            <div class="d-flex-column">
+                                <div class="d-flex ms-4">#viewUserAddress.fldFirstName#  #viewUserAddress.fldLastName#  </div>
+                                <div class="d-flex ms-4">#viewUserAddress.fldAdressLine1# , #viewUserAddress.fldAdressLine2# ,
+                                #viewUserAddress.fldCity# , #viewUserAddress.fldState#</div>
+                                <div class="d-flex ms-4">#viewUserAddress.fldPincode# #viewUserAddress.fldPhoneNumber#</div>
+                            </div>
+                            <div>
+                                <button type="submit" class="adddressRemove" onClick="removeAddress(event)" value="#viewUserAddress.fldAddress_Id#"><i class="fa-regular fa-trash-can pe-none"></i></button>
+                            </div>
                         </div>      
                     </cfloop> 
                     <button type="submit" data-bs-toggle="modal" data-bs-target="##editUserAddress" id="userAddressBtn" class="userAddressBtn" >ADD</button>
@@ -99,7 +106,7 @@
                     </div>
                 </div>
 
-                 <div class="modal fade" id="editUserAddress" tabindex="-1">
+                <div class="modal fade" id="editUserAddress" tabindex="-1">
                     <div class="modal-dialog">
                         <div class="modal-content d-flex justify-content-center align-items-center">
                             <div class="d-flex ">

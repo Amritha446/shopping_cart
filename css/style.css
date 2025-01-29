@@ -337,17 +337,18 @@ body{
     color:#1f6625;
     margin-left:10px;
 } 
-.productDescription{
+.productDescription,.productTax,.productActualPrice{
     font-size:15px;
     font-weight: 250;
     color:#1f6625;
     margin:10px;
 }  
-.productPrice{
+.productPrice,.totalPrice{
     font-size: 17px;
     color:#1f6625;
     font-weight: 500;
     margin-left:10px;
+    width:12vw;
 }  
 .productPath{
     color:#686e72;
@@ -415,14 +416,33 @@ body{
     transition: transform 0.3s ease;
     height:20%;
 }
-.productBox:hover {
-    transform: scale(1.05);
+.productBox1 {
+    width: 25%; 
+    margin: 25px;
+    box-sizing: border-box;
+    height:20%;
+    
 }
-.productBox .productBoxImage {
+.productMainDetails{
+    margin-left:20%;
+    margin-top:8%;
+}
+/* .productBox:hover {
+    transform: scale(1.05);
+} */
+.cartItem:hover {
+    /* transform: scale(1.05); 
+    box-shadow:1px 1px 2px #90b993;*/
+}
+.priceDetails:hover {
+    transform: scale(1.05);
+    box-shadow:1px 1px 2px #90b993;
+}
+/* .productBox ,.productBoxImage {
     width: 100%;
     height:12vw;;
     border-radius: 8px;
-}
+} */
 .hiddenProduct {
     display: none;
 }
@@ -445,8 +465,7 @@ body{
 }
 .cartItem {
     display: flex;
-    justify-content: space-between;
-    margin: 10px 0;
+    /* transition: transform 0.3s ease; */
 }
 .quantityBlock {
     display: flex;
@@ -483,17 +502,22 @@ body{
 	display:none;
 }
 .placeOrder{
-   width:20vw;
+   width:10vw;
    background-color: #1f6625;
    height:4vw;
    color:white;
-   margin-top:2vw;
+   margin-top:1vw;
+   border:transparent;
+   border-radius:10px;
+   margin-left:5vw;
 }
 .priceDetails{
-    height:10vw;
+    height:13vw;
     width:20vw;
-    border:1px solid #77b680;
+    box-shadow: 2px 2px 2px 2px #90b993;
     border-radius:5px;
+    margin-top:20px;
+    margin-left:50px;
 }
 .profileButton{
     background-color: #1f6625;
@@ -525,14 +549,82 @@ body{
     color:#1f6625;
     font-size:12px;
     border-bottom:1px slategrey; 
+    justify-content:space-between;
 }
 .userAddressBtn{
     background-color: #d8e5f1;
     color:#1f6625;
-    margin-left:8vw;
+    margin-left:3vw;
     margin-top:10px;
     border-radius:10px;
+    border:transparent;
+    margin-bottom:5px;
+}
+.userAddressBtn1{
+    background-color: #d8e5f1;
+    color:#1f6625;
+    margin-left:10px;
+    margin-top:10px;
+    border-radius:10px;
+    border:transparent;
+    margin-bottom:5px;
 }
 .userAddressBtn:hover{
     background-color:#8fdf99;
+}
+.userAddressBtn1:hover{
+    background-color:#8fdf99;
+}
+.adddressRemove{
+    margin-top:1vw;
+    border:transparent;
+}
+.custom-modal-width { 
+    width: 20vw;
+}
+.modal-dialog {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    top: 30%;
+}
+.addressOrder{
+    width:100%;
+    height:5vw;
+    box-shadow:0px 0px 0px 1px#9ec7a2;
+}
+.productOrder{
+    width:100%;
+    height:auto;
+}
+.orderSummary{
+    width:35vw;
+    height:10vw;;
+    margin-left:30%;
+    background-color: #1f6625;
+}
+.orderedProductName{
+    width:10vw;
+}
+.productBasedDetails{
+    margin-left:10px;
+}
+.orderListing{
+    justify-content:space-between;
+    width:30vw;
+}
+.productBoxImage1{
+    width:10vw;
+    height:10vw;
+}
+.orderPlacingBtn{
+    border:transparent;
+    background-color: #b1f1bc;
+    width:9vw;
+    height:2vw;
+    color:#1f6625;
+    margin-left:8vw;
+    margin-top:2vw;
+    margin-bottom:2vw;
 }

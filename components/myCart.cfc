@@ -709,6 +709,7 @@
 
     <cffunction name="addToCart" access = "remote" returnType = "string" returnFormat = "json">
         <cfargument name = "productId" required = "true" type = "numeric">
+        <cfargument name = "quantity" required = "false" type = "numeric" default=1> 
         <cfquery name = "local.selectCartItem" datasource = "#application.datasource#">
             SELECT 
                 fldUserId,
@@ -739,7 +740,7 @@
                     UPDATE
                         shoppingcart.tblcart
                     SET
-                       fldQuantity =  #local.selectCartItem.fldQuantity# + 1
+                       fldQuantity = <cfqueryparam value="#arguments.quantity#" cfsqltype="varchar">
                     WHERE 
                         fldUserId = <cfqueryparam value="#session.userId#" cfsqltype="varchar">
                         AND  fldProductId = <cfqueryparam value="#arguments.productId#" cfsqltype="integer">
@@ -756,6 +757,7 @@
             SELECT 
                 c.fldCart_Id,
                 c.fldQuantity,
+                c.fldProductId,
                 p.fldProduct_Id,
                 p.fldProductName,
                 p.fldDescription,
@@ -863,8 +865,10 @@
     </cffunction>
 
     <cffunction  name = "fetchUserAddress" access = "public" returnType = "query">
+        <cfargument name = "addressId" required = "false" type = "string" default="">
         <cfquery name = "local.addressFetching" datasource = "#application.datasource#">
             SELECT
+                fldAddress_Id,
                 fldFirstName,
                 fldLastName,
                 fldAdressLine1,
@@ -878,7 +882,24 @@
             WHERE
                 fldUserId = <cfqueryparam value="#session.userId#" cfsqltype="varchar">
                 AND fldActive = 1
+                <cfif arguments.addressId NEQ "">
+                    AND fldAddress_Id = <cfqueryparam value="#arguments.addressId#" cfsqltype="varchar">
+                </cfif>
         </cfquery>
         <cfreturn local.addressFetching>
     </cffunction>
+
+    <cffunction name = "removeUserAddress" access = "remote" returnType = "void" returnFormat = "json">
+        <cfargument  name = "addressId" required = "true" type = "numeric">
+        <cfquery name = "removeAddress" datasource = "#application.datasource#">
+            UPDATE 
+                shoppingcart.tbladdress
+            SET 
+                fldActive = 0
+            WHERE 
+                fldAddress_Id = <cfqueryparam value = "#arguments.addressId#" cfsqltype="integer">
+        </cfquery>
+        <cfreturn void>
+    </cffunction>
+
 </cfcomponent>

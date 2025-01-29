@@ -372,59 +372,85 @@ function removeCartProduct(event) {
 
 function updateTotalPrice() {
     let totalPrice = 0;
-  
+
     document.querySelectorAll('.cartItem').forEach(cartItem => {
-      const quantityElement = cartItem.querySelector('.quantityNumber');
-      const priceElement = cartItem.querySelector('.productPrice');
-      
-      const quantity = parseInt(quantityElement.textContent);
-      const price = parseFloat(priceElement.textContent.replace('Product Price:$', '').trim());
-      
-      const totalPriceForItem = quantity * price;
-      
-      totalPrice += totalPriceForItem;
-      
-      const totalPriceElement = cartItem.querySelector('.totalPrice');
-      totalPriceElement.textContent = 'Total Price:$' + totalPriceForItem.toFixed(2);
+        const quantityElement = cartItem.querySelector('.quantityNumber');
+        const priceElement = cartItem.querySelector('.productPrice');
+        const taxElement = cartItem.querySelector('.productActualPrice');
+        const actualPriceElement = cartItem.querySelector('.productTax');
+        const totalPriceElement = cartItem.querySelector('.totalPrice');
+        
+        if (!quantityElement || !priceElement || !taxElement || !actualPriceElement || !totalPriceElement) return;
+
+        const quantity = parseInt(quantityElement.textContent);
+        const price = parseFloat(priceElement.textContent.replace('Unit Price:$', '').trim());
+        const taxPercentage = parseFloat(taxElement.textContent.replace('Product Tax:', '').replace('%', '').trim());
+
+        const taxAmount = (taxPercentage / 100) * price;
+        const actualPrice = price + taxAmount;
+
+        actualPriceElement.textContent = 'Actual Price:$' + actualPrice.toFixed(2);
+
+        const totalPriceForItem = quantity * actualPrice; 
+
+        totalPrice += totalPriceForItem;
+
+        totalPriceElement.textContent = 'Total Price:$' + totalPriceForItem.toFixed(2);
     });
-  
+
     const totalPriceElement = document.querySelector('.priceDetailsHeading');
-    totalPriceElement.textContent = 'Total Price: $' + totalPrice.toFixed(2);
-  }
-  
-  function incrementQuantity(event) {
+    if (totalPriceElement) {
+        totalPriceElement.textContent = 'Total Price: $' + totalPrice.toFixed(2);
+    }
+}
+
+function incrementQuantity(event) {
     const cartItem = event.target.closest('.cartItem');
     const quantityElement = cartItem.querySelector('.quantityNumber');
     let currentQuantity = parseInt(quantityElement.textContent);
-    
-    if (currentQuantity < 10) {
-      quantityElement.textContent = currentQuantity + 1;
-      updateTotalPrice();
+
+    if (currentQuantity < 10) { 
+        quantityElement.textContent = currentQuantity + 1;
+        updateTotalPrice();
     }
-  }
-  
-  function decrementQuantity(event) {
+}
+
+function decrementQuantity(event) {
     const cartItem = event.target.closest('.cartItem');
     const quantityElement = cartItem.querySelector('.quantityNumber');
     let currentQuantity = parseInt(quantityElement.textContent);
-    
-    if (currentQuantity > 1) {
-      quantityElement.textContent = currentQuantity - 1;
-      updateTotalPrice();
+
+    if (currentQuantity > 1) { 
+        quantityElement.textContent = currentQuantity - 1;
+        updateTotalPrice(); 
     }
-  }
-  
-  document.addEventListener('DOMContentLoaded', updateTotalPrice);
-  
-  document.querySelectorAll('.increment').forEach(button => {
+}
+
+document.addEventListener('DOMContentLoaded', updateTotalPrice);
+
+document.querySelectorAll('.increment').forEach(button => {
     button.addEventListener('click', incrementQuantity);
-  });
-  
-  document.querySelectorAll('.decrement').forEach(button => {
+});
+
+document.querySelectorAll('.decrement').forEach(button => {
     button.addEventListener('click', decrementQuantity);
-  });
+});
+
+function updateCartQuantity(productId, newQuantity) {
+    $.ajax({
+        type: "GET",
+        url: "Components/myCart.cfc?method=addToCart",
+        data: {
+            productId: productId,
+            quantity: newQuantity
+        },
+        success: function(response) {
+            console.log("Quantity updated successfully");
+        }
+    });
+}
   
-  function editUser(){
+function editUser(){
     $.ajax({
         type:"POST",
         url:"Components/myCart.cfc?method=userDetailsFetching", 
@@ -440,12 +466,12 @@ function updateTotalPrice() {
 function editUserSubmit(){
     event.preventDefault()
     $.ajax({
-        type:"POST",
+        type:"GET",
         url:"Components/myCart.cfc?method=userDetailsUpdating", 
         data:{userFirstName:document.getElementById('userFirstNameProfile').value,
             userLastName:document.getElementById('userLastNameProfile').value,
-            userPhoneNumber:document.getElementById('userPhoneNumberProfile').value,
-            userEmail:document.getElementById('userEmailProfile').value  
+            userEmail:document.getElementById('userPhoneNumberProfile').value,
+            userPhoneNumber:document.getElementById('userEmailProfile').value 
         },
         success:function(){
            location.reload(); 
@@ -471,3 +497,31 @@ function editUserAddress(){
         }
     })
 }
+
+function removeAddress(event){
+    event.preventDefault
+    if(confirm("Confirm delete?")){
+        $.ajax({
+            type:"GET",
+            url:"Components/myCart.cfc?method=removeUserAddress",
+            data:{addressId:event.target.value},
+            success:function(){
+                location.reload(); 
+            }
+        })
+    }
+}
+
+// JavaScript to update the hidden input with the selected addressId
+
+document.querySelectorAll('.address-radio').forEach(function (radioButton) {
+    radioButton.addEventListener('change', function () {
+        const selectedAddressId = document.querySelector('input[name="addressRadio"]:checked')?.value;
+        console.log(selectedAddressId)
+        // Update the hidden input field with the selected addressId
+        if (selectedAddressId) {
+            document.getElementById('selectedAddressId').value = selectedAddressId;
+            document.getElementById('hiddenAddressId').value = selectedAddressId; // For form submission
+        }
+    });
+});

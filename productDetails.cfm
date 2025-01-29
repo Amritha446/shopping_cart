@@ -65,7 +65,7 @@
                                 </cfloop>
                             </div>
                             <div class="d-flex ms-4">
-                                <button type="submit" class="buyProduct">BUY NOW</button>
+                                <button type="submit" class="buyProduct"  data-bs-toggle="modal" data-bs-target="##buyNow" id="buyNowBtn">BUY NOW</button>
                                 <button type="submit" class="addToCart" value=#url.productId# onClick="addProductToCart(event)" >ADD TO CART</button>
                             </div>
                         </div>   
@@ -89,6 +89,83 @@
                     </div>
                 </div>
                 
+                <div class="modal fade" id="buyNow" tabindex="-1">
+                    <div class="modal-dialog custom-modal-width">
+                        <div class="modal-content d-flex justify-content-center align-items-center">
+                            <div class="buyModal">
+                                <div class="text-success ms-5 mt-1 fw-bold">SELECT ADDRESS</div>
+                                <cfset viewUserAddress = application.myCartObj.fetchUserAddress()>
+                                <form action="orderPage.cfm" method="get">
+                                    <cfloop query="#viewUserAddress#">
+                                        <div class="addressAddSection d-flex ms-4 mt-2">
+                                            <div class="d-flex-column">
+                                                <input type="radio" name="addressId" value="#viewUserAddress.fldAddress_Id#" class="address-radio" required>
+                                                <div class="d-flex ms-4">#viewUserAddress.fldFirstName# #viewUserAddress.fldLastName#</div>
+                                                <div class="d-flex ms-4">#viewUserAddress.fldAdressLine1# , #viewUserAddress.fldAdressLine2# , #viewUserAddress.fldCity# , #viewUserAddress.fldState#</div>
+                                                <div class="d-flex ms-4">#viewUserAddress.fldPincode# #viewUserAddress.fldPhoneNumber#</div>
+                                            </div>
+                                        </div>
+                                    </cfloop>
+                                    <input type="hidden" name="productId" value="#url.productId#">
+                                    <div class="d-flex">
+                                        <button type="submit" id="userPaymentBtn" class="userAddressBtn1">PAYMENT</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div class="modal fade" id="editUserAddress" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content d-flex justify-content-center align-items-center">
+                            <div class="d-flex ">
+                                <div class="d-flex-column ">
+                                    <div class="textHead">FIRST NAME:</div>
+                                    <input type="text" name="addressFirstName" class="ms-1" id="addressFirstName">
+                                </div>
+                                <div class="d-flex-column">
+                                    <div class="textHead">LAST NAME:</div>
+                                    <input type="text" name="addressLastName" class="ms-1" id="addressLastName" >
+                                </div>
+                            </div>
+                            <div class="d-flex ">
+                                <div class="d-flex-column ">
+                                    <div class="textHead">ADDRESS LINE 1:</div>
+                                    <input type="text" name="addressLine1" class="ms-1" id="addressLine1">
+                                </div>
+                                <div class="d-flex-column">
+                                    <div class="textHead">ADDRESS LINE 2:</div>
+                                    <input type="text" name="addressLine2" class="ms-1" id="addressLine2">
+                                </div>
+                            </div>
+                            <div class="d-flex ">
+                                <div class="d-flex-column ">
+                                    <div class="textHead">CITY:</div>
+                                    <input type="text" name="userCity" class="ms-1" id="userCity">
+                                </div>
+                                <div class="d-flex-column">
+                                    <div class="textHead">STATE:</div>
+                                    <input type="text" name="userState" class="ms-1" id="userState" >
+                                </div>
+                            </div>
+                            <div class="d-flex ">
+                                <div class="d-flex-column ">
+                                    <div class="textHead">PINCODE:</div>
+                                    <input type="text" name="userPincode" class="ms-1" id="userPincode">
+                                </div>
+                                <div class="d-flex-column">
+                                    <div class="textHead">PHONE NO:</div>
+                                    <input type="text" name="userPhoneNumber" class="ms-1" id="userPhoneNumber" >
+                                </div>
+                            </div>
+                            <button type="submit" value="submit" class="btn mt-3 mb-5 ms-3" name="submit" onClick="editUserAddress()">SUBMIT</button>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="footerSection d-flex mt-5">
                     <div class="footerHeading ms-5 mt-4">
                         <a href="logIn.cfm" class="footerHeading">BECOME A SELLER</a>
