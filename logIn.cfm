@@ -38,10 +38,11 @@
                 <cfset loginObj=createObject("component","components.myCart")>
                 <cfset result=application.myCartObj.validateLogin(userName = form.userName , userPassword  = form.userPassword )>
                 <cfif result == "true">
-                    <cfif len(trim(url.productId)) NEQ 0> 
+                    <cfif len(trim(url.productId)) EQ 0> 
                         <cflocation  url="cartDashboard.cfm">
                     <cfelse>
-                        <cfset result=application.myCartObj.addToCart(productId = url.productId)> 
+                        <cfset application.myCartObj.addToCart(productId = url.productId)>
+                        <cflocation  url="cartPage.cfm"> 
                     </cfif>
                 <cfelse>
                     <div class="text-danger">Invalid Login attempt.</div>

@@ -1,3 +1,5 @@
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 </head>
     <body>
         <cfoutput>
@@ -48,6 +50,8 @@
                         </div>
                     </cfloop>
                 </div>
+                
+                
                 <div class="orderSummary">
                     <h5 class="ms-5 ps-5 mt-3 text-light p-2">ORDER SUMMARY</h5>
                     <div class="addressOrder">
@@ -65,7 +69,9 @@
                             <cfset cartData = application.myCartObj.viewProduct(productId = URL.productId)>
                         <cfelse>
                             <cfset cartData = application.myCartObj.viewCartData()>
+                            <input type = "hidden" id="cartIdFetch" value="#cartData.fldCart_Id#">
                         </cfif>
+
                         <div class="fs-6 text-success orderedProductName ms-4 mt-4">PRODUCT DETAILS</div>
                         <cfloop query="#cartData#">
                             <div class="cartItem d-flex">
@@ -95,8 +101,41 @@
                                 </div>
                             </div>
                         </cfloop>
-                        <button type="submit" class="orderPlacingBtn ">PLACE ORDER</button>
+                        <div class="priceDetailsHeading ms-5 text-success" id="priceDetailsHeading">Total Price:</div>
+                        <div class="taxDetailsHeading ms-5 text-success" id="taxDetailsHeading">Total Tax:</div>
+
+                        <button type="submit" class="orderPlacingBtn" data-bs-toggle="modal" data-bs-target="##orderItems">PLACE ORDER</button>
                     </div>  
+                </div>
+
+                <div class="modal fade" id="orderItems" tabindex="-1">
+                    <div class="modal-dialog ">
+                        <div class="modal-content d-flex justify-content-center align-items-center">
+                            <form method="POST" name="form">
+                                <div class="orderBox">
+                                    <div class="cardDetails ">
+                                        <h6 class="text-success ms-5">CARD DETAILS</h6>
+                                        <div class="d-flex-column">
+                                            <div>
+                                                <div class="textHead">CARD NUMBER</div>
+                                                <input type="number" name="paymentCardNumber" class="ms-1" id="paymentCardNumber" placeholder="0000-000">
+                                            </div>
+                                            <div>
+                                                <div class="textHead">CVV</div>
+                                                <input type="number" name="paymentCardCvv" class="ms-1" id="paymentCardCvv" placeholder="000">
+                                            </div>
+                                            <input type = "hidden" name = "productDetailsPassing" id = "productDetailsPassing" value="#URL.productId#">
+                                            <input type = "hidden" name = "addressDetailsPassing" id = "addressDetailsPassing" value="#URL.addressId#">
+                                            
+                                        </div>
+                                    </div>
+                                </div>                             
+                                <div class="d-flex">
+                                    <button type="submit" id="userPaymentBtn" class="userAddressBtn1 " name="submit" onClick="paymentData()">PROCEED</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
         </cfoutput>

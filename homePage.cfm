@@ -6,22 +6,23 @@
             <cfparam name="url.searchTerm" default="">
             <div class="container-fluid ">
                 <div class="header d-flex text-align-center">
-                    <cfset cartData = application.myCartObj.viewCartData()>
+                    
                     <div class="headerText ms-5 mt-2 col-6">MyCart</div>
                     <div class="input-group mt-2 ms-5 ">
                         <form action="homePage.cfm?searchTerm=#url.searchTerm#" method="get">
                             <input class="form-control border rounded-pill" type="search" name="searchTerm" value="#(structKeyExists(url, 'searchTerm') ? url.searchTerm : '')#" id="example-search-input" placeholder="Serach..">
                         </form>
                     </div>
-                    <cfif session.isAuthenticated EQ true>
+                    <cfif structKeyExists(session, "isAuthenticated") AND session.isAuthenticated EQ true>
+                        <cfset cartData = application.myCartObj.viewCartData()>
                         <div><a href="cartPage.cfm"><i class="fa badge fa-lg mt-3" value=#cartData.recordCount#>&##xf07a;</i></a></div>
                     <cfelse>
                          <div><i class="fa-solid fa-cart-shopping me-2 mt-2 p-2" style="color: ##fff"></i></div>
                     </cfif>
-                    <div class="profile d-flex me-5 mt-1 text-light p-2">
+                    <a href="userProfile.cfm" class="profileButton"><div class="profile d-flex me-5 mt-1 text-light p-2">
                         <div class="me-1 ">Profile</div>
                         <i class="fa-regular fa-user mt-1"></i>
-                    </div>
+                    </div></a>
                     <button type="button" class="logOutBtn p-1 col-1">
                         <div class="signUp d-flex">
                             <i class="fa-solid fa-right-from-bracket mb-1 mt-2" style="color:##fff"></i><div class="text-white footerContent mt-2 ms-1" onClick = "logoutUser()">LOGOUT</div>

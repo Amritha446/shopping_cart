@@ -19,29 +19,35 @@
 
         <cfargument  name="requestPage" required="true"> 
         <cfset onApplicationStart()>
-        <cfset local.excludePages = ["/Amritha_CF/testTask/myCart/shopping_cart/login.cfm","/Amritha_CF/testTask/myCart/shopping_cart/signUp.cfm","/Amritha_CF/testTask/myCart/shopping_cart/homePage.cfm",
-        "/Amritha_CF/testTask/myCart/shopping_cart/categoryBasedProduct.cfm","/Amritha_CF/testTask/myCart/shopping_cart/productDetails.cfm"]>
+        <cfset local.publicPages = ["/Amritha_CF/testTask/myCart/shopping_cart/login.cfm","/Amritha_CF/testTask/myCart/shopping_cart/signUp.cfm","/Amritha_CF/testTask/myCart/shopping_cart/homePage.cfm",
+        "/Amritha_CF/testTask/myCart/shopping_cart/categoryBasedProduct.cfm","/Amritha_CF/testTask/myCart/shopping_cart/productDetails.cfm","/Amritha_CF/testTask/myCart/shopping_cart/filterProduct.cfm"]>
         <cfset local.adminPages = ["/Amritha_CF/testTask/myCart/shopping_cart/cartDashboard.cfm","/Amritha_CF/testTask/myCart/shopping_cart/addCategory.cfm",
         "/Amritha_CF/testTask/myCart/shopping_cart/productPage.cfm","/Amritha_CF/testTask/myCart/shopping_cart/subCategory.cfm"]>
-        <cfif ArrayContains(local.excludePages,arguments.requestPage)>
-            <cfreturn true>
-        <cfelseif structKeyExists(session, "isAuthenticated")>
-            <cfif session.roleId EQ 1>
-                <cfreturn true> 
-            <cfelse>
-                <cfif ArrayContains(local.adminPages,arguments.requestPage)>
-                    <cflocation  url="homePage.cfm">
+        
+        <cfif ArrayContains(local.adminPages,arguments.requestPage)>
+            <cfif structKeyExists(session, "isAuthenticated") AND session.isAuthenticated EQ true >
+                <cfif session.roleId EQ 1>
+                    <cfreturn true> 
                 <cfelse>
-                    <cfreturn true>
+                    <cflocation url ="/Amritha_CF/testTask/myCart/shopping_cart/homePage.cfm">
                 </cfif>
+            <cfelse>
+                <cflocation url ="/Amritha_CF/testTask/myCart/shopping_cart/homePage.cfm">
+           </cfif>
+        <cfelseif ArrayContains(["/Amritha_CF/testTask/myCart/shopping_cart/logIn.cfm","/Amritha_CF/testTask/myCart/shopping_cart/signUp.cfm"],arguments.requestPage)>
+            <cfif structKeyExists(session, "isAuthenticated") AND session.isAuthenticated EQ true >
+                <cflocation url ="/Amritha_CF/testTask/myCart/shopping_cart/homePage.cfm">
             </cfif>
+        <cfelseif ArrayContains(local.publicPages,arguments.requestPage)>
+            <cfreturn true>
         <cfelse>
-            <cfif ArrayContains(local.excludePages,arguments.requestPage)>
+            <cfif structKeyExists(session, "isAuthenticated") AND session.isAuthenticated EQ true >
                 <cfreturn true>
             <cfelse>
-                <cflocation  url="logIn.cfm">
+                <cflocation url ="/Amritha_CF/testTask/myCart/shopping_cart/logIn.cfm">  
             </cfif> 
         </cfif>
+        <cfreturn true>
     </cffunction>
     
 </cfcomponent>

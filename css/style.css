@@ -628,3 +628,9 @@ body{
     margin-top:2vw;
     margin-bottom:2vw;
 }
+.orderBox{
+    width:15vw;
+    height:13vw;
+    border:1px solid black;
+    margin-top:10px;
+}

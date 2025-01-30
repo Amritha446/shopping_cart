@@ -4,16 +4,10 @@ function logoutUser(){
         $.ajax({
             type:"POST",
             url:"Components/myCart.cfc?method=logout",
-            success:function(result){
-                if(result){
-                    location.reload();
-                    return true; 
-                }
+            success:function(){
+                location.reload();
             }
         })
-    }
-    else{
-        event.preventDefault()
     }
 }
 
@@ -341,19 +335,7 @@ function toggleProducts() {
 document.querySelectorAll('.hiddenProduct').forEach(function(product) {
     product.style.display = "none";
 });
-
-function addProductToCart(event){
-    console.log(event.target.value)
-    $.ajax({
-        type:"GET",
-        url:"Components/myCart.cfc?method=addToCart", 
-        data:{productId:event.target.value},
-        success:function(){
-           window.location.href = "cartPage.cfm";
-        }
-    })
-}
-  
+ 
 function removeCartProduct(event) {
     if(confirm("Confirm delete?")){
         $.ajax({
@@ -362,8 +344,7 @@ function removeCartProduct(event) {
             data:{CartId:event.target.value},
             success:function(result){
                 if(result){
-                    event.target.parentNode.parentNode.parentNode.remove()
-                    return true; 
+                    window.location.href = "cartPage.cfm";
                 }
             }     
         })
@@ -372,6 +353,7 @@ function removeCartProduct(event) {
 
 function updateTotalPrice() {
     let totalPrice = 0;
+    let totalTaxAmount = 0; 
 
     document.querySelectorAll('.cartItem').forEach(cartItem => {
         const quantityElement = cartItem.querySelector('.quantityNumber');
@@ -386,8 +368,9 @@ function updateTotalPrice() {
         const price = parseFloat(priceElement.textContent.replace('Unit Price:$', '').trim());
         const taxPercentage = parseFloat(taxElement.textContent.replace('Product Tax:', '').replace('%', '').trim());
 
-        const taxAmount = (taxPercentage / 100) * price;
-        const actualPrice = price + taxAmount;
+        const unitTaxAmount = (taxPercentage / 100) * price;
+
+        const actualPrice = price + unitTaxAmount;
 
         actualPriceElement.textContent = 'Actual Price:$' + actualPrice.toFixed(2);
 
@@ -396,22 +379,35 @@ function updateTotalPrice() {
         totalPrice += totalPriceForItem;
 
         totalPriceElement.textContent = 'Total Price:$' + totalPriceForItem.toFixed(2);
+
+        const totalTaxForItem = quantity * unitTaxAmount;
+
+        totalTaxAmount += totalTaxForItem;
     });
 
     const totalPriceElement = document.querySelector('.priceDetailsHeading');
     if (totalPriceElement) {
         totalPriceElement.textContent = 'Total Price: $' + totalPrice.toFixed(2);
     }
+    const totalTaxElement = document.querySelector('.taxDetailsHeading');
+    if (totalTaxElement) {
+        totalTaxElement.textContent = 'Total Tax: $' + totalTaxAmount.toFixed(2);
+    }
 }
+
 
 function incrementQuantity(event) {
     const cartItem = event.target.closest('.cartItem');
     const quantityElement = cartItem.querySelector('.quantityNumber');
     let currentQuantity = parseInt(quantityElement.textContent);
+    let productId = event.target.getAttribute('value');
+    console.log(event.target.getAttribute('value'))
+    console.log('hi')
 
-    if (currentQuantity < 10) { 
+    if (currentQuantity < 20) { 
         quantityElement.textContent = currentQuantity + 1;
         updateTotalPrice();
+        updateCartQuantity(productId, (currentQuantity + 1));
     }
 }
 
@@ -419,10 +415,12 @@ function decrementQuantity(event) {
     const cartItem = event.target.closest('.cartItem');
     const quantityElement = cartItem.querySelector('.quantityNumber');
     let currentQuantity = parseInt(quantityElement.textContent);
+    let productId = event.target.getAttribute('value');
 
     if (currentQuantity > 1) { 
         quantityElement.textContent = currentQuantity - 1;
         updateTotalPrice(); 
+        updateCartQuantity(productId, (currentQuantity - 1));
     }
 }
 
@@ -436,6 +434,7 @@ document.querySelectorAll('.decrement').forEach(button => {
     button.addEventListener('click', decrementQuantity);
 });
 
+
 function updateCartQuantity(productId, newQuantity) {
     $.ajax({
         type: "GET",
@@ -444,12 +443,13 @@ function updateCartQuantity(productId, newQuantity) {
             productId: productId,
             quantity: newQuantity
         },
-        success: function(response) {
+        success: function() {
             console.log("Quantity updated successfully");
         }
     });
 }
-  
+
+
 function editUser(){
     $.ajax({
         type:"POST",
@@ -512,16 +512,53 @@ function removeAddress(event){
     }
 }
 
-// JavaScript to update the hidden input with the selected addressId
 
 document.querySelectorAll('.address-radio').forEach(function (radioButton) {
     radioButton.addEventListener('change', function () {
         const selectedAddressId = document.querySelector('input[name="addressRadio"]:checked')?.value;
         console.log(selectedAddressId)
-        // Update the hidden input field with the selected addressId
         if (selectedAddressId) {
             document.getElementById('selectedAddressId').value = selectedAddressId;
-            document.getElementById('hiddenAddressId').value = selectedAddressId; // For form submission
+            document.getElementById('hiddenAddressId').value = selectedAddressId;
         }
     });
 });
+
+
+function paymentData() {
+    
+    let cvv = $('#paymentCardCvv').val();
+    let productId = $('#productDetailsPassing').val();
+    let addressId = $('#addressDetailsPassing').val();
+    let totalPrice = $('#priceDetailsHeading').text(); 
+    let totalTax = $('#taxDetailsHeading').text(); 
+    let cardNumber = document.getElementById('paymentCardNumber').value;
+
+    console.log(cartId);
+   
+    let data = {
+        cardNumber: cardNumber,
+        cardCvv: cvv,
+        productId: productId,
+        addressId: addressId,
+        totalPrice: totalPrice,
+        totalTax: totalTax
+    };
+
+    console.log(data);
+
+    $.ajax({
+        url: "Components/myCart.cfc?method=vieworderPayment",
+        type: "GET",
+        data: data,
+        success: function(response) {
+            console.log("response: ", response);
+        },
+        error: function(xhr, status, error) {
+            alert('error');
+        }
+    });
+}
+
+
+

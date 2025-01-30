@@ -3,7 +3,7 @@
         <cfoutput>
             <cfparam name="url.searchTerm" default="">
             <div class="container-fluid ">
-                <cfset cartData = application.myCartObj.viewCartData()>
+                
                 <div class="header d-flex text-align-center">
                     <div class="headerText ms-5 mt-2 col-6">MyCart</div>
                     <div class="input-group mt-2 ms-5 ">
@@ -12,7 +12,12 @@
                         </form>
                     </div>
 
-                    <div><i class="fa badge fa-lg mt-3" value=#cartData.recordCount#>&##xf07a;</i></div>
+                    <cfif structKeyExists(session, "isAuthenticated") AND session.isAuthenticated EQ true>
+                        <cfset cartData = application.myCartObj.viewCartData()>
+                        <div><a href="cartPage.cfm"><i class="fa badge fa-lg mt-3" value=#cartData.recordCount#>&##xf07a;</i></a></div>
+                    <cfelse>
+                         <div><i class="fa-solid fa-cart-shopping me-2 mt-2 p-2" style="color: ##fff"></i></div>
+                    </cfif>
 
                     <a href="userProfile.cfm" class="profileButton"><div class="profile d-flex me-5 mt-1 text-light p-2">
                         <div class="me-1 ">Profile</div>
@@ -44,17 +49,19 @@
                 </div>
                 <div class="d-flex">
                     <cfset cartData = application.myCartObj.viewCartData()>
+                    <input type = "hidden" id="cartIdFetch" value="#cartData.fldCart_Id#">
                     <div class="cartContainer d-flex-column">
                         <cfloop query="#cartData#">
-                            <div class="cartItem d-flex-column ms-5">
+                            <div class="cartItem d-flex-column ms-5" >
                                 <div class="d-flex-column productBox1">
                                     <img src="assets/#cartData.fldImageFileName#" alt="img" class="productBoxImage"> 
                                     <div class="ms-4 font-weight-bold h5">#cartData.fldProductName#</div>
                                     <div class="quantityBlock ms-5">
-                                        <button class="decrement me-2" onClick="decrementQuantity(event)">-</button>
+                                        <button class="decrement me-2" value="#cartData.fldProduct_Id#" onClick="decrementQuantity(event)">-</button>
                                         <span class="quantityNumber">#cartData.fldQuantity#</span>
-                                        <button class="increment ms-2" onClick="incrementQuantity(event)">+</button>
+                                        <button class="increment ms-2" value="#cartData.fldProduct_Id#" onClick="incrementQuantity(event)">+</button>
                                     </div>
+
                                     <div class="d-flex">
                                         <button type="submit" class="buyProduct" value="#cartData.fldCart_Id#" onClick="removeCartProduct(event)">REMOVE</button>
                                         <a href="productDetails.cfm?productId=#cartData.fldProduct_Id#" class="imageLink"><button type="submit" class="buyProduct">VIEW</button></a>
@@ -101,8 +108,6 @@
                         </div>
                     </div>
                 </div>
-
-
 
                 <div class="modal fade" id="editUserAddress" tabindex="-1">
                     <div class="modal-dialog">
