@@ -5,7 +5,7 @@
             <div class="container-fluid ">
                 <div class="header d-flex text-align-center">
                     <cfset cartData = application.myCartObj.viewCartData()>
-                    <div class="headerText ms-5 mt-2 col-6">MyCart</div>
+                    <a href="homePage.cfm" class="imageLink"><div class="headerText ms-5 mt-2 col-6">MyCart</div></a>
                     <div class="input-group mt-2 ms-5 ">
                         <form action="homePage.cfm?searchTerm=#url.searchTerm#" method="get">
                             <input class="form-control border rounded-pill" type="search" name="searchTerm" value="#(structKeyExists(url, 'searchTerm') ? url.searchTerm : '')#" id="example-search-input" placeholder="Serach..">

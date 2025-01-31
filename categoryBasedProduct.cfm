@@ -5,13 +5,13 @@
             <div class="container-fluid ">
                 <cfset cartData = application.myCartObj.viewCartData()>
                 <div class="header d-flex text-align-center">
-                    <div class="headerText ms-5 mt-2 col-6">MyCart</div>
+                    <a href="homePage.cfm" class="imageLink"><div class="headerText ms-5 mt-2 col-6">MyCart</div></a>
                     <div class="input-group mt-2 ms-5 ">
                         <form action="homePage.cfm?searchTerm=#url.searchTerm#" method="get">
                             <input class="form-control border rounded-pill" type="search" name="searchTerm" value="#(structKeyExists(url, 'searchTerm') ? url.searchTerm : '')#" id="example-search-input" placeholder="Serach..">
                         </form>
                     </div>
-                    <cfif session.isAuthenticated EQ true>
+                    <cfif structKeyExists(session, "isAuthenticated") AND session.isAuthenticated EQ true>
                         <div><a href="cartPage.cfm"><i class="fa badge fa-lg mt-3" value=#cartData.recordCount#>&##xf07a;</i></a></div>
                     <cfelse>
                          <div><i class="fa-solid fa-cart-shopping me-2 mt-2 p-2" style="color: ##fff"></i></div>

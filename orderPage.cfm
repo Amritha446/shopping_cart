@@ -1,4 +1,4 @@
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 
 </head>
     <body>
@@ -9,14 +9,14 @@
             <div class="container-fluid ">
                 <cfset cartData = application.myCartObj.viewCartData()>
                 <div class="header d-flex text-align-center">
-                    <div class="headerText ms-5 mt-2 col-6">MyCart</div>
+                    <a href="homePage.cfm" class="imageLink"><div class="headerText ms-5 mt-2 col-6">MyCart</div></a>
                     <div class="input-group mt-2 ms-5 ">
                         <form action="homePage.cfm?searchTerm=#url.searchTerm#" method="get">
                             <input class="form-control border rounded-pill" type="search" name="searchTerm" value="#(structKeyExists(url, 'searchTerm') ? url.searchTerm : '')#" id="example-search-input" placeholder="Serach..">
                         </form>
                     </div>
 
-                    <cfif session.isAuthenticated EQ true>
+                    <cfif structKeyExists(session, "isAuthenticated") AND session.isAuthenticated EQ true>
                         <div><a href="cartPage.cfm"><i class="fa badge fa-lg mt-3" value=#cartData.recordCount#>&##xf07a;</i></a></div>
                     <cfelse>
                          <div><i class="fa-solid fa-cart-shopping me-2 mt-2 p-2" style="color: ##fff"></i></div>
@@ -105,6 +105,7 @@
                         <div class="taxDetailsHeading ms-5 text-success" id="taxDetailsHeading">Total Tax:</div>
 
                         <button type="submit" class="orderPlacingBtn" data-bs-toggle="modal" data-bs-target="##orderItems">PLACE ORDER</button>
+                        
                     </div>  
                 </div>
 
@@ -132,7 +133,9 @@
                                 </div>                             
                                 <div class="d-flex">
                                     <button type="submit" id="userPaymentBtn" class="userAddressBtn1 " name="submit" onClick="paymentData()">PROCEED</button>
+                                    
                                 </div>
+
                             </form>
                         </div>
                     </div>

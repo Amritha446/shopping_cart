@@ -313,7 +313,7 @@ window.onload = function() {
 };
 
 function toggleProducts() {
-    // Get all elements with the class "hiddenProduct"
+    // elements with class "hiddenProduct"
     var hiddenProducts = document.querySelectorAll('.hiddenProduct');
 
     hiddenProducts.forEach(function(product) {
@@ -343,9 +343,7 @@ function removeCartProduct(event) {
             url:"Components/myCart.cfc?method=removeCartProduct", 
             data:{CartId:event.target.value},
             success:function(result){
-                if(result){
-                    window.location.href = "cartPage.cfm";
-                }
+                location.reload()
             }     
         })
     } 
@@ -397,14 +395,15 @@ function updateTotalPrice() {
 
 
 function incrementQuantity(event) {
+    console.log(event.target.value)
     const cartItem = event.target.closest('.cartItem');
     const quantityElement = cartItem.querySelector('.quantityNumber');
     let currentQuantity = parseInt(quantityElement.textContent);
     let productId = event.target.getAttribute('value');
-    console.log(event.target.getAttribute('value'))
-    console.log('hi')
+    console.log(event.target.getAttribute('value'));
+    console.log(productId)
 
-    if (currentQuantity < 20) { 
+    if (currentQuantity < 21) { 
         quantityElement.textContent = currentQuantity + 1;
         updateTotalPrice();
         updateCartQuantity(productId, (currentQuantity + 1));
@@ -526,35 +525,39 @@ document.querySelectorAll('.address-radio').forEach(function (radioButton) {
 
 
 function paymentData() {
-    
+    console.log('hi')
     let cvv = $('#paymentCardCvv').val();
+    let cardNumber = document.getElementById('paymentCardNumber').value;
     let productId = $('#productDetailsPassing').val();
     let addressId = $('#addressDetailsPassing').val();
-    let totalPrice = $('#priceDetailsHeading').text(); 
-    let totalTax = $('#taxDetailsHeading').text(); 
-    let cardNumber = document.getElementById('paymentCardNumber').value;
+    let totalPriceText = $('#priceDetailsHeading').text().trim();
+    let totalTaxText = $('#taxDetailsHeading').text().trim();
 
-    console.log(cartId);
-   
+    let cleanTotalPrice = totalPriceText.replace(/[^\d.-]/g, ''); 
+    let cleanTotalTax = totalTaxText.replace(/[^\d.-]/g, '');
+
+    let totalPrice = isNaN(parseFloat(cleanTotalPrice)) ? 0 : parseFloat(cleanTotalPrice);
+    let totalTax = isNaN(parseFloat(cleanTotalTax)) ? 0 : parseFloat(cleanTotalTax);
+    
+    console.log("Parsed Total Price: ", totalPrice);
+
     let data = {
         cardNumber: cardNumber,
-        cardCvv: cvv,
+        cvv: cvv,
         productId: productId,
         addressId: addressId,
         totalPrice: totalPrice,
         totalTax: totalTax
     };
-
     console.log(data);
-
     $.ajax({
-        url: "Components/myCart.cfc?method=vieworderPayment",
+        url: "Components/myCart.cfc?method=addOrderPayment",
         type: "GET",
         data: data,
         success: function(response) {
-            console.log("response: ", response);
+           window.location.href = "paymentPage.cfm";
         },
-        error: function(xhr, status, error) {
+        error: function() {
             alert('error');
         }
     });

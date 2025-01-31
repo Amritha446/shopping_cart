@@ -6,7 +6,7 @@
             <cfparam name="url.random" default=0>
             <div class="container-fluid ">
                 <div class="header d-flex text-align-center">
-                    <div class="headerText ms-5 mt-2 col-6">MyCart</div>
+                    <a href="homePage.cfm" class="imageLink"><div class="headerText ms-5 mt-2 col-6">MyCart</div></a>
                     <div class="input-group mt-2 ms-5 ">
                         <form action="homePage.cfm?searchTerm=#url.searchTerm#" method="get">
                             <input class="form-control border rounded-pill" type="search" name="searchTerm" value="#(structKeyExists(url, 'searchTerm') ? url.searchTerm : '')#" id="example-search-input" placeholder="Serach..">
@@ -73,12 +73,19 @@
                                 <form method="POST" name="form">
                                     <button type="submit" class="addToCart" >ADD TO CART</button>
                                     <input type="hidden" value = "#url.productId#" name="addToCartHidden">
+                                    <input type="hidden" name="cartToken" id="cartToken" value = 1>
                                 </form>
                             </div>
                         </div>   
                     </div>
                     <cfif structKeyExists(form, "addToCartHidden")>
-                        <cfset viewcart = application.myCartObj.addToCart(productId = form.addToCartHidden)>
+                        <cfset viewcart = application.myCartObj.addToCart(productId = form.addToCartHidden,
+                                                                         cartToken = form.cartToken)>
+                        <cfif viewcart == true >
+                            <cflocation  url="cartPage.cfm">
+                        <cfelse>
+                            <cflocation url="logIn.cfm?productId=#productId#&cartToken=1" addToken = "false">
+                        </cfif>
                     </cfif>
                     
                     <div class="d-flex-column productDetails">

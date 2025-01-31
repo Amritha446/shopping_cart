@@ -5,6 +5,7 @@
         <script src="js/validateLogin.js"></script> 
     </head>--->
     <cfparam name="url.productId" default=0>
+    <cfparam name="url.cartToken" default=0>
     <body>
         <cfoutput>
             <div class="container-fluid ">
@@ -35,13 +36,15 @@
                 </div>
             </div>
             <cfif structKeyExists(form,"submit")>
-                <cfset loginObj=createObject("component","components.myCart")>
-                <cfset result=application.myCartObj.validateLogin(userName = form.userName , userPassword  = form.userPassword )>
+                <!--- <cfset loginObj=createObject("component","components.myCart")> --->
+                <cfset result=application.myCartObj.validateLogin(userName = form.userName , 
+                                        userPassword  = form.userPassword )>
                 <cfif result == "true">
                     <cfif len(trim(url.productId)) EQ 0> 
                         <cflocation  url="cartDashboard.cfm">
                     <cfelse>
-                        <cfset application.myCartObj.addToCart(productId = url.productId)>
+                        <cfset application.myCartObj.addToCart(productId = url.productId,
+                                                                cartToken = url.cartToken)>
                         <cflocation  url="cartPage.cfm"> 
                     </cfif>
                 <cfelse>
