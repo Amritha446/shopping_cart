@@ -708,7 +708,7 @@
     </cffunction>
 
     <cffunction name="addToCart" access = "remote" returnType = "boolean" returnFormat = "json">
-        <cfargument name = "productId" required = "true" type = "string">
+        <cfargument name = "productId" required = "true" type = "string" default="">
         <cfargument name = "quantity" required = "false" type = "numeric" default=1>
         <cfargument name = "cartToken" required = "false" type = "numeric" default=0>  
         <cfquery name = "local.selectCartItem" datasource = "#application.datasource#">
@@ -723,7 +723,7 @@
         </cfquery>
 
         <cfif structKeyExists(session, "isAuthenticated") AND session.isAuthenticated EQ true >
-            <cfif local.selectCartItem.recordCount EQ 0>
+            <cfif (local.selectCartItem.recordCount EQ 0) AND( arguments.productId NEQ "")>
                 <cfquery name="local.addProductToCart" datasource = "#application.datasource#">
                     INSERT INTO shoppingcart.tblcart(
                         fldUserId,
@@ -876,6 +876,7 @@
 
     <cffunction  name = "fetchUserAddress" access = "public" returnType = "query">
         <cfargument name = "addressId" required = "false" type = "string" default="">
+        
         <cfquery name = "local.addressFetching" datasource = "#application.datasource#">
             SELECT
                 fldAddress_Id,
@@ -897,6 +898,7 @@
                 </cfif>
         </cfquery>
         <cfreturn local.addressFetching>
+    
     </cffunction>
 
     <cffunction name = "removeUserAddress" access = "remote" returnType = "void" returnFormat = "json">
@@ -1008,8 +1010,95 @@
                 type="html">
                 <p>#local.orderId#</p>
             </cfmail>
-            <!--- <cflocation url="paymentPage.cfm?orderId=#local.orderId#" addtoken="no"> --->
         </cfif>
     </cffunction>
 
+    <cffunction  name="orderHistoryDisplay" access="remote" returnType = "query" returnFormat="json">
+        <cfargument name = "orderId" required = "false" type = "string" default="">
+        <cfargument name = "orderIdList" required = "false" type = "string" default="">
+        <cfargument name = "searchId" required = "false" type = "string" default="">
+        <cfquery name = "orderHistoryData" datasource = "#application.datasource#">
+            SELECT 
+                o.fldOrder_Id,
+                o.fldTotalPrice,
+                o.fldTotalTax,
+                o.fldOrderDate,
+                oi.fldQuantity,
+                oi.fldUnitPrice,
+                a.fldFirstName AS addressFirstName,
+                a.fldLastName AS addressLastName,
+                a.fldAdressLine1,
+                a.fldAdressLine2,
+                a.fldCity,
+                a.fldState,
+                a.fldPincode,
+                a.fldPhoneNumber,
+                p.fldProductName,
+                p.fldTax AS productTax,
+                pi.fldImageFileName
+            FROM 
+                shoppingcart.tblorder o
+            JOIN 
+                shoppingcart.tblorderitems oi ON o.fldOrder_Id = oi.fldOrderId
+            LEFT JOIN 
+                shoppingcart.tbladdress a ON o.fldAdressId = a.fldAddress_Id
+            JOIN 
+                shoppingcart.tblproduct p ON oi.fldProductId = p.fldProduct_Id
+            LEFT JOIN 
+                shoppingcart.tblproductimages pi ON p.fldProduct_Id = pi.fldProductId AND pi.fldDefaultImage = 1
+            WHERE
+                o.fldUserId = <cfqueryparam value="#session.UserId#" cfsqltype = "integer">
+                <cfif trim(len(arguments.orderId))>
+                    AND fldOrder_Id = <cfqueryparam value = "#arguments.orderId#" cfsqltype = "varchar">
+                </cfif>
+                <cfif trim(len(arguments.searchId))>
+                    AND fldOrder_Id = <cfqueryparam value = "#arguments.searchId#" cfsqltype = "varchar">
+                </cfif>
+                <cfif trim(len(arguments.orderIdList))>
+                    AND fldOrder_Id = <cfqueryparam value = "#arguments.orderIdList#" cfsqltype = "varchar">
+                </cfif>
+            ORDER BY 
+                o.fldOrderDate DESC;
+        </cfquery>
+
+        <cfif structKeyExists(arguments, "orderId") AND trim(len(arguments.orderId))>
+            <cfdocument format="pdf" filename="../assets1/createdPdf.pdf" overwrite="yes">
+                <cfoutput>
+                <h1>Invoice for Order : #orderHistoryData.fldOrder_Id#</h1>
+                <p>Order Date: #orderHistoryData.fldOrderDate#</p>
+                <p>Total Price: $#orderHistoryData.fldTotalPrice#</p>
+                <p>Shipping Address: #orderHistoryData.addressFirstName# #orderHistoryData.addressLastName#</p>
+                <p>Shipping Address: #orderHistoryData.fldAdressLine1#, #orderHistoryData.fldCity#, #orderHistoryData.fldState# #orderHistoryData.fldPincode#</p>
+                <p>Phone: #orderHistoryData.fldPhoneNumber#</p>
+                
+                <h2>Order Items:</h2>
+                <table border="1" cellpadding="5" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Product Name</th>
+                            <th>Quantity</th>
+                            <th>Unit Price ($)</th>
+                            <th>Product Tax (%)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <cfloop query="#orderHistoryData#">
+                            <tr>
+                                <td>#orderHistoryData.fldProductName#</td>
+                                <td>#orderHistoryData.fldQuantity#</td>
+                                <td>$#orderHistoryData.fldUnitPrice#</td>
+                                <td>#orderHistoryData.productTax#%</td>
+                            </tr>
+                        </cfloop>
+                    </tbody>
+                </table>
+                </cfoutput>
+            </cfdocument>
+            <cfabort>
+        <cfelse>
+            <cfreturn orderHistoryData>
+        </cfif>
+    </cffunction>
+
+    
 </cfcomponent>

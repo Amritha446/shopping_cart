@@ -19,15 +19,28 @@
                     <cfelse>
                          <div><i class="fa-solid fa-cart-shopping me-2 mt-2 p-2" style="color: ##fff"></i></div>
                     </cfif>
-                    <a href="userProfile.cfm" class="profileButton"><div class="profile d-flex me-5 mt-1 text-light p-2">
-                        <div class="me-1 ">Profile</div>
-                        <i class="fa-regular fa-user mt-1"></i>
-                    </div></a>
-                    <button type="button" class="logOutBtn p-1 col-1">
-                        <div class="signUp d-flex">
-                            <i class="fa-solid fa-right-from-bracket mb-1 mt-2" style="color:##fff"></i><div class="text-white footerContent mt-2 ms-1" onClick = "logoutUser()">LOGOUT</div>
+
+                    <a href="userProfile.cfm" class="profileButton">
+                        <div class="profile d-flex me-5 mt-1 text-light p-2">
+                            <div class="me-1 ">Profile</div>
+                            <i class="fa-regular fa-user mt-1"></i>
                         </div>
-                    </button>
+                    </a>
+
+                    <cfif structKeyExists(session, "isAuthenticated") AND session.isAuthenticated EQ true>
+                        <button type="button" class="logOutBtn p-1 col-1">
+                            <div class="signUp d-flex">
+                                <i class="fa-solid fa-right-from-bracket mb-1 mt-2" style="color:##fff"></i><div class="text-white footerContent mt-2 ms-1" onClick = "logoutUser()">LOGOUT</div>
+                            </div>
+                        </button>
+                    <cfelse>
+                        <div class="logInBtn d-flex">
+                            <a href="logIn.cfm" class="signUp d-flex">
+                                <i class="fa-solid fa-right-to-bracket mb-1 mt-1 " style="color:##fff"></i><div class="text-white ">LogIn</div>
+                            </a>
+                        </div>
+                    </cfif>
+
                 </div>
                 
                 <div class="navBar">

@@ -24,11 +24,19 @@
                         <div class="me-1 ">Profile</div>
                         <i class="fa-regular fa-user mt-1"></i>
                     </div>
-                    <button type="button" class="logOutBtn p-1 col-1">
-                        <div class="signUp d-flex">
-                            <i class="fa-solid fa-right-from-bracket mb-1 mt-2" style="color:##fff"></i><div class="text-white footerContent mt-2 ms-1" onClick = "logoutUser()">LOGOUT</div>
+                    <cfif structKeyExists(session, "isAuthenticated") AND session.isAuthenticated EQ true>
+                        <button type="button" class="logOutBtn p-1 col-1">
+                            <div class="signUp d-flex">
+                                <i class="fa-solid fa-right-from-bracket mb-1 mt-2" style="color:##fff"></i><div class="text-white footerContent mt-2 ms-1" onClick = "logoutUser()">LOGOUT</div>
+                            </div>
+                        </button>
+                    <cfelse>
+                        <div class="logInBtn d-flex">
+                            <a href="logIn.cfm" class="signUp d-flex">
+                                <i class="fa-solid fa-right-to-bracket mb-1 mt-1 " style="color:##fff"></i><div class="text-white ">LogIn</div>
+                            </a>
                         </div>
-                    </button>
+                    </cfif>
                 </div>
                 <div class="navBar">
                     <cfset viewCategory = application.myCartObj.viewCategoryData()>
@@ -69,7 +77,13 @@
                                 </cfloop>
                             </div>
                             <div class="d-flex ms-4">
-                                <button type="submit" class="buyProduct"  data-bs-toggle="modal" data-bs-target="##buyNow" id="buyNowBtn">BUY NOW</button>
+                                <form method="POST" name="formBuyNow">
+                                    <cfif structKeyExists(session, "isAuthenticated")>
+                                        <button type="button" class="buyProduct"  data-bs-toggle="modal" data-bs-target="##buyNow" id="buyNowBtn" name="buyNowBtn">BUY NOW</button>
+                                    <cfelse>
+                                        <button type="submit" class="buyProduct"  data-bs-toggle="modal" data-bs-target="##buyNow" id="buyNowBtn" name="buyNowBtn">BUY NOW</button>
+                                    </cfif>
+                                </form>
                                 <form method="POST" name="form">
                                     <button type="submit" class="addToCart" >ADD TO CART</button>
                                     <input type="hidden" value = "#url.productId#" name="addToCartHidden">
@@ -78,6 +92,11 @@
                             </div>
                         </div>   
                     </div>
+
+                    <cfif structKeyExists(form, "buyNowBtn") AND structKeyExists(session, "isAuthenticated") EQ FALSE>
+                        <cflocation url = "logIn.cfm">
+                    </cfif>
+
                     <cfif structKeyExists(form, "addToCartHidden")>
                         <cfset viewcart = application.myCartObj.addToCart(productId = form.addToCartHidden,
                                                                          cartToken = form.cartToken)>
@@ -104,34 +123,34 @@
                         <div class="productDescription">Product Tax:#viewProduct.fldTax#%</div>
                     </div>
                 </div>
-                
-                <div class="modal fade" id="buyNow" tabindex="-1">
-                    <div class="modal-dialog custom-modal-width">
-                        <div class="modal-content d-flex justify-content-center align-items-center">
-                            <div class="buyModal">
-                                <div class="text-success ms-5 mt-1 fw-bold">SELECT ADDRESS</div>
-                                <cfset viewUserAddress = application.myCartObj.fetchUserAddress()>
-                                <form action="orderPage.cfm" method="get">
-                                    <cfloop query="#viewUserAddress#">
-                                        <div class="addressAddSection d-flex ms-4 mt-2">
-                                            <div class="d-flex-column">
-                                                <input type="radio" name="addressId" value="#viewUserAddress.fldAddress_Id#" class="address-radio" required>
-                                                <div class="d-flex ms-4">#viewUserAddress.fldFirstName# #viewUserAddress.fldLastName#</div>
-                                                <div class="d-flex ms-4">#viewUserAddress.fldAdressLine1# , #viewUserAddress.fldAdressLine2# , #viewUserAddress.fldCity# , #viewUserAddress.fldState#</div>
-                                                <div class="d-flex ms-4">#viewUserAddress.fldPincode# #viewUserAddress.fldPhoneNumber#</div>
+                <cfif structKeyExists(session, "isAuthenticated") AND session.isAuthenticated EQ true>
+                    <div class="modal fade" id="buyNow" tabindex="-1">
+                        <div class="modal-dialog custom-modal-width">
+                            <div class="modal-content d-flex justify-content-center align-items-center">
+                                <div class="buyModal">
+                                    <div class="text-success ms-5 mt-1 fw-bold">SELECT ADDRESS</div>
+                                    <cfset viewUserAddress = application.myCartObj.fetchUserAddress()>
+                                    <form action="orderPage.cfm" method="get">
+                                        <cfloop query="#viewUserAddress#">
+                                            <div class="addressAddSection d-flex ms-4 mt-2">
+                                                <div class="d-flex-column">
+                                                    <input type="radio" name="addressId" value="#viewUserAddress.fldAddress_Id#" class="address-radio" required>
+                                                    <div class="d-flex ms-4">#viewUserAddress.fldFirstName# #viewUserAddress.fldLastName#</div>
+                                                    <div class="d-flex ms-4">#viewUserAddress.fldAdressLine1# , #viewUserAddress.fldAdressLine2# , #viewUserAddress.fldCity# , #viewUserAddress.fldState#</div>
+                                                    <div class="d-flex ms-4">#viewUserAddress.fldPincode# #viewUserAddress.fldPhoneNumber#</div>
+                                                </div>
                                             </div>
+                                        </cfloop>
+                                        <input type="hidden" name="productId" value="#url.productId#">
+                                        <div class="d-flex">
+                                            <button type="submit" id="userPaymentBtn" class="userAddressBtn1">PAYMENT</button>
                                         </div>
-                                    </cfloop>
-                                    <input type="hidden" name="productId" value="#url.productId#">
-                                    <div class="d-flex">
-                                        <button type="submit" id="userPaymentBtn" class="userAddressBtn1">PAYMENT</button>
-                                    </div>
-                                </form>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-
+                </cfif>
 
 
                 <div class="modal fade" id="editUserAddress" tabindex="-1">
