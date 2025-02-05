@@ -388,6 +388,15 @@ body{
     margin-top:-10px;
     margin-left:10px;
 }
+.logInBtn{
+    width:100px;
+    height:40px;
+    background-color:#1f6625;
+    border:white;
+    border-radius: 8px;
+    margin-top:-5px;
+    margin-right:20px;
+}
 .productSection{
     height:50vw;
 }
@@ -633,4 +642,58 @@ body{
     height:13vw;
     border:1px solid black;
     margin-top:10px;
+}
+.orderHistoryPage{
+    margin-left:30vw;
+    align-items:center;
+    justify-content: center;
+}
+.successMsg{
+    margin-left:10vw;
+    margin-top:5vw;
+    color:#1f6625;
+    font-weight: 800;
+    margin-bottom: 3vw;;
+}
+.orderedItems{
+    height:auto;
+    width:50vw;
+    margin-left:35vw;
+    padding:10px;
+    color:#1f6625;
+    margin-top:10px;
+    font-size: large;
+    font-weight: 600;
+}
+.orderedItemsBlock{
+    height:auto;
+    width:75vw;
+    margin-left:10vw;
+    padding:10px;
+    color:#1f6625;
+    border:1px solid rgb(208, 216, 208);
+}
+.orderedItemsBlock:hover{
+    background-color: #b7d1ba;
+}
+.orderedItemsSearch{
+    height:2vw;
+    width:15vw;
+    margin-left:70vw;
+    padding:10px;
+    color:#1f6625;
+    margin-top:-35px;
+    border-radius:10px;
+    border:1px solid #1f6625;
+}
+.orderListImage{
+    height:5vw;
+    width:5vw;
+    border-radius: 50%;
+    margin:10px;
+}
+.invoiceDownload{
+    border:white;
+    margin-left:1vw;
+    margin-top:1vw;
 }

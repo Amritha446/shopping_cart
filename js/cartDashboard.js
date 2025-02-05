@@ -563,5 +563,13 @@ function paymentData() {
     });
 }
 
+function downloadInvoice(event) {
+    $.ajax({
+        type:"POST",
+        url:"Components/myCart.cfc?method=orderHistoryDisplay",
+        data:{orderId:event.target.value}
+    })
+}
+    
 
 

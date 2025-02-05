@@ -84,13 +84,13 @@
                                         </cfif>
                                     <div class="productBasedDetails"><div class="ms-5 font-weight-bold h6 d-flex orderedProductName">#cartData.fldProductName#</div>
                                     <div class="quantityBlock ms-5">
-                                        <button class="decrement me-2" onClick="decrementQuantity(event)">-</button>
+                                        <button class="decrement me-2" onClick="decrementQuantity(event)" value="#cartData.fldProduct_Id#">-</button>
                                         <cfif len(trim(URL.productId))>
                                             <span class="quantityNumber">1</span>  
                                         <cfelse>
                                             <span class="quantityNumber">#cartData.fldQuantity#</span> 
                                         </cfif>
-                                        <button class="increment ms-2" onClick="incrementQuantity(event)">+</button>
+                                        <button class="increment ms-2" onClick="incrementQuantity(event)" value="#cartData.fldProduct_Id#">+</button>
                                     </div>
                                     <div class="d-flex-column productMainDetails">
                                         <div class="productPrice ms-3">Unit Price:$#cartData.fldPrice#</div>
@@ -127,15 +127,12 @@
                                             </div>
                                             <input type = "hidden" name = "productDetailsPassing" id = "productDetailsPassing" value="#URL.productId#">
                                             <input type = "hidden" name = "addressDetailsPassing" id = "addressDetailsPassing" value="#URL.addressId#">
-                                            
                                         </div>
                                     </div>
                                 </div>                             
                                 <div class="d-flex">
                                     <button type="submit" id="userPaymentBtn" class="userAddressBtn1 " name="submit" onClick="paymentData()">PROCEED</button>
-                                    
                                 </div>
-
                             </form>
                         </div>
                     </div>

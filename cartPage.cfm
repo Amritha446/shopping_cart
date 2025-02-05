@@ -10,7 +10,7 @@
                         <form action="homePage.cfm?searchTerm=#url.searchTerm#" method="get">
                             <input class="form-control border rounded-pill" type="search" name="searchTerm" value="#(structKeyExists(url, 'searchTerm') ? url.searchTerm : '')#" id="example-search-input" placeholder="Serach..">
                         </form>
-                    </div>
+                    </div> 
 
                     <cfif structKeyExists(session, "isAuthenticated") AND session.isAuthenticated EQ true>
                         <cfset cartData = application.myCartObj.viewCartData()>
