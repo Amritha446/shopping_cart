@@ -4,7 +4,8 @@
         <cfinclude template="commonLink.cfm"> 
         <script src="js/validateLogin.js"></script> 
     </head>--->
-    
+    <cfparam name="url.productId" default=0>
+    <cfparam name="url.cartToken" default=0>
     <body>
         <cfoutput>
             <div class="container-fluid ">
@@ -36,9 +37,16 @@
             </div>
             <cfif structKeyExists(form,"submit")>
                 <!--- <cfset loginObj=createObject("component","components.myCart")> --->
-                <cfset result=application.myCartObj.validateLogin(userName = form.userName , userPassword  = form.userPassword )>
+                <cfset result=application.myCartObj.validateLogin(userName = form.userName , 
+                                        userPassword  = form.userPassword )>
                 <cfif result == "true">
-                    <cflocation  url="cartDashboard.cfm">
+                    <cfif len(trim(url.productId)) EQ 0> 
+                        <cflocation  url="cartDashboard.cfm">
+                    <cfelse>
+                        <cfset application.myCartObj.addToCart(productId = url.productId,
+                                                                cartToken = url.cartToken)>
+                        <cflocation  url="cartPage.cfm"> 
+                    </cfif>
                 <cfelse>
                     <div class="text-danger">Invalid Login attempt.</div>
                 </cfif>

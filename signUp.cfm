@@ -49,7 +49,7 @@
                             <div class = "d-flex">
                                 <div class="input">
                                 <div class="text-secondary mt-3 ms-2"> Password </div>
-                                    <input type="password" name="userPassword1" class="inputs me-2">
+                                    <input type="password" name="userPassword" class="inputs me-2">
                                     <div class="error text-danger" id="pass1Error"></div>
                                 </div>
                                 <div class="input d-flex-column">
@@ -66,15 +66,15 @@
             </div>
             <cfif structKeyExists(form, "submit")>
                 <cfset obj=createObject("component","components.myCart")>
-                <cfset result=application.myCartObj.signUp(firstName = form.firstName ,
+                <cfset result=obj.signUp(firstName = form.firstName ,
                     lastName = form.lastName ,
                     mail = form.mail ,
                     phone = form.phone ,
-                    password = form.userPassword1 ,
-                    confirmPassword = form.userPassword2)>
-                <cftry>
+                    password = form.userPassword)>
+                    <cflocation  url="homePage.cfm">
+                <!--- <cftry>
                     #result#
-                </cftry>
+                </cftry> --->
             </cfif>
             
         </cfoutput>    

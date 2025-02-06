@@ -2,32 +2,52 @@
     <cfset this.name = 'shoppingCart'>
     <cfset this.sessionManagement = true>
     <cfset this.sessionTimeout=createTimespan(0, 2, 0, 0)>
-    <cfset this.datasource = "shoppingCart">
     
     <cffunction name = "onApplicationStart" access="public" returnType="boolean">
         <cfset application.myCartObj = createObject("component", "components.myCart")>
+        <cfset application.datasource = "shoppingCart">
         <cfreturn true>
     </cffunction>
 
-    <!--- <cffunction name="onRequestStart" returnType="void">
-        <cfargument  name="requestPage" required="true"> 
-        <cfset local.excludePages = ["/Amritha_CF/testTask/myCart/shopping_cart/login.cfm","/Amritha_CF/testTask/myCart/shopping_cart/signUp.cfm"]>
-        <cfif ArrayContains(local.excludePages,arguments.requestPage)>
-            <cfinclude  template="#arguments.requestPage#">
-        <cfelseif structKeyExists(session, "isAuthenticated")>
-            <cfif session.roleId EQ 1>
-                <cfinclude  template="#arguments.requestPage#">  
-            <cfelse>
-                <cfinclude  template="home.cfm">
-            </cfif>
-        <cfelse>
-            <cfinclude  template="login.cfm">
-        </cfif>
-    </cffunction> --->
     <cffunction  name="onRequest" returnType="void">
-        <cfargument  name="requestPage">
+        <cfargument  name="requestPage" required="true">
         <cfinclude template="commonLink.cfm">
         <cfinclude  template="#arguments.requestPage#">
     </cffunction>
 
+    <cffunction name="onRequestStart" returnType="boolean">
+
+        <cfargument  name="requestPage" required="true"> 
+        <cfset onApplicationStart()>
+        <cfset local.publicPages = ["/Amritha_CF/testTask/myCart/shopping_cart/login.cfm","/Amritha_CF/testTask/myCart/shopping_cart/signUp.cfm","/Amritha_CF/testTask/myCart/shopping_cart/homePage.cfm",
+        "/Amritha_CF/testTask/myCart/shopping_cart/categoryBasedProduct.cfm","/Amritha_CF/testTask/myCart/shopping_cart/productDetails.cfm","/Amritha_CF/testTask/myCart/shopping_cart/filterProduct.cfm"]>
+        <cfset local.adminPages = ["/Amritha_CF/testTask/myCart/shopping_cart/cartDashboard.cfm","/Amritha_CF/testTask/myCart/shopping_cart/addCategory.cfm",
+        "/Amritha_CF/testTask/myCart/shopping_cart/productPage.cfm","/Amritha_CF/testTask/myCart/shopping_cart/subCategory.cfm"]>
+        
+        <cfif ArrayContains(local.adminPages,arguments.requestPage)>
+            <cfif structKeyExists(session, "isAuthenticated") AND session.isAuthenticated EQ true >
+                <cfif session.roleId EQ 1>
+                    <cfreturn true> 
+                <cfelse>
+                    <cflocation url ="/Amritha_CF/testTask/myCart/shopping_cart/homePage.cfm">
+                </cfif>
+            <cfelse>
+                <cflocation url ="/Amritha_CF/testTask/myCart/shopping_cart/homePage.cfm">
+           </cfif>
+        <cfelseif ArrayContains(["/Amritha_CF/testTask/myCart/shopping_cart/logIn.cfm","/Amritha_CF/testTask/myCart/shopping_cart/signUp.cfm"],arguments.requestPage)>
+            <cfif structKeyExists(session, "isAuthenticated") AND session.isAuthenticated EQ true >
+                <cflocation url ="/Amritha_CF/testTask/myCart/shopping_cart/homePage.cfm">
+            </cfif>
+        <cfelseif ArrayContains(local.publicPages,arguments.requestPage)>
+            <cfreturn true>
+        <cfelse>
+            <cfif structKeyExists(session, "isAuthenticated") AND session.isAuthenticated EQ true >
+                <cfreturn true>
+            <cfelse>
+                <cflocation url ="/Amritha_CF/testTask/myCart/shopping_cart/logIn.cfm">  
+            </cfif> 
+        </cfif>
+        <cfreturn true>
+    </cffunction>
+    
 </cfcomponent>

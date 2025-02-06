@@ -26,8 +26,8 @@
                                 id="createNewProductBtn">Add</button> <!---  id="addProductBtn" ---> 
                         </div>
                         <cfset objCreate = createObject("component","components.myCart")>
-                        <cfset viewProduct = application.myCartObj.viewProduct(subCategoryId = url.subCategoryId)>
-                        <cfloop array = "#viewProduct#">
+                        <cfset viewProduct = objCreate.viewProduct(subCategoryId = url.subCategoryId)>
+                        <cfloop query = "#viewProduct#">
                             <div class = "contentBox h-50 d-flex mb-3 bg-success"> 
                                 <div class = "d-flex-column productData">
                                     <div class="ms-4 font-weight-bold h5">#viewProduct.fldProductName#</div>
@@ -96,8 +96,8 @@
                                 </div><hr class="horizontalLine1 mt-1">                                                
                                 
                                 <div class="d-flex-column" id = "multiSelect">
-                                    <cfset objCreate = createObject("component","components.myCart")>
-                                    <cfset viewCategory = objCreate.viewCategoryData()>
+                                    <!--- <cfset objCreate = createObject("component","components.myCart")> --->
+                                    <cfset viewCategory = application.myCartObj.viewCategoryData()>
                                     <div class="textHead ">Category Name:</div>
                                     <select id="categoryIdProduct" name="categoryIdProduct" class="ms-3" >
                                         <cfloop query = #viewCategory#>
@@ -108,11 +108,11 @@
                                 </div>
 
                                 <div class="d-flex-column" id = "multiSelect">
-                                    <cfset objCreate = createObject("component","components.myCart")>
-                                    <cfset viewSubCategory = objCreate.viewSubCategoryData(categoryId = categoryId)>
+                                    <!--- <cfset objCreate = createObject("component","components.myCart")> --->
+                                    <cfset viewSubCategory = application.myCartObj.viewSubCategoryData(categoryId = categoryId)>
                                     <div class="textHead ">Sub-Category Name:</div>
                                     <select id="subCategoryIdProduct" name="subCategoryIdProduct" class="ms-3">
-                                        <cfloop array = #viewSubCategory# index="viewSubCategory">
+                                        <cfloop query = #viewSubCategory#>
                                             <option value="#viewSubCategory.fldSubCategory_Id#">#viewSubCategory.fldSubCategoryName#</option>
                                         </cfloop>
                                     </select>
