@@ -34,11 +34,11 @@
                     <cfloop query="#viewCategory#">
                         <div class="categoryDisplay ms-5 me-5 d-flex">
                             <div class="categoryNameNavBar p-1" data-category-id="#viewCategory.fldCategory_Id#">
-                                <a href="categoryBasedProduct.cfm?categoryId=#viewCategory.fldCategory_Id#" class="navBarButton">#viewCategory.fldCategoryName#</a>
+                                <a href="categoryBasedProduct.cfm?categoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = viewCategory.fldCategory_Id))#" class="navBarButton">#viewCategory.fldCategoryName#</a>
                                 <div class="subCategoryMenu">
                                     <cfset subCategories = application.myCartObj.viewSubCategoryData(categoryId = viewCategory.fldCategory_Id)>
                                     <cfloop query="#subCategories#">
-                                        <a href="filterProduct.cfm?subCategoryId=#subCategories.fldSubCategory_Id#" class="subcategory-item">
+                                        <a href="filterProduct.cfm?subCategoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = subCategories.fldSubCategory_Id))#" class="subcategory-item">
                                             #subCategories.fldSubCategoryName#
                                         </a>
                                     </cfloop>
@@ -64,8 +64,9 @@
 
                                     <div class="d-flex">
                                         <button type="submit" class="buyProduct" value="#cartData.fldCart_Id#" onClick="removeCartProduct(event)">REMOVE</button>
-                                        <a href="productDetails.cfm?productId=#cartData.fldProduct_Id#" class="imageLink"><button type="submit" class="buyProduct">VIEW</button></a>
+                                        <a href="productDetails.cfm?productId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = cartData.fldProduct_Id))#" class="imageLink"><button type="submit" class="buyProduct">VIEW</button></a>
                                     </div>
+                                    
                                 </div>
                                 <div class="d-flex-column productMainDetails">
                                     <div class="productPrice ms-3" id="orderedProductPriceId">Unit Price:$#cartData.fldPrice#</div>

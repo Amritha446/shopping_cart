@@ -60,7 +60,7 @@
                     </div>
                 </div>
                 <div class="addressSection p-3">
-                    <div class="text-light ms-5 mt-1 fw-bold">SELECT ADDRESS</div>
+                    <div class="text-light ms-5 mt-1 fw-bold">ADDRESS LIST</div>
                     <cfset viewUserAddress = application.myCartObj.fetchUserAddress()>
                     <cfloop query="#viewUserAddress#">
                         <div class="addressAddSection d-flex ms-4 mt-2 ">

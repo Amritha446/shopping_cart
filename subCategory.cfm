@@ -92,8 +92,12 @@
                             <cfset obj = createObject("component","components.myCart")>
                             <cfset result = application.myCartObj.addSubCategory(categoryId=form.categoryFrmSubCategory,
                                 subCategoryName=form.subCategoryName)>
-                            #result#
-                            <cflocation  url="subCategory.cfm?categoryId=#categoryId#">
+                            
+                            <cfif result EQ "">
+                                <cflocation  url="subCategory.cfm?categoryId=#categoryId#">
+                            <cfelse>
+                                #result#
+                            </cfif>
                         </cfif>
                        
                     </div>

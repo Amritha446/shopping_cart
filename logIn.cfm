@@ -1,11 +1,8 @@
-<!--- <html>
-    <head>
-        <title>Login page</title>
-        <cfinclude template="commonLink.cfm"> 
-        <script src="js/validateLogin.js"></script> 
-    </head>--->
     <cfparam name="url.productId" default=0>
     <cfparam name="url.cartToken" default=0>
+    <cfif url.productId NEQ 0>
+        <cfset variables.productId = application.myCartObj.decryptUrl(encryptedData = url.productId)>
+    </cfif>
     <body>
         <cfoutput>
             <div class="container-fluid ">
@@ -40,12 +37,12 @@
                 <cfset result=application.myCartObj.validateLogin(userName = form.userName , 
                                         userPassword  = form.userPassword )>
                 <cfif result == "true">
-                    <cfif len(trim(url.productId)) EQ 0> 
-                        <cflocation  url="cartDashboard.cfm">
-                    <cfelse>
-                        <cfset application.myCartObj.addToCart(productId = url.productId,
+                    <cfif structKeyExists(variables, "productId")> 
+                        <cfset application.myCartObj.addToCart(productId = variables.productId,
                                                                 cartToken = url.cartToken)>
                         <cflocation  url="cartPage.cfm"> 
+                    <cfelse>
+                        <cflocation  url="cartDashboard.cfm">
                     </cfif>
                 <cfelse>
                     <div class="text-danger">Invalid Login attempt.</div>

@@ -10,6 +10,19 @@
                     <div class="mainHeading ">
                         <h5 class = "ms-5 mt-3">MyCart</h5>
                     </div>
+                    <cfif structKeyExists(session, "isAuthenticated") AND session.isAuthenticated EQ true>
+                        <button type="button" class="logOutBtn p-1 col-1">
+                            <div class="signUp d-flex">
+                                <i class="fa-solid fa-right-from-bracket mb-1 mt-2" style="color:##fff"></i><div class="text-white footerContent mt-2 ms-1" onClick = "logoutUser()">LOGOUT</div>
+                            </div>
+                        </button>
+                    <cfelse>
+                        <div class="logInBtn d-flex">
+                            <a href="logIn.cfm" class="signUp d-flex">
+                                <i class="fa-solid fa-right-to-bracket mb-1 mt-1 " style="color:##fff"></i><div class="text-white ">LogIn</div>
+                            </a>
+                        </div>
+                    </cfif>
                 </div>
                 <div class = "mainContent d-flex justify-content-center align-items-center h-50" id = "content">
                     <input type="hidden" value="" name = "categoryId1" id = "categoryId1">

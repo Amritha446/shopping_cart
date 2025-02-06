@@ -39,11 +39,11 @@
                     <cfloop query="#viewCategory#">
                         <div class="categoryDisplay ms-5 me-5 d-flex">
                             <div class="categoryNameNavBar p-1" data-category-id="#viewCategory.fldCategory_Id#">
-                                <a href="categoryBasedProduct.cfm?categoryId=#viewCategory.fldCategory_Id#" class="navBarButton">#viewCategory.fldCategoryName#</a>
+                                <a href="categoryBasedProduct.cfm?categoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = viewCategory.fldCategory_Id))#" class="navBarButton">#viewCategory.fldCategoryName#</a>
                                 <div class="subCategoryMenu">
                                     <cfset subCategories = application.myCartObj.viewSubCategoryData(categoryId = viewCategory.fldCategory_Id)>
                                     <cfloop query="#subCategories#">
-                                        <a href="filterProduct.cfm?subCategoryId=#subCategories.fldSubCategory_Id#" class="subcategory-item">
+                                        <a href="filterProduct.cfm?subCategoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = subCategories.fldSubCategory_Id))#" class="subcategory-item">
                                             #subCategories.fldSubCategoryName#
                                         </a>
                                     </cfloop>
@@ -63,43 +63,6 @@
                     <cfelse>
                         <cfset orderedItemList = application.myCartObj.orderHistoryDisplay()>
                     </cfif>
-                    
-                    <!--- <cfloop query = "#orderedItemList#">
-                        <div class="d-flex-column">
-                            <cfset orderedEachItemList = application.myCartObj.orderHistoryDisplay(orderIdList = #orderedItemList.fldOrder_Id#)>
-                            <cfloop query="#orderedEachItemList#">
-                                <div class="orderedItemsBlock d-flex">
-                                    <img src="assets/#orderedEachItemList.fldImageFileName#" alt="img" class="orderListImage ms-2 me-3">
-                                    <div class="d-flex-column col-2">
-                                        <div>#orderedEachItemList.fldProductName#</div>
-                                        <div class="">Quantity : #orderedEachItemList.fldQuantity#</div>
-                                        <div class="">Unit Price : #orderedEachItemList.fldUnitPrice#</div>
-                                        <div class="">Unit Tax : #orderedEachItemList.productTax# % </div>
-                                    </div> 
-                                    <div class="d-flex-column ms-4 col-2">
-                                        <!--- <cfset date = DateFormat(CreateDateTime(orderedItemList.fldOrderDate), "dd-mm-yyyy")> --->
-                                        <div class="">Ordered On:</div>
-                                        <div class="">#orderedEachItemList.fldOrderDate#</div>
-                                    </div> 
-                                    <div class="d-flex-column ms-4 col-3">
-                                        <div class="">Contact Details:</div>
-                                        <div class="">Mob No: #orderedEachItemList.fldPhoneNumber#</div>
-                                        <div class="">Address: #orderedItemList.fldAdressLine1# #orderedEachItemList.fldAdressLine2#</div>
-                                    </div> 
-                                    <div class="d-flex-column ms-4 col-2">
-                                        <div class="">Delivery date:</div>
-                                        <div class=""></div>
-                                    </div> 
-                                    
-                                </div>
-                            </cfloop>
-                            <div class = "ms-4">
-                                <button type="button" class="invoiceDownload" onClick="downloadInvoice(event)" value="#orderedEachItemList.fldOrder_Id#">
-                                    <i class="fa-solid fa-download bg-light pe-none"></i> 
-                                </button>
-                            </div>
-                        </div>
-                    </cfloop> --->
 
                     <cfset lastOrderId = "">
                     <cfloop query = "#orderedItemList#">
@@ -107,7 +70,12 @@
                             <div class="d-flex-column">
                                 <cfset lastOrderId = orderedItemList.fldOrder_Id> 
                                 <cfset orderedEachItemList = application.myCartObj.orderHistoryDisplay(orderIdList = #orderedItemList.fldOrder_Id#)>
-                                
+                                <div class="d-flex orderListHeading">
+                                    <div class="">ORDER ID : #orderedEachItemList.fldOrder_Id#</div>
+                                    <button type="button" class="invoiceDownload" onClick="downloadInvoice(event)" value="#orderedEachItemList.fldOrder_Id#" title="Download Invoice">
+                                        <i class="fa-solid fa-download bg-light pe-none"></i> 
+                                    </button>
+                                </div>
                                 <cfloop query="#orderedEachItemList#">
                                     <div class="orderedItemsBlock d-flex">
                                         <img src="assets/#orderedEachItemList.fldImageFileName#" alt="img" class="orderListImage ms-2 me-3">
@@ -133,11 +101,7 @@
                                     </div>
                                 </cfloop>
 
-                                <div class="ms-4">
-                                    <button type="button" class="invoiceDownload" onClick="downloadInvoice(event)" value="#orderedEachItemList.fldOrder_Id#">
-                                        <i class="fa-solid fa-download bg-light pe-none"></i> 
-                                    </button>
-                                </div>
+                                
                             </div>
                         </cfif>
                     </cfloop>

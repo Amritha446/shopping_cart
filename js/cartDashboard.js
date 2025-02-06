@@ -11,6 +11,85 @@ function logoutUser(){
     }
 }
 
+/* function signUpFunction(){
+    $.ajax({
+        type:"POST",
+        url:"Components/myCart.cfc?method=signUp", 
+        data:{firstName : document.getElementById('firstName').value,
+            lastName : document.getElementById('lastName').value,
+            mail : document.getElementById('mail').value,
+            phone :  document.getElementById('phone').value,
+            password : document.getElementById('userPassword').value
+        },
+        success:function(response){
+            location.reload()
+        }
+    })
+} */
+
+    function signUpFunction() {
+    
+        var firstName = document.getElementById('firstName').value;
+        var lastName = document.getElementById('lastName').value;
+        var mail = document.getElementById('mail').value;
+        var phone = document.getElementById('phone').value;
+        var password = document.getElementById('userPassword').value;
+        document.getElementById('validationError').innerHTML = "";
+        console.log(firstName)
+        $.ajax({
+            type: "POST",
+            url: "Components/myCart.cfc?method=signUp", 
+            data: {
+                firstName: firstName,
+                lastName: lastName,
+                mail: mail,
+                phone: phone,
+                password: password
+            },
+            success: function(response1) {
+                let response = JSON.parse(response1);
+                console.log(response)
+                document.getElementById('firstnameError').innerHTML = '';
+                document.getElementById('lastnameError').innerHTML = '';
+                document.getElementById('mailError').innerHTML = '';
+                document.getElementById('phoneError').innerHTML = '';
+                document.getElementById('passwordError').innerHTML = '';
+                // document.getElementById('successMsg').remove();
+                if (response.firstName) {
+                    document.getElementById('firstnameError').innerHTML = response.firstName;
+                }
+                if (response.lastName) {
+                    document.getElementById('lastnameError').innerHTML = response.lastName;
+                }
+                if (response.mail) {
+                    document.getElementById('mailError').innerHTML = response.mail;
+                }
+                if (response.phone) {
+                    document.getElementById('phoneError').innerHTML = response.phone;
+                }
+                if (response.password) {
+                    document.getElementById('passwordError').innerHTML = response.password;
+                }
+    
+                if(!response.success){
+                    document.getElementById('validationError').innerHTML = response.message;
+                }
+                else{    
+                    document.getElementById('successMsg').innerHTML = response.message;
+                    let aTag = document.createElement('a'); 
+                    aTag.className = "successAnchor";
+                    aTag.innerHTML = "Click here to log in";
+                    aTag.href = "logIn.cfm";
+                    document.getElementById('successMsg').append(aTag)
+                }
+            },
+            error: function() {
+                alert('An error occurred while submitting the form.');
+            }
+        });
+    }
+    
+    
 function deleteCategory(event){
     console.log(event.target.value)
     if(confirm("Confirm delete?")){
@@ -19,7 +98,7 @@ function deleteCategory(event){
             url:"Components/myCart.cfc?method=delCategory",
             data:{categoryId:event.target.value},
             success:function(result){
-                event.target.parentNode.parentNode.remove()
+                event.target.parentNode.parentNode.parentNode.remove()
                 location.reload()
             }
         })
@@ -54,8 +133,13 @@ function editCategorySubmit(event){
         data:{categoryId:document.getElementById('categoryId').value,
             categoryName:document.getElementById('categoryNameField').value
         },
-        success:function(){
+        success:function(response){
             location.reload();
+            if (response === "Updated successfully") {
+                location.reload();
+            } else {
+                alert(response);
+            } 
         }
     })
 }
@@ -103,7 +187,13 @@ function editSubCategoryFormSubmit(){
             categoryId:categoryId
         },
         success:function(){
-           location.reload(); 
+           
+           if (response === "Sub-Category updated successfully!") {
+                location.reload();
+            } else {
+                alert(response);
+            } 
+            location.reload(); 
         }
     })
 }
@@ -256,7 +346,7 @@ function setDefaultImage() {
         },
         success: function(response) {
             alert('Default image updated successfully!');
-            
+            location.reload();
         }
     });
 }
@@ -433,7 +523,6 @@ document.querySelectorAll('.decrement').forEach(button => {
     button.addEventListener('click', decrementQuantity);
 });
 
-
 function updateCartQuantity(productId, newQuantity) {
     $.ajax({
         type: "GET",
@@ -472,8 +561,13 @@ function editUserSubmit(){
             userEmail:document.getElementById('userPhoneNumberProfile').value,
             userPhoneNumber:document.getElementById('userEmailProfile').value 
         },
-        success:function(){
-           location.reload(); 
+        success:function(response){
+            if (response === "Updated User details successfully") {
+                alert("User details updated successfully!");
+                location.reload();
+            } else {
+                alert(response);
+            } 
         }
     })
 }
@@ -491,8 +585,13 @@ function editUserAddress(){
             userPincode:document.getElementById('userPincode').value,
             userPhoneNumber:document.getElementById('userPhoneNumber').value,
         },
-        success:function(){
-           location.reload(); 
+        success:function(response){
+            if (response === "Address addedd successfully.") {
+                location.reload();
+                alert("Address addedd successfully!");
+            } else {
+                alert(response);
+            }
         }
     })
 }
@@ -511,7 +610,6 @@ function removeAddress(event){
     }
 }
 
-
 document.querySelectorAll('.address-radio').forEach(function (radioButton) {
     radioButton.addEventListener('change', function () {
         const selectedAddressId = document.querySelector('input[name="addressRadio"]:checked')?.value;
@@ -522,7 +620,6 @@ document.querySelectorAll('.address-radio').forEach(function (radioButton) {
         }
     });
 });
-
 
 function paymentData() {
     console.log('hi')
@@ -555,7 +652,11 @@ function paymentData() {
         type: "GET",
         data: data,
         success: function(response) {
-           window.location.href = "paymentPage.cfm";
+           if (response === "") {
+                window.location.href = "paymentPage.cfm";
+            } else {
+                alert(response);
+            }
         },
         error: function() {
             alert('error');

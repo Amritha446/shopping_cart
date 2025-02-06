@@ -2,8 +2,9 @@
     <body>
         <cfoutput>
             <cfparam name="url.searchTerm" default="">
-            <cfset productId = url.productId>
             <cfparam name="url.random" default=0>
+            <cfset productId = application.myCartObj.decryptUrl(encryptedData = url.productId)>
+
             <div class="container-fluid ">
                 <div class="header d-flex text-align-center">
                     <a href="homePage.cfm" class="imageLink"><div class="headerText ms-5 mt-2 col-6">MyCart</div></a>
@@ -12,7 +13,6 @@
                             <input class="form-control border rounded-pill" type="search" name="searchTerm" value="#(structKeyExists(url, 'searchTerm') ? url.searchTerm : '')#" id="example-search-input" placeholder="Serach..">
                         </form>
                     </div>
-                    <!--- <cfset onApplicationStart()> --->
                     <cfif structKeyExists(session, "isAuthenticated") AND session.isAuthenticated EQ true>
                         <cfset cartData = application.myCartObj.viewCartData()>
                         <div><a href="cartPage.cfm"><i class="fa badge fa-lg mt-3" value=#cartData.recordCount#>&##xf07a;</i></a></div>
@@ -20,10 +20,12 @@
                          <div><i class="fa-solid fa-cart-shopping me-2 mt-2 p-2" style="color: ##fff"></i></div>
                     </cfif>
 
-                    <div class="profile d-flex me-5 mt-1 text-light p-2">
-                        <div class="me-1 ">Profile</div>
-                        <i class="fa-regular fa-user mt-1"></i>
-                    </div>
+                    <a href="userProfile.cfm" class="profileButton">
+                        <div class="profile d-flex me-5 mt-1 text-light p-2">
+                            <div class="me-1 ">Profile</div>
+                            <i class="fa-regular fa-user mt-1"></i>
+                        </div>
+                    </a>
                     <cfif structKeyExists(session, "isAuthenticated") AND session.isAuthenticated EQ true>
                         <button type="button" class="logOutBtn p-1 col-1">
                             <div class="signUp d-flex">
@@ -43,11 +45,11 @@
                     <cfloop query="#viewCategory#">
                         <div class="categoryDisplay ms-5 me-5 d-flex">
                             <div class="categoryNameNavBar p-1" data-category-id="#viewCategory.fldCategory_Id#">
-                                <a href="categoryBasedProduct.cfm?categoryId=#viewCategory.fldCategory_Id#" class="navBarButton">#viewCategory.fldCategoryName#</a>
+                                <a href="categoryBasedProduct.cfm?categoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = viewCategory.fldCategory_Id))#" class="navBarButton">#viewCategory.fldCategoryName#</a>
                                 <div class="subCategoryMenu">
                                     <cfset subCategories = application.myCartObj.viewSubCategoryData(categoryId = viewCategory.fldCategory_Id)>
                                     <cfloop query="#subCategories#">
-                                        <a href="filterProduct.cfm?subCategoryId=#subCategories.fldSubCategory_Id#" class="subcategory-item">
+                                        <a href="filterProduct.cfm?subCategoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = subCategories.fldSubCategory_Id))#" class="subcategory-item">
                                             #subCategories.fldSubCategoryName#
                                         </a>
                                     </cfloop>
@@ -57,7 +59,7 @@
                     </cfloop>
                 </div>
                 
-                <cfset viewProduct = application.myCartObj.viewProduct(productId = #url.ProductId#,
+                <cfset viewProduct = application.myCartObj.viewProduct(productId = #productId#,
                                                                           random = url.random)>
                 <cfif url.searchTerm NEQ "">
                     <cfset viewProduct = application.myCartObj.viewProduct(searchTerm=url.searchTerm)>
@@ -82,11 +84,14 @@
                                         <button type="button" class="buyProduct"  data-bs-toggle="modal" data-bs-target="##buyNow" id="buyNowBtn" name="buyNowBtn">BUY NOW</button>
                                     <cfelse>
                                         <button type="submit" class="buyProduct"  data-bs-toggle="modal" data-bs-target="##buyNow" id="buyNowBtn" name="buyNowBtn">BUY NOW</button>
+                                        <input type="hidden" value = "#productId#" name="addToCartHidden">
+                                        <input type="hidden" name="cartToken" id="cartToken" value = 1>
                                     </cfif>
                                 </form>
+
                                 <form method="POST" name="form">
                                     <button type="submit" class="addToCart" >ADD TO CART</button>
-                                    <input type="hidden" value = "#url.productId#" name="addToCartHidden">
+                                    <input type="hidden" value = "#productId#" name="addToCartHidden">
                                     <input type="hidden" name="cartToken" id="cartToken" value = 1>
                                 </form>
                             </div>
@@ -94,7 +99,13 @@
                     </div>
 
                     <cfif structKeyExists(form, "buyNowBtn") AND structKeyExists(session, "isAuthenticated") EQ FALSE>
-                        <cflocation url = "logIn.cfm">
+                        <cfset viewcart = application.myCartObj.addToCart(productId = form.addToCartHidden,
+                                                                         cartToken = form.cartToken)>
+                        <cfif viewcart == true >
+                            <cflocation  url="cartPage.cfm">
+                        <cfelse>
+                            <cflocation url="logIn.cfm?productId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = productId))#&cartToken=1" addToken = "false">
+                        </cfif>
                     </cfif>
 
                     <cfif structKeyExists(form, "addToCartHidden")>
@@ -103,7 +114,7 @@
                         <cfif viewcart == true >
                             <cflocation  url="cartPage.cfm">
                         <cfelse>
-                            <cflocation url="logIn.cfm?productId=#productId#&cartToken=1" addToken = "false">
+                            <cflocation url="logIn.cfm?productId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = productId))#&cartToken=1" addToken = "false">
                         </cfif>
                     </cfif>
                     
@@ -112,9 +123,9 @@
                     <cfset categoryFetching = application.myCartObj.categoryFetching(categoryId = #subCategoryFetching.fldCategoryId#)>
                         <div class="productPath p-1 ">
                             <a href="homePage.cfm" class="navBarButton ms-2">home</a>
-                            ><a href="categoryBasedProduct.cfm?categoryId=#categoryFetching.fldCategory_Id#" class="navBarButton ms-2">#categoryFetching.fldCategoryName#</a>
-                            ><a href="filterProduct.cfm?subCategoryId=#viewProduct.fldSubCategoryId#" class="navBarButton ms-2">#subCategoryFetching.fldSubCategoryName#</a>
-                            ><a href="productDetails.cfm?productId=#productId#" class="navBarButton ms-2">#viewProduct.fldBrandName#</a>
+                            ><a href="categoryBasedProduct.cfm?categoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = categoryFetching.fldCategory_Id))#" class="navBarButton ms-2">#categoryFetching.fldCategoryName#</a>
+                            ><a href="filterProduct.cfm?subCategoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = viewProduct.fldSubCategoryId))#" class="navBarButton ms-2">#subCategoryFetching.fldSubCategoryName#</a>
+                            ><a href="productDetails.cfm?productId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = productId))#" class="navBarButton ms-2">#viewProduct.fldBrandName#</a>
                         </div>
                         <div class="productName">#viewProduct.fldProductName#</div>
                         <div class="productBrandName">#viewProduct.fldBrandName#</div>
@@ -141,7 +152,7 @@
                                                 </div>
                                             </div>
                                         </cfloop>
-                                        <input type="hidden" name="productId" value="#url.productId#">
+                                        <input type="hidden" name="productId" value="#productId#">
                                         <div class="d-flex">
                                             <button type="submit" id="userPaymentBtn" class="userAddressBtn1">PAYMENT</button>
                                         </div>

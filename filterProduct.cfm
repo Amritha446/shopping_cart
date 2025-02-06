@@ -16,10 +16,12 @@
                     <cfelse>
                          <div><i class="fa-solid fa-cart-shopping me-2 mt-2 p-2" style="color: ##fff"></i></div>
                     </cfif>
-                    <div class="profile d-flex me-5 mt-1 text-light p-2">
-                        <div class="me-1 ">Profile</div>
-                        <i class="fa-regular fa-user mt-1"></i>
-                    </div>
+                    <a href="userProfile.cfm" class="profileButton">
+                        <div class="profile d-flex me-5 mt-1 text-light p-2">
+                            <div class="me-1 ">Profile</div>
+                            <i class="fa-regular fa-user mt-1"></i>
+                        </div>
+                    </a>
                     <cfif structKeyExists(session, "isAuthenticated") AND session.isAuthenticated EQ true>
                         <button type="button" class="logOutBtn p-1 col-1">
                             <div class="signUp d-flex">
@@ -34,7 +36,7 @@
                         </div>
                     </cfif>
                 </div>
-                <cfset subCategoryId = url.subCategoryId>
+                <cfset subCategoryId = application.myCartObj.decryptUrl(encryptedData =url.subCategoryId)>
                 <cfparam name="url.sort" default=0>
                 <cfparam name="url.min" default=0>
                 <cfparam name="url.max" default=0>
@@ -46,11 +48,11 @@
                     <cfloop query="#viewCategory#">
                         <div class="categoryDisplay ms-5 me-5 d-flex">
                             <div class="categoryNameNavBar p-1" data-category-id="#viewCategory.fldCategory_Id#">
-                                <a href="categoryBasedProduct.cfm?categoryId=#viewCategory.fldCategory_Id#" class="navBarButton">#viewCategory.fldCategoryName#</a>
+                                <a href="categoryBasedProduct.cfm?categoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = viewCategory.fldCategory_Id))#" class="navBarButton">#viewCategory.fldCategoryName#</a>
                                 <div class="subCategoryMenu">
                                     <cfset subCategories = application.myCartObj.viewSubCategoryData(categoryId = viewCategory.fldCategory_Id)>
                                     <cfloop query="#subCategories#">
-                                        <a href="filterProduct.cfm?subCategoryId=#subCategories.fldSubCategory_Id#" class="subcategory-item">
+                                        <a href="filterProduct.cfm?subCategoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = subCategories.fldSubCategory_Id))#" class="subcategory-item">
                                             #subCategories.fldSubCategoryName#
                                         </a>
                                     </cfloop>
@@ -68,14 +70,14 @@
                             <cfif viewData.fldSubCategory_Id EQ subCategoryId>
                                 <div class="productPath">
                                     <a href="homePage.cfm" class="navBarButton ms-2">home</a>
-                                    ><a href="categoryBasedProduct.cfm?categoryId=#viewCategory.fldCategory_Id#" class="navBarButton ms-2">#viewCategory.fldCategoryName#</a>
-                                    ><a href="filterProduct.cfm?subCategoryId=#subCategoryId#" class="navBarButton ms-2">#viewData.fldSubCategoryName#</a>
+                                    ><a href="categoryBasedProduct.cfm?categoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = viewCategory.fldCategory_Id))#" class="navBarButton ms-2">#viewCategory.fldCategoryName#</a>
+                                    ><a href="filterProduct.cfm?subCategoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = subCategoryId))#" class="navBarButton ms-2">#viewData.fldSubCategoryName#</a>
                                 </div> 
                                 <h5 class="navBarButton ms-5 mt-2">#viewData.fldSubCategoryName#</h5>
                                 <div class="filterProduct d-flex ms-5">
                                     <div class="filterLink ms-2">
-                                        <a href="filterProduct.cfm?subCategoryId=#viewData.fldSubCategory_Id#&sort=1" class="navBarButton">Price High To Low</a>
-                                        <a href="filterProduct.cfm?subCategoryId=#viewData.fldSubCategory_Id#&sort=2" class="ms-3 navBarButton">Price Low To High </a>
+                                        <a href="filterProduct.cfm?subCategoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = viewData.fldSubCategory_Id))#&sort=1" class="navBarButton">Price High To Low</a>
+                                        <a href="filterProduct.cfm?subCategoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = viewData.fldSubCategory_Id))#&sort=2" class="ms-3 navBarButton">Price Low To High </a>
                                     </div>
                                     <div class="d-flex">
                                         <button type="submit" class="filterButton" data-bs-toggle="modal" data-bs-target="##filterProduct" >Filter <i class="fa-solid fa-filter"></i></button>
@@ -85,7 +87,7 @@
                                 <div class="fade modal" id="filterProduct" tabindex="-1">
                                     <div class="modal-dialog">
                                         <div class="modal-content">
-                                            <form method="post" name="form" action="filterProduct.cfm?subCategoryId=#subCategoryId#">
+                                            <form method="post" name="form" action="filterProduct.cfm?subCategoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = subCategoryId))#">
                                                 <div class="d-flex-column ms-2 mt-2 p-2">
                                                     <label for="selectedValue">Select min value:</label>
                                                     <select name="min" id="selectedValueMin" class="mb-1">
@@ -139,7 +141,7 @@
                                             <div class="productRow d-flex">
                                         </cfif>
                                         <div class="productBox d-flex-column">
-                                            <a href="productDetails.cfm?productId=#viewProduct.fldProduct_Id#&random=1" class="imageLink">
+                                            <a href="productDetails.cfm?productId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = viewProduct.fldProduct_Id))#&random=1" class="imageLink">
                                                 <img src="assets/#viewProduct.imageFileName#" alt="img" class="productBoxImage">
                                                 <div class="ms-4 font-weight-bold h5">#viewProduct.fldProductName#</div>
                                                 <div class="ms-4 h6 ">#viewProduct.fldBrandName#</div>

@@ -16,10 +16,12 @@
                     <cfelse>
                          <div><i class="fa-solid fa-cart-shopping me-2 mt-2 p-2" style="color: ##fff"></i></div>
                     </cfif>
-                    <div class="profile d-flex me-5 mt-1 text-light p-2">
-                        <div class="me-1 ">Profile</div>
-                        <i class="fa-regular fa-user mt-1"></i>
-                    </div>
+                    <a href="userProfile.cfm" class="profileButton">
+                        <div class="profile d-flex me-5 mt-1 text-light p-2">
+                            <div class="me-1 ">Profile</div>
+                            <i class="fa-regular fa-user mt-1"></i>
+                        </div>
+                    </a>
                     <cfif structKeyExists(session, "isAuthenticated") AND session.isAuthenticated EQ true>
                         <button type="button" class="logOutBtn p-1 col-1">
                             <div class="signUp d-flex">
@@ -39,11 +41,11 @@
                     <cfloop query="#viewCategory#">
                         <div class="categoryDisplay ms-5 me-5 d-flex">
                             <div class="categoryNameNavBar p-1" data-category-id="#viewCategory.fldCategory_Id#">
-                                <a href="categoryBasedProduct.cfm?categoryId=#viewCategory.fldCategory_Id#" class="navBarButton">#viewCategory.fldCategoryName#</a>
+                                <a href="categoryBasedProduct.cfm?categoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = viewCategory.fldCategory_Id))#" class="navBarButton">#viewCategory.fldCategoryName#</a>
                                 <div class="subCategoryMenu">
                                     <cfset subCategories = application.myCartObj.viewSubCategoryData(categoryId = viewCategory.fldCategory_Id)>
                                     <cfloop query="#subCategories#">
-                                        <a href="filterProduct.cfm?subCategoryId=#subCategories.fldSubCategory_Id#" class="subcategory-item">
+                                        <a href="filterProduct.cfm?subCategoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = subCategories.fldSubCategory_Id))#" class="subcategory-item">
                                             #subCategories.fldSubCategoryName#
                                         </a>
                                     </cfloop>
@@ -54,7 +56,8 @@
                 </div>
 
                 <div class="productListingBasedCategory">
-                    <cfset categoryId = url.categoryId>
+                    <cfset categoryId = application.myCartObj.decryptUrl(encryptedData = URL.categoryId)>
+
                     <cfset viewCategory = application.myCartObj.viewCategoryData()>
                     <cfloop query="#viewCategory#">
                         <cfif viewCategory.fldCategory_Id EQ categoryId>
@@ -62,11 +65,11 @@
 
                             <div class="productPath">
                                 <a href="homePage.cfm" class="navBarButton ms-2">home</a>
-                                ><a href="categoryBasedProduct.cfm?categoryId=#categoryId#" class="navBarButton ms-2">#viewCategory.fldCategoryName#</a>
+                                ><a href="categoryBasedProduct.cfm?categoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = categoryId))#" class="navBarButton ms-2">#viewCategory.fldCategoryName#</a>
                             </div>
 
                             <cfloop query="#viewData#">
-                                <a href="filterProduct.cfm?subCategoryId=#viewData.fldSubCategory_Id#" class="navBarButton ms-2"><h5>#viewData.fldSubCategoryName#</h5></a>
+                                <a href="filterProduct.cfm?subCategoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = viewData.fldSubCategory_Id))#" class="navBarButton ms-2"><h5>#viewData.fldSubCategoryName#</h5></a>
                                 <cfset viewProduct = application.myCartObj.viewProduct(subCategoryId = #viewData.fldSubCategory_Id#)>
                                 <cfif url.searchTerm NEQ "">
                                     <cfset viewProduct = application.myCartObj.viewProduct(searchTerm=url.searchTerm)>
@@ -81,7 +84,7 @@
                                             <div class="productRow d-flex">
                                         </cfif>
                                         <div class="productBox d-flex-column">
-                                            <a href="productDetails.cfm?productId=#viewProduct.fldProduct_Id#&random=1" class="imageLink">
+                                            <a href="productDetails.cfm?productId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = viewProduct.fldProduct_Id))#&random=1" class="imageLink">
                                             <img src="assets/#viewProduct.imageFileName#" alt="img" class="productBoxImage">
                                             <div class="ms-4 font-weight-bold h5">#viewProduct.fldProductName#</div>
                                             <div class="ms-4 h6 ">#viewProduct.fldBrandName#</div>

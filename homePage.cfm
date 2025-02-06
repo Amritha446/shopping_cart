@@ -48,14 +48,20 @@
                     <cfloop query="#viewCategory#">
                         <div class="categoryDisplay ms-5 me-5 d-flex">
                             <div class="categoryNameNavBar p-1" data-category-id="#viewCategory.fldCategory_Id#">
-                                <a href="categoryBasedProduct.cfm?categoryId=#viewCategory.fldCategory_Id#" class="navBarButton">#viewCategory.fldCategoryName#</a>
+                                <a href="categoryBasedProduct.cfm?categoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = viewCategory.fldCategory_Id))#" class="navBarButton">#viewCategory.fldCategoryName#</a>
                                 <div class="subCategoryMenu">
                                     <cfset subCategories = application.myCartObj.viewSubCategoryData(categoryId = viewCategory.fldCategory_Id)>
-                                    <cfloop query="#subCategories#">
-                                        <a href="filterProduct.cfm?subCategoryId=#subCategories.fldSubCategory_Id#" class="subcategory-item">
-                                            #subCategories.fldSubCategoryName#
-                                        </a>
-                                    </cfloop>
+                                    <!--- <cfif structKeyExists(subCategories, "message")>
+                                        <div class="errorMessage">
+                                            #subCategories.message#
+                                        </div>
+                                    <cfelse> --->
+                                        <cfloop query="#subCategories#">
+                                            <a href="filterProduct.cfm?subCategoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = subCategories.fldSubCategory_Id))#" class="subcategory-item">
+                                                #subCategories.fldSubCategoryName#
+                                            </a>
+                                        </cfloop>
+                                    <!--- </cfif> --->
                                 </div>
                             </div>
                         </div>
@@ -112,7 +118,7 @@
                                     </cfif>
                                     
                                     <div class="productBox d-flex-column">
-                                        <a href="productDetails.cfm?productId=#viewProduct.fldProduct_Id#&random=1" class="imageLink">
+                                        <a href="productDetails.cfm?productId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = viewProduct.fldProduct_Id))#&random=1" class="imageLink">
                                             <img src="assets/#viewProduct.imageFileName#" alt="img" class="productBoxImage">
                                             <div class="ms-4 font-weight-bold h5">#viewProduct.fldProductName#</div>
                                             <div class="ms-4 h6 ">#viewProduct.fldBrandName#</div>
@@ -124,7 +130,7 @@
                                 <!-- hidden products -->
                                 <cfif currentRow GT 5>
                                     <div class="productBox d-flex-column hiddenProduct">
-                                        <a href="productDetails.cfm?productId=#viewProduct.fldProduct_Id#&random=1" class="imageLink">
+                                        <a href="productDetails.cfm?productId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = viewProduct.fldProduct_Id))#&random=1" class="imageLink">
                                             <img src="assets/#viewProduct.imageFileName#" alt="img" class="productBoxImage">
                                             <div class="ms-4 font-weight-bold h5">#viewProduct.fldProductName#</div>
                                             <div class="ms-4 h6 ">#viewProduct.fldBrandName#</div>
