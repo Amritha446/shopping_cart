@@ -11,84 +11,68 @@ function logoutUser(){
     }
 }
 
-/* function signUpFunction(){
-    $.ajax({
-        type:"POST",
-        url:"Components/myCart.cfc?method=signUp", 
-        data:{firstName : document.getElementById('firstName').value,
-            lastName : document.getElementById('lastName').value,
-            mail : document.getElementById('mail').value,
-            phone :  document.getElementById('phone').value,
-            password : document.getElementById('userPassword').value
-        },
-        success:function(response){
-            location.reload()
-        }
-    })
-} */
+function signUpFunction() {
 
-    function signUpFunction() {
-    
-        var firstName = document.getElementById('firstName').value;
-        var lastName = document.getElementById('lastName').value;
-        var mail = document.getElementById('mail').value;
-        var phone = document.getElementById('phone').value;
-        var password = document.getElementById('userPassword').value;
-        document.getElementById('validationError').innerHTML = "";
-        console.log(firstName)
-        $.ajax({
-            type: "POST",
-            url: "Components/myCart.cfc?method=signUp", 
-            data: {
-                firstName: firstName,
-                lastName: lastName,
-                mail: mail,
-                phone: phone,
-                password: password
-            },
-            success: function(response1) {
-                let response = JSON.parse(response1);
-                console.log(response)
-                document.getElementById('firstnameError').innerHTML = '';
-                document.getElementById('lastnameError').innerHTML = '';
-                document.getElementById('mailError').innerHTML = '';
-                document.getElementById('phoneError').innerHTML = '';
-                document.getElementById('passwordError').innerHTML = '';
-                // document.getElementById('successMsg').remove();
-                if (response.firstName) {
-                    document.getElementById('firstnameError').innerHTML = response.firstName;
-                }
-                if (response.lastName) {
-                    document.getElementById('lastnameError').innerHTML = response.lastName;
-                }
-                if (response.mail) {
-                    document.getElementById('mailError').innerHTML = response.mail;
-                }
-                if (response.phone) {
-                    document.getElementById('phoneError').innerHTML = response.phone;
-                }
-                if (response.password) {
-                    document.getElementById('passwordError').innerHTML = response.password;
-                }
-    
-                if(!response.success){
-                    document.getElementById('validationError').innerHTML = response.message;
-                }
-                else{    
-                    document.getElementById('successMsg').innerHTML = response.message;
-                    let aTag = document.createElement('a'); 
-                    aTag.className = "successAnchor";
-                    aTag.innerHTML = "Click here to log in";
-                    aTag.href = "logIn.cfm";
-                    document.getElementById('successMsg').append(aTag)
-                }
-            },
-            error: function() {
-                alert('An error occurred while submitting the form.');
+    var firstName = document.getElementById('firstName').value;
+    var lastName = document.getElementById('lastName').value;
+    var mail = document.getElementById('mail').value;
+    var phone = document.getElementById('phone').value;
+    var password = document.getElementById('userPassword').value;
+    document.getElementById('validationError').innerHTML = "";
+    console.log(firstName)
+    $.ajax({
+        type: "POST",
+        url: "Components/myCart.cfc?method=signUp", 
+        data: {
+            firstName: firstName,
+            lastName: lastName,
+            mail: mail,
+            phone: phone,
+            password: password
+        },
+        success: function(response1) {
+            let response = JSON.parse(response1);
+            console.log(response)
+            document.getElementById('firstnameError').innerHTML = '';
+            document.getElementById('lastnameError').innerHTML = '';
+            document.getElementById('mailError').innerHTML = '';
+            document.getElementById('phoneError').innerHTML = '';
+            document.getElementById('passwordError').innerHTML = '';
+            // document.getElementById('successMsg').remove();
+            if (response.firstName) {
+                document.getElementById('firstnameError').innerHTML = response.firstName;
             }
-        });
-    }
-    
+            if (response.lastName) {
+                document.getElementById('lastnameError').innerHTML = response.lastName;
+            }
+            if (response.mail) {
+                document.getElementById('mailError').innerHTML = response.mail;
+            }
+            if (response.phone) {
+                document.getElementById('phoneError').innerHTML = response.phone;
+            }
+            if (response.password) {
+                document.getElementById('passwordError').innerHTML = response.password;
+            }
+
+            if(!response.success){
+                document.getElementById('validationError').innerHTML = response.message;
+            }
+            else{    
+                document.getElementById('successMsg').innerHTML = response.message;
+                let aTag = document.createElement('a'); 
+                aTag.className = "successAnchor";
+                aTag.innerHTML = "Click here to log in";
+                aTag.href = "logIn.cfm";
+                document.getElementById('successMsg').append(aTag)
+            }
+        },
+        error: function() {
+            alert('An error occurred while submitting the form.');
+        }
+    });
+}
+
     
 function deleteCategory(event){
     console.log(event.target.value)
@@ -98,8 +82,7 @@ function deleteCategory(event){
             url:"Components/myCart.cfc?method=delCategory",
             data:{categoryId:event.target.value},
             success:function(result){
-                event.target.parentNode.parentNode.parentNode.remove()
-                location.reload()
+                event.target.parentNode.parentNode.remove()
             }
         })
     }
@@ -110,23 +93,21 @@ function deleteCategory(event){
 
 function editCategory(event){
     document.getElementById('categoryId').value=event.target.value;
-    console.log(event.target.value)
     $.ajax({
         type:"POST",
         url:"Components/myCart.cfc?method=viewEachCategory", 
         data:{categoryId:event.target.value},
         success:function(result){
             let formattedResult=JSON.parse(result);
-            console.log(formattedResult)
             let categoryName = formattedResult;
             document.getElementById('categoryNameField').value = categoryName;
         }
-    })
+        }
+    )
 }
 
 function editCategorySubmit(event){
     event.preventDefault()
-    console.log(event.target.value)
     $.ajax({
         type:"POST",
         url:"Components/myCart.cfc?method=updateCategory", 
@@ -155,6 +136,29 @@ function createSubCategory(){
     document.getElementById('editSubCategorySubmit').style.display="none";
     document.getElementById('addSubCategorySubmit').style.display="block";
 
+
+}
+
+function addSubCategoryFormSubmit(){
+    let categoryId = document.getElementById('categoryFrmSubCategory').value;
+    $.ajax({
+        type:"POST",
+        url:"Components/myCart.cfc?method=addSubCategory", 
+        data:{
+            subCategoryName:document.getElementById('subCategoryNameField').value,
+            categoryId:categoryId
+        },
+        success:function(response){
+            location.reload();
+           if (response === "Subcategory updated successfully") {
+                location.reload();
+            } else {
+                alert(response);  
+            } 
+             
+        }
+        
+    })
 }
 
 function editSubCategory(event){
@@ -186,15 +190,16 @@ function editSubCategoryFormSubmit(){
             subCategoryName:document.getElementById('subCategoryNameField').value,
             categoryId:categoryId
         },
-        success:function(){
-           
+        success:function(response){
+            location.reload();
            if (response === "Sub-Category updated successfully!") {
                 location.reload();
             } else {
-                alert(response);
+                alert(response);  
             } 
-            location.reload(); 
+             
         }
+        
     })
 }
 function deleteSubCategory(event){
@@ -369,8 +374,7 @@ function deleteImage() {
                 imageId: currentImageId
             },
             success: function(response) {
-                alert('Image deleted successfully!');
-                
+                alert('Image deleted successfully!'); 
             }
         });
     }
@@ -562,7 +566,7 @@ function editUserSubmit(){
             userPhoneNumber:document.getElementById('userEmailProfile').value 
         },
         success:function(response){
-            if (response === "Updated User details successfully") {
+            if (JSON.parse(response) === "Updated User details successfully") {
                 alert("User details updated successfully!");
                 location.reload();
             } else {
@@ -571,6 +575,7 @@ function editUserSubmit(){
         }
     })
 }
+
 function editUserAddress(){
     event.preventDefault()
     $.ajax({
@@ -586,7 +591,7 @@ function editUserAddress(){
             userPhoneNumber:document.getElementById('userPhoneNumber').value,
         },
         success:function(response){
-            if (response === "Address addedd successfully.") {
+            if (JSON.parse(response) === "Address addedd successfully.") {
                 location.reload();
                 alert("Address addedd successfully!");
             } else {
@@ -622,7 +627,6 @@ document.querySelectorAll('.address-radio').forEach(function (radioButton) {
 });
 
 function paymentData() {
-    console.log('hi')
     let cvv = $('#paymentCardCvv').val();
     let cardNumber = document.getElementById('paymentCardNumber').value;
     let productId = $('#productDetailsPassing').val();
@@ -649,10 +653,10 @@ function paymentData() {
     console.log(data);
     $.ajax({
         url: "Components/myCart.cfc?method=addOrderPayment",
-        type: "GET",
+        type: "POST",
         data: data,
         success: function(response) {
-           if (response === "") {
+           if (JSON.parse(response) === "") {
                 window.location.href = "paymentPage.cfm";
             } else {
                 alert(response);
@@ -670,6 +674,17 @@ function downloadInvoice(event) {
         url:"Components/myCart.cfc?method=orderHistoryDisplay",
         data:{orderId:event.target.value}
     })
+}
+function checkAddressBeforeOrder(event) {
+    var addressRecordCount = event.target.getAttribute('data-recordcount');
+    console.log('hi')
+    if (addressRecordCount == 0) {
+        console.log(addressRecordCount)
+        document.getElementById('addressErrorMessage').style.display = 'block';
+        document.getElementById('placeOrderBtn').disabled = true; 
+    } else {
+        $('#orderItems').modal('show');
+    }
 }
     
 

@@ -80,26 +80,13 @@
                                                 <button type="button" name="editSubCategorySubmit" class="btn mt-5 ms-5" onClick ="editSubCategoryFormSubmit()"
                                                     id="editSubCategorySubmit" value="">UPDATE</button>
                                                 <button type="submit" name="addSubCategorySubmit" class="btn mt-5 ms-5"
-                                                    id="addSubCategorySubmit" value="">ADD</button>
+                                                    id="addSubCategorySubmit" value="" onClick="addSubCategoryFormSubmit()">ADD</button>
                                             </div>
                                         </form>
                                     </div>
                                 </div>
                             </div>
                         </div>
-
-                        <cfif structKeyExists(form, "addSubCategorySubmit")>
-                            <cfset obj = createObject("component","components.myCart")>
-                            <cfset result = application.myCartObj.addSubCategory(categoryId=form.categoryFrmSubCategory,
-                                subCategoryName=form.subCategoryName)>
-                            
-                            <cfif result EQ "">
-                                <cflocation  url="subCategory.cfm?categoryId=#categoryId#">
-                            <cfelse>
-                                #result#
-                            </cfif>
-                        </cfif>
-                       
                     </div>
                 </div>
             </div>

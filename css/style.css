@@ -430,7 +430,6 @@ body{
     margin: 25px;
     box-sizing: border-box;
     height:20%;
-    
 }
 .productMainDetails{
     margin-left:20%;
@@ -624,6 +623,10 @@ body{
     width:30vw;
 }
 .productBoxImage1{
+    width:10vw;
+    height:10vw;
+}
+.productBoxImage{
     width:10vw;
     height:10vw;
 }

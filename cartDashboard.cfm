@@ -10,6 +10,7 @@
                     <div class="mainHeading ">
                         <h5 class = "ms-5 mt-3">MyCart</h5>
                     </div>
+                    <div class="col-6"></div>
                     <cfif structKeyExists(session, "isAuthenticated") AND session.isAuthenticated EQ true>
                         <button type="button" class="logOutBtn p-1 col-1">
                             <div class="signUp d-flex">

@@ -64,7 +64,9 @@
 
                                     <div class="d-flex">
                                         <button type="submit" class="buyProduct" value="#cartData.fldCart_Id#" onClick="removeCartProduct(event)">REMOVE</button>
-                                        <a href="productDetails.cfm?productId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = cartData.fldProduct_Id))#" class="imageLink"><button type="submit" class="buyProduct">VIEW</button></a>
+                                        <a href="productDetails.cfm?productId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = cartData.fldProduct_Id))#&random=1" class="imageLink">
+                                            <button type="submit" class="buyProduct">VIEW</button>
+                                        </a>
                                     </div>
                                     
                                 </div>
@@ -81,7 +83,7 @@
                     <div class="priceDetails">
                         <h6 class="text-success ms-5">Buy Together</h6>
                         <div class="priceDetailsHeading ms-3">Total Price:</div>
-                        <button type="button" class="placeOrder" data-bs-toggle="modal" data-bs-target="##cartItems" id="cartOrderBtn">PLACE ORDER</button> 
+                        <button type="button" class="placeOrder" data-bs-toggle="modal" data-bs-target="##cartItems" id="cartOrderBtn"> ORDER </button> 
                     </div>
                 </div>
                 <div class="modal fade" id="cartItems" tabindex="-1">

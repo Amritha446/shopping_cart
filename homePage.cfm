@@ -102,9 +102,10 @@
 
                 <div class="productListing d-flex-column">
                     <h6 class="mt-3 ms-3">RANDOM PRODUCTS</h6>
-                    <cfset viewProduct = application.myCartObj.viewProduct()>
                     <cfif url.searchTerm NEQ "">
                         <cfset viewProduct = application.myCartObj.viewProduct(searchTerm=url.searchTerm)>
+                    <cfelse>
+                        <cfset viewProduct = application.myCartObj.viewProduct()>
                     </cfif>
                     <cfif viewProduct.recordCount GT 0>
                         <div class="productContainer">
@@ -149,9 +150,9 @@
                     </cfif>
                 </div>
 
-                <div class="footerSection D-FLEX">
+                <div class="footerSection d-flex">
                     <div class="footerHeading ms-5 mt-4">
-                        <a href="logIn.cfm" class="footerHeading">BECOME A SELLER</a>
+                        <a href="cartDashboard.cfm" class="footerHeading">BECOME A SELLER</a>
                     </div>
                     <div class="footerHeading ms-5 mt-4">
                         ADVERTISE

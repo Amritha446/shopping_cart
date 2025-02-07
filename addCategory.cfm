@@ -18,7 +18,12 @@
                                 <div class="text-secondary mt-4 ms-5"> Enter Category Name: </div>
                                 <input type="text" name="categoryName" class="inputs ms-5">
                             </div>
-                            <button type="submit" name="submit" class="btn mt-3 ms-5">ADD</button>
+                            <div class="d-flex">
+                                <button type="submit" name="submit" class="btn mt-3 ms-5">ADD</button>
+                                <a href = "cartDashboard.cfm" class = "imageLink">
+                                    <button type="button" name="submit1" class="btn mt-3 ms-5">Close</button>
+                                </a>
+                            </div>
                         </div>
                     </form>
                 </div>

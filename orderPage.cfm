@@ -56,16 +56,20 @@
                     <h5 class="ms-5 ps-5 mt-3 text-light p-2">ORDER SUMMARY</h5>
                     <div class="addressOrder">
                         <cfset viewUserAddress = application.myCartObj.fetchUserAddress(addressId = URL.addressId)>
-                        <div class="addressAddSection d-flex-column mt-2 ">
-                            <div class="fs-6 ms-4 text-success">SELECTED ADDRESS</div>
-                            <div class="d-flex ms-4">#viewUserAddress.fldFirstName#  #viewUserAddress.fldLastName#  </div>
-                            <div class="d-flex ms-4">#viewUserAddress.fldAdressLine1# , #viewUserAddress.fldAdressLine2# ,
-                            #viewUserAddress.fldCity# , #viewUserAddress.fldState#</div>
-                            <div class="d-flex ms-4">#viewUserAddress.fldPincode# #viewUserAddress.fldPhoneNumber#</div>
-                        </div>
+                        <cfif viewUserAddress.recordCount EQ 0>
+                            
+                        <cfelse>
+                            <div class="addressAddSection d-flex-column mt-2 ">
+                                <div class="fs-6 ms-4 text-success">SELECTED ADDRESS</div>
+                                <div class="d-flex ms-4">#viewUserAddress.fldFirstName#  #viewUserAddress.fldLastName#  </div>
+                                <div class="d-flex ms-4">#viewUserAddress.fldAdressLine1# , #viewUserAddress.fldAdressLine2# ,
+                                #viewUserAddress.fldCity# , #viewUserAddress.fldState#</div>
+                                <div class="d-flex ms-4">#viewUserAddress.fldPincode# #viewUserAddress.fldPhoneNumber#</div>
+                            </div>
+                        </cfif>
                     </div>
                     <div class="productOrder d-flex-column ">
-                        <cfif #URL.productId# NEQ "">
+                        <cfif URL.productId NEQ "">
                             <cfset cartData = application.myCartObj.viewProduct(productId = URL.productId)>
                         <cfelse>
                             <cfset cartData = application.myCartObj.viewCartData()>
@@ -103,9 +107,13 @@
                         </cfloop>
                         <div class="priceDetailsHeading ms-5 text-success" id="priceDetailsHeading">Total Price:</div>
                         <div class="taxDetailsHeading ms-5 text-success" id="taxDetailsHeading">Total Tax:</div>
-
-                        <button type="submit" class="orderPlacingBtn" data-bs-toggle="modal" data-bs-target="##orderItems">PLACE ORDER</button>
-                        
+                        <cfif viewUserAddress.recordCount EQ 0>
+                            <button type="button" class="orderPlacingBtn" disabled>Place Order</button>
+                            <div class="alert alert-danger ms-4 mt-2" id="addressErrorMessage">No address found. Please add an address before placing the order.
+                            <a href="userProfile.cfm" class="imageLink">ADD ADDRESS</a></div>
+                        <cfelse>
+                            <button type="button" class="orderPlacingBtn" data-bs-toggle="modal" data-bs-target="##orderItems" name="placeorder" data-recordcount="#viewUserAddress.recordCount#" onClick="checkAddressBeforeOrder()" >PLACE ORDER</button>
+                        </cfif>
                     </div>  
                 </div>
 
@@ -131,7 +139,7 @@
                                     </div>
                                 </div>                             
                                 <div class="d-flex">
-                                    <button type="submit" id="userPaymentBtn" class="userAddressBtn1 " name="submit" onClick="paymentData()">PROCEED</button>
+                                    <button type="button" id="userPaymentBtn" class="userAddressBtn1 " name="submit" onClick="paymentData()">PROCEED</button>
                                 </div>
                             </form>
                         </div>

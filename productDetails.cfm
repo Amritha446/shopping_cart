@@ -59,7 +59,7 @@
                     </cfloop>
                 </div>
                 
-                <cfset viewProduct = application.myCartObj.viewProduct(productId = #productId#,
+                <cfset viewProduct = application.myCartObj.viewProduct(productId = productId,
                                                                           random = url.random)>
                 <cfif url.searchTerm NEQ "">
                     <cfset viewProduct = application.myCartObj.viewProduct(searchTerm=url.searchTerm)>
@@ -119,8 +119,8 @@
                     </cfif>
                     
                     <div class="d-flex-column productDetails">
-                    <cfset subCategoryFetching = application.myCartObj.subCategoryFetching(subCategoryId = #viewProduct.fldSubCategoryId#)>
-                    <cfset categoryFetching = application.myCartObj.categoryFetching(categoryId = #subCategoryFetching.fldCategoryId#)>
+                        <cfset subCategoryFetching = application.myCartObj.subCategoryFetching(subCategoryId = #viewProduct.fldSubCategoryId#)>
+                        <cfset categoryFetching = application.myCartObj.categoryFetching(categoryId = #subCategoryFetching.fldCategoryId#)>
                         <div class="productPath p-1 ">
                             <a href="homePage.cfm" class="navBarButton ms-2">home</a>
                             ><a href="categoryBasedProduct.cfm?categoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = categoryFetching.fldCategory_Id))#" class="navBarButton ms-2">#categoryFetching.fldCategoryName#</a>

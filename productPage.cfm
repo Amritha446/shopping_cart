@@ -128,8 +128,7 @@
                                 <div class="d-flex-column">
                                     <div class="textHead">PRODUCT BRAND</div>
                                     <select id="productBrand" name="productBrand" class="ms-3">
-                                        <cfset obj = createObject("component","components.myCart")>
-                                        <cfset brandName = obj.viewBrands()>
+                                        <cfset brandName = application.myCartObj.viewBrands()>
                                         <cfloop query = #brandName#>
                                             <option value="#brandName.fldBrand_Id#">#brandName.fldBrandName#</option>
                                         </cfloop>
