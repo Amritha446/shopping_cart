@@ -414,7 +414,7 @@ function toggleProducts() {
         if (product.style.display === "none") {
             product.style.display = "block";
         } else {
-            product.style.display = "block";
+            product.style.display = "none";
         }
     });
 

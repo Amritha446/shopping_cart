@@ -51,7 +51,7 @@ function validation(){
     else{
         document.getElementById('priceError').textContent = '';
     }
-    if(productImg == ''){
+    if(productImg == '' && document.getElementById('productId').value == ""){
         document.getElementById('imgError').textContent = 'Please upload image';
         valid = false;
     }

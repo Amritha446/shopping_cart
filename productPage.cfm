@@ -170,24 +170,30 @@
                 </div>
             </div>
             
-            <cfif structKeyExists(form,"submit") AND form.productId == "">
+            <cfif structKeyExists(form,"submit")>
                 <cfset obj=createObject("component","components.myCart")>
-                <cfset resultProduct=application.myCartObj.createProduct(categoryId = form.categoryIdProduct,
+                <cfset resultProduct=application.myCartObj.saveProduct(categoryId = form.categoryIdProduct,
                 subCategoryId = form.subCategoryIdProduct,
+                productId = form.productId,
                 productName = form.productName,
                 productBrandId = form.productBrand,
                 productPrice = form.productPrice,
                 productDescrptn = form.productDescrptn,
                 productImg = form.productImg,
                 productTax = form.productTax)>
-                <cfif len(trim(resultProduct)) EQ 0>
+                <!--- <cfif len(trim(resultProduct)) EQ 0>
                     <cflocation  url="productPage.cfm?categoryId=#categoryId#&subCategoryId=#subCategoryId#">
                 <cfelse>
                     #resultProduct#
+                </cfif> --->
+                <cfif structKeyExists(resultProduct, "success") AND resultProduct.success EQ true>
+                    <cflocation url="productPage.cfm?categoryId=#categoryId#&subCategoryId=#subCategoryId#">
+                <cfelse>
+                    <div class="text-danger">Error occured</div>
                 </cfif>
             </cfif>  
 
-            <cfif structKeyExists(form,"submit") AND form.productId != "">
+            <!--- <cfif structKeyExists(form,"submit") AND form.productId != "">
                 <cfset obj=createObject("component","components.myCart")>
                 <cfset resultProduct=application.myCartObj.EditProduct(categoryId = form.categoryIdProduct,
                 subCategoryId = form.subCategoryIdProduct,
@@ -203,7 +209,7 @@
                 <cfelse>
                     #resultProduct#
                 </cfif>
-            </cfif>
+            </cfif> --->
         </cfoutput>    
     </body>
 </html>

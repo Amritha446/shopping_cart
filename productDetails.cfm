@@ -61,7 +61,7 @@
                 
                 <cfset viewProduct = application.myCartObj.viewProduct(productId = productId,
                                                                           random = url.random)>
-                <cfif url.searchTerm NEQ "">
+                <cfif len(trim(url.searchTerm)) NEQ 0>
                     <cfset viewProduct = application.myCartObj.viewProduct(searchTerm=url.searchTerm)>
                 </cfif>
                 <cfset subCategories = application.myCartObj.viewSubCategoryData(categoryId = viewCategory.fldCategory_Id)>
