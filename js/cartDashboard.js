@@ -19,7 +19,6 @@ function signUpFunction() {
     var phone = document.getElementById('phone').value;
     var password = document.getElementById('userPassword').value;
     document.getElementById('validationError').innerHTML = "";
-    console.log(firstName)
     $.ajax({
         type: "POST",
         url: "Components/myCart.cfc?method=signUp", 
@@ -32,7 +31,6 @@ function signUpFunction() {
         },
         success: function(response1) {
             let response = JSON.parse(response1);
-            console.log(response)
             document.getElementById('firstnameError').innerHTML = '';
             document.getElementById('lastnameError').innerHTML = '';
             document.getElementById('mailError').innerHTML = '';
@@ -75,7 +73,6 @@ function signUpFunction() {
 
     
 function deleteCategory(event){
-    console.log(event.target.value)
     if(confirm("Confirm delete?")){
         $.ajax({
             type:"POST",
@@ -89,6 +86,26 @@ function deleteCategory(event){
     else{
         event.preventDefault()
     }
+}
+
+function addCategoryFormSubmit(){
+    $.ajax({
+        type:"POST",
+        url:"Components/myCart.cfc?method=saveCategory", 
+        data:{
+            categoryName:document.getElementById('categoryNameAdd').value,
+            operation:"add"
+        },
+        success:function(response){
+            location.reload();
+           if (response === "Category addedd successfully") {
+                document.getElementsByClassName('successContent').textContent = "Addedd successfullly";
+                window.location.href="cartDashboard.cfm"
+            } else {
+                alert(response);  
+            }   
+        } 
+    })
 }
 
 function editCategory(event){
@@ -110,9 +127,10 @@ function editCategorySubmit(event){
     event.preventDefault()
     $.ajax({
         type:"POST",
-        url:"Components/myCart.cfc?method=updateCategory", 
+        url:"Components/myCart.cfc?method=saveCategory", 
         data:{categoryId:document.getElementById('categoryId').value,
-            categoryName:document.getElementById('categoryNameField').value
+            categoryName:document.getElementById('categoryNameField').value,
+            operation:"update"
         },
         success:function(response){
             location.reload();
@@ -136,17 +154,17 @@ function createSubCategory(){
     document.getElementById('editSubCategorySubmit').style.display="none";
     document.getElementById('addSubCategorySubmit').style.display="block";
 
-
 }
 
 function addSubCategoryFormSubmit(){
     let categoryId = document.getElementById('categoryFrmSubCategory').value;
     $.ajax({
         type:"POST",
-        url:"Components/myCart.cfc?method=addSubCategory", 
+        url:"Components/myCart.cfc?method=saveSubCategory", 
         data:{
             subCategoryName:document.getElementById('subCategoryNameField').value,
-            categoryId:categoryId
+            categoryId:categoryId,
+            operation:"add"
         },
         success:function(response){
             location.reload();
@@ -154,10 +172,8 @@ function addSubCategoryFormSubmit(){
                 location.reload();
             } else {
                 alert(response);  
-            } 
-             
+            }    
         }
-        
     })
 }
 
@@ -165,14 +181,12 @@ function editSubCategory(event){
     document.getElementById('subCategoryId').value=event.target.value;
     document.getElementById('addSubCategorySubmit').style.display="none";
     document.getElementById('editSubCategorySubmit').style.display="block";
-    console.log(event.target.value)
     $.ajax({
         type:"POST",
         url:"Components/myCart.cfc?method=viewEachSubCategory", 
         data:{subCategoryId:event.target.value},
         success:function(result){
             let formattedResult=JSON.parse(result);
-            console.log(formattedResult)
             let subCategoryName = formattedResult;
             document.getElementById('subCategoryNameField').value = subCategoryName;
         }
@@ -185,10 +199,11 @@ function editSubCategoryFormSubmit(){
     let categoryId = document.getElementById('categoryFrmSubCategory').value;
     $.ajax({
         type:"POST",
-        url:"Components/myCart.cfc?method=updateSubCategory", 
+        url:"Components/myCart.cfc?method=saveSubCategory", 
         data:{subCategoryId:document.getElementById('subCategoryId').value,
             subCategoryName:document.getElementById('subCategoryNameField').value,
-            categoryId:categoryId
+            categoryId:categoryId,
+            operation:"update"
         },
         success:function(response){
             location.reload();
@@ -196,14 +211,11 @@ function editSubCategoryFormSubmit(){
                 location.reload();
             } else {
                 alert(response);  
-            } 
-             
+            }  
         }
-        
     })
 }
 function deleteSubCategory(event){
-    console.log(event.target.value)
     if(confirm("Confirm delete?")){
         $.ajax({
             type:"POST",
@@ -224,7 +236,6 @@ function createNewProduct(){
     document.getElementById('createProductData').reset();
     $('.error').text("");
     $('#editProductDetails').modal('show'); 
-    
 }
 
 function editProductDetailsButton(event){
@@ -236,7 +247,7 @@ function editProductDetailsButton(event){
         type:"POST",
         url:"Components/myCart.cfc?method=viewProduct", 
         data:{productId:  event.target.value,
-            subCategoryId: new URLSearchParams(document.URL.split('?')[1]).get('subCategoryId') //passing values through url param
+            subCategoryId: new URLSearchParams(document.URL.split('?')[1]).get('subCategoryId')
         },
         success:function(result){
             let formattedResult=JSON.parse(result);
@@ -247,14 +258,12 @@ function editProductDetailsButton(event){
             document.getElementById('productBrand').value = formattedResult.DATA[0][7];
             document.getElementById('productDescrptn').value = formattedResult.DATA[0][4];
             document.getElementById('productPrice').value = formattedResult.DATA[0][5];
-            document.getElementById('productTax').value = formattedResult.DATA[0][6];
-            
+            document.getElementById('productTax').value = formattedResult.DATA[0][6];  
         }
     })
 }
 
 function deleteProduct(event){
-    console.log(event.target.value)
     if(confirm("Confirm delete?")){
         $.ajax({
             type:"POST",
@@ -287,7 +296,6 @@ $(document).ready(function() {
                     let  subCategoryId= data.DATA[i][1];
                     let optionTag = `<option value="${subCategoryId}">${subCategoryId}</option>`;
                     $("#subCategoryIdProduct").append(optionTag);
-                    console.log(subCategoryId)
                 }
             }
         });	
@@ -305,7 +313,6 @@ function loadProductImages() {
             let images = JSON.parse(response);
             let carouselContent = '';
             let activeClass = 'active'; // To mark the first image as active
-            console.log(images)
             for (let i = 0; i < images.length; i++) {
                 let image = images[i];
                 let defaultImageClass = image.fldDefaultImage == 1 ? 'default-image' : '';
@@ -361,8 +368,6 @@ function deleteImage() {
     let Id = currentId.split(",")
     let currentImageId=Id[0]
     let currentProductId = Id[1]
-    console.log(currentImageId)
-    console.log(currentProductId)
     if (!currentImageId) return alert('No image selected');
 
     if (confirm('Are you sure you want to delete this image?')) {
@@ -374,7 +379,8 @@ function deleteImage() {
                 imageId: currentImageId
             },
             success: function(response) {
-                alert('Image deleted successfully!'); 
+                alert('Image deleted successfully!');
+                location.reload();
             }
         });
     }
@@ -382,12 +388,12 @@ function deleteImage() {
 
 let currentIndex = 0;
 let images = []; 
-let mainImage = document.getElementById('main-image');
+let mainImage = document.getElementById('mainImage');
 let thumbnailImages = document.querySelectorAll('.thumbnail');
 
 // Function to change the main image when a thumbnail is clicked
 function changeMainImage(thumbnail) {
-    let mainImage = document.getElementById('main-image');
+    let mainImage = document.getElementById('mainImage');
     let newImageSrc = thumbnail.src; 
     mainImage.src = newImageSrc; 
     
@@ -489,18 +495,16 @@ function updateTotalPrice() {
 
 
 function incrementQuantity(event) {
-    console.log(event.target.value)
     const cartItem = event.target.closest('.cartItem');
     const quantityElement = cartItem.querySelector('.quantityNumber');
     let currentQuantity = parseInt(quantityElement.textContent);
     let productId = event.target.getAttribute('value');
-    console.log(event.target.getAttribute('value'));
-    console.log(productId)
-
     if (currentQuantity < 21) { 
         quantityElement.textContent = currentQuantity + 1;
         updateTotalPrice();
-        updateCartQuantity(productId, (currentQuantity + 1));
+        if (document.getElementById('hiddenQuantityUpdate').value == 1) {
+            updateCartQuantity(productId, (currentQuantity + 1));
+        } 
     }
 }
 
@@ -513,7 +517,9 @@ function decrementQuantity(event) {
     if (currentQuantity > 1) { 
         quantityElement.textContent = currentQuantity - 1;
         updateTotalPrice(); 
-        updateCartQuantity(productId, (currentQuantity - 1));
+        if (document.getElementById('hiddenQuantityUpdate').value == 1) {
+            updateCartQuantity(productId, (currentQuantity - 1));
+        } 
     }
 }
 
@@ -618,7 +624,6 @@ function removeAddress(event){
 document.querySelectorAll('.address-radio').forEach(function (radioButton) {
     radioButton.addEventListener('change', function () {
         const selectedAddressId = document.querySelector('input[name="addressRadio"]:checked')?.value;
-        console.log(selectedAddressId)
         if (selectedAddressId) {
             document.getElementById('selectedAddressId').value = selectedAddressId;
             document.getElementById('hiddenAddressId').value = selectedAddressId;
@@ -634,13 +639,17 @@ function paymentData() {
     let totalPriceText = $('#priceDetailsHeading').text().trim();
     let totalTaxText = $('#taxDetailsHeading').text().trim();
 
-    let cleanTotalPrice = totalPriceText.replace(/[^\d.-]/g, ''); 
+    let cleanTotalPrice = totalPriceText.replace(/[^\d.-]/g, '');
     let cleanTotalTax = totalTaxText.replace(/[^\d.-]/g, '');
 
     let totalPrice = isNaN(parseFloat(cleanTotalPrice)) ? 0 : parseFloat(cleanTotalPrice);
     let totalTax = isNaN(parseFloat(cleanTotalTax)) ? 0 : parseFloat(cleanTotalTax);
-    
-    console.log("Parsed Total Price: ", totalPrice);
+
+    document.querySelectorAll('.cartItem').forEach(cartItem => {
+        const productId = cartItem.querySelector('.increment').getAttribute('value'); 
+        const quantity = parseInt(cartItem.querySelector('.quantityNumber').textContent);
+        updateCartQuantity(productId, quantity); 
+    });
 
     let data = {
         cardNumber: cardNumber,
@@ -650,21 +659,21 @@ function paymentData() {
         totalPrice: totalPrice,
         totalTax: totalTax
     };
-    console.log(data);
     $.ajax({
         url: "Components/myCart.cfc?method=addOrderPayment",
         type: "POST",
         data: data,
         success: function(response) {
-           if (JSON.parse(response) === "") {
+           if (JSON.parse(response) === "Order placed successfully.") {
                 window.location.href = "paymentPage.cfm";
             } else {
                 alert(response);
             }
         },
-        error: function() {
-            alert('error');
-        }
+        error: function (xhr, ajaxOptions, thrownError) {
+            alert(xhr.status);
+            alert(thrownError);
+          }
     });
 }
 
@@ -677,9 +686,7 @@ function downloadInvoice(event) {
 }
 function checkAddressBeforeOrder(event) {
     var addressRecordCount = event.target.getAttribute('data-recordcount');
-    console.log('hi')
     if (addressRecordCount == 0) {
-        console.log(addressRecordCount)
         document.getElementById('addressErrorMessage').style.display = 'block';
         document.getElementById('placeOrderBtn').disabled = true; 
     } else {

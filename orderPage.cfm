@@ -51,7 +51,6 @@
                     </cfloop>
                 </div>
                 
-                
                 <div class="orderSummary">
                     <h5 class="ms-5 ps-5 mt-3 text-light p-2">ORDER SUMMARY</h5>
                     <div class="addressOrder">
@@ -86,7 +85,9 @@
                                         <cfelse>
                                             <img src="assets/#cartData.fldImageFileName#" alt="img" class="productBoxImage1"> 
                                         </cfif>
-                                    <div class="productBasedDetails"><div class="ms-5 font-weight-bold h6 d-flex orderedProductName">#cartData.fldProductName#</div>
+                                    <button type="submit" class="closeLink" value="#cartData.fldCart_Id#" onClick="removeCartProduct(event)"><i class="fa-solid fa-xmark pe-none"></i></button>
+                                    <div class="productBasedDetails">
+                                    <div class="ms-5 font-weight-bold h6 d-flex orderedProductName">#cartData.fldProductName#</div>
                                     <div class="quantityBlock ms-5">
                                         <button class="decrement me-2" onClick="decrementQuantity(event)" value="#cartData.fldProduct_Id#">-</button>
                                         <cfif len(trim(URL.productId))>
@@ -111,8 +112,10 @@
                             <button type="button" class="orderPlacingBtn" disabled>Place Order</button>
                             <div class="alert alert-danger ms-4 mt-2" id="addressErrorMessage">No address found. Please add an address before placing the order.
                             <a href="userProfile.cfm" class="imageLink">ADD ADDRESS</a></div>
-                        <cfelse>
+                        <cfelseif cartData.recordCount GT 0>
                             <button type="button" class="orderPlacingBtn" data-bs-toggle="modal" data-bs-target="##orderItems" name="placeorder" data-recordcount="#viewUserAddress.recordCount#" onClick="checkAddressBeforeOrder()" >PLACE ORDER</button>
+                        <cfelse>
+                            <div class="alert alert-danger ms-4 mt-2" id="addressErrorMessage">No products found. Please add products before placing the order.</div>
                         </cfif>
                     </div>  
                 </div>

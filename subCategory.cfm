@@ -5,6 +5,7 @@
             <div class = "container-fluid" id = "container">
                 <div class = "header d-flex col-12" id = "header">
                     <div class="mainHeading ">
+                        <a href="homePage.cfm" class="imageLink"><div class="headerText ms-5 mt-2 col-6">MyCart</div></a>
                         <h5 class = "ms-5 mt-3">ADD SUB-CATEGORY</h5>
                     </div>
                     <button type="button" class="btn1">

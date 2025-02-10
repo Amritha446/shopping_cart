@@ -16,10 +16,10 @@
                         <div class="addBox d-flex-column h-50">
                             <div class="d-flex">
                                 <div class="text-secondary mt-4 ms-5"> Enter Category Name: </div>
-                                <input type="text" name="categoryName" class="inputs ms-5">
+                                <input type="text" name="categoryName" class="inputs ms-5" id="categoryNameAdd">
                             </div>
                             <div class="d-flex">
-                                <button type="submit" name="submit" class="btn mt-3 ms-5">ADD</button>
+                                <button type="submit" name="submit" class="btn mt-3 ms-5" onClick="addCategoryFormSubmit()">ADD</button>
                                 <a href = "cartDashboard.cfm" class = "imageLink">
                                     <button type="button" name="submit1" class="btn mt-3 ms-5">Close</button>
                                 </a>
@@ -28,15 +28,14 @@
                     </form>
                 </div>
             </div>
-             <cfif structKeyExists(form,"submit") >
+            <!--- <cfif structKeyExists(form,"submit") >
                 <cfset objCreate = createObject("component","components.myCart")>
                 <cfset result = application.myCartObj.addCategory(categoryName = form.categoryName)>
                 <cfif result EQ "">
                     <cflocation url="cartDashBoard.cfm">
                 <cfelse>
                     #result#
-                </cfif>
-            </cfif>
+                </cfif>--->
         </cfoutput>
     </body>
 </html>

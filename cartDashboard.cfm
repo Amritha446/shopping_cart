@@ -8,7 +8,7 @@
             <div class = "container-fluid" id = "container">
                 <div class = "header d-flex col-12" id = "header">
                     <div class="mainHeading ">
-                        <h5 class = "ms-5 mt-3">MyCart</h5>
+                        <a href="homePage.cfm" class="imageLink"><div class="headerText ms-5 mt-2 col-6">MyCart</div></a>
                     </div>
                     <div class="col-6"></div>
                     <cfif structKeyExists(session, "isAuthenticated") AND session.isAuthenticated EQ true>

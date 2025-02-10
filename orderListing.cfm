@@ -99,13 +99,10 @@
                                             <div class=""></div>
                                         </div> 
                                     </div>
-                                </cfloop>
-
-                                
+                                </cfloop>  
                             </div>
                         </cfif>
                     </cfloop>
-
                 </div>
             </div>
         </cfoutput>

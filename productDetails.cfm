@@ -69,8 +69,8 @@
                 <div class="d-flex productSection">
                     <div class="product-container d-flex">
                         <div class="d-flex-column">
-                            <div class="main-image-container">
-                                <img src="assets/#viewProduct.imageFileName#" alt="Main Product Image" id="main-image">
+                            <div class="mainImage-container">
+                                <img src="assets/#viewProduct.imageFileName#" alt="Main Product Image" id="mainImage">
                             </div>
 
                             <div class="thumbnails p-2 ms-4">

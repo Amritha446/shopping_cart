@@ -60,6 +60,7 @@
                                         <button class="decrement me-2" value="#cartData.fldProduct_Id#" onClick="decrementQuantity(event)">-</button>
                                         <span class="quantityNumber">#cartData.fldQuantity#</span>
                                         <button class="increment ms-2" value="#cartData.fldProduct_Id#" onClick="incrementQuantity(event)">+</button>
+                                        <input type="hidden" id="hiddenQuantityUpdate" value = 1>
                                     </div>
 
                                     <div class="d-flex">

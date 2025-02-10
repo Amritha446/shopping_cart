@@ -8,7 +8,7 @@
             
             <div class="container-fluid">
                 <div class="header d-flex">
-                    <div class="headerText ms-5 mt-2">PRODUCT PAGE</div>
+                    <a href="homePage.cfm" class="imageLink"><div class="headerText ms-5 mt-2 col-6">MyCart</div></a>
                     <button type="button" class="btn1">
                         <div class="signUp d-flex">
                             <i class="fa-solid fa-right-from-bracket mb-1 mt-1" style="color:##fff"></i><div class="text-white ms-2" onClick = "logoutUser()">SignOut</div>
@@ -25,8 +25,7 @@
                             <button type="submit" class="addSubCategoryBtn ms-4 mb-3 mt-4" onClick="createNewProduct()"
                                 id="createNewProductBtn">Add</button> <!---  id="addProductBtn" ---> 
                         </div>
-                        <cfset objCreate = createObject("component","components.myCart")>
-                        <cfset viewProduct = objCreate.viewProduct(subCategoryId = url.subCategoryId)>
+                        <cfset viewProduct = application.myCartObj.viewProduct(subCategoryId = url.subCategoryId)>
                         <cfloop query = "#viewProduct#">
                             <div class = "contentBox h-50 d-flex mb-3 bg-success"> 
                                 <div class = "d-flex-column productData">
@@ -96,7 +95,6 @@
                                 </div><hr class="horizontalLine1 mt-1">                                                
                                 
                                 <div class="d-flex-column" id = "multiSelect">
-                                    <!--- <cfset objCreate = createObject("component","components.myCart")> --->
                                     <cfset viewCategory = application.myCartObj.viewCategoryData()>
                                     <div class="textHead ">Category Name:</div>
                                     <select id="categoryIdProduct" name="categoryIdProduct" class="ms-3" >
@@ -108,7 +106,6 @@
                                 </div>
 
                                 <div class="d-flex-column" id = "multiSelect">
-                                    <!--- <cfset objCreate = createObject("component","components.myCart")> --->
                                     <cfset viewSubCategory = application.myCartObj.viewSubCategoryData(categoryId = categoryId)>
                                     <div class="textHead ">Sub-Category Name:</div>
                                     <select id="subCategoryIdProduct" name="subCategoryIdProduct" class="ms-3">
@@ -171,7 +168,31 @@
             </div>
             
             <cfif structKeyExists(form,"submit")>
-                <cfset obj=createObject("component","components.myCart")>
+                <cfset resultProduct=application.myCartObj.saveProduct(
+                    categoryId = form.categoryIdProduct,
+                    subCategoryId = form.subCategoryIdProduct,
+                    productId = (len(trim(form.productId)) EQ 0 ? 0 : form.productId),
+                    productName = form.productName,
+                    productBrandId = form.productBrand,
+                    productPrice = form.productPrice,
+                    productDescrptn = form.productDescrptn,
+                    productImg = form.productImg,
+                    productTax = form.productTax
+                )>
+
+                <!--- <cfif len(trim(resultProduct)) EQ 0>
+                    <cflocation  url="productPage.cfm?categoryId=#categoryId#&subCategoryId=#subCategoryId#">
+                <cfelse>
+                    #resultProduct#
+                </cfif> --->
+                <cfif structKeyExists(resultProduct, "success") AND resultProduct.success EQ true>
+                    <cflocation url="productPage.cfm?categoryId=#categoryId#&subCategoryId=#subCategoryId#">
+                <cfelse>
+                    
+                </cfif>
+            </cfif>  
+
+            <!--- <cfif structKeyExists(form,"submit") AND form.productId != "">
                 <cfset resultProduct=application.myCartObj.saveProduct(categoryId = form.categoryIdProduct,
                 subCategoryId = form.subCategoryIdProduct,
                 productId = form.productId,
@@ -190,24 +211,6 @@
                     <cflocation url="productPage.cfm?categoryId=#categoryId#&subCategoryId=#subCategoryId#">
                 <cfelse>
                     <div class="text-danger">Error occured</div>
-                </cfif>
-            </cfif>  
-
-            <!--- <cfif structKeyExists(form,"submit") AND form.productId != "">
-                <cfset obj=createObject("component","components.myCart")>
-                <cfset resultProduct=application.myCartObj.EditProduct(categoryId = form.categoryIdProduct,
-                subCategoryId = form.subCategoryIdProduct,
-                productId = form.productId,
-                productName = form.productName,
-                productBrandId = form.productBrand,
-                productPrice = form.productPrice,
-                productDescrptn = form.productDescrptn,
-                productImg = form.productImg,
-                productTax = form.productTax)>
-                <cfif len(trim(resultProduct)) EQ 0>
-                    <cflocation  url="productPage.cfm?categoryId=#categoryId#&subCategoryId=#subCategoryId#">
-                <cfelse>
-                    #resultProduct#
                 </cfif>
             </cfif> --->
         </cfoutput>    
