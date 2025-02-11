@@ -85,7 +85,9 @@
                                         <cfelse>
                                             <img src="assets/#cartData.fldImageFileName#" alt="img" class="productBoxImage1"> 
                                         </cfif>
-                                    <button type="submit" class="closeLink" value="#cartData.fldCart_Id#" onClick="removeCartProduct(event)"><i class="fa-solid fa-xmark pe-none"></i></button>
+                                    <cfif len(trim(URL.productId)) EQ 0>
+                                        <button type="submit" class="closeLink" value="#cartData.fldCart_Id#" onClick="removeCartProduct(event)"><i class="fa-solid fa-xmark pe-none"></i></button>
+                                    </cfif>
                                     <div class="productBasedDetails">
                                     <div class="ms-5 font-weight-bold h6 d-flex orderedProductName">#cartData.fldProductName#</div>
                                     <div class="quantityBlock ms-5">
@@ -102,6 +104,8 @@
                                         <div class="productTax ms-3">Actual Price:$#cartData.fldPrice#</div>
                                         <div class="productActualPrice ms-3">Product Tax:#cartData.fldTax#%</div>
                                         <div class="totalPrice ms-3 text-success">Total Price:$#cartData.fldPrice#</div>
+                                        <input type="hidden" id="unitPriceProduct" value="#cartData.fldPrice#">
+                                        <input type="hidden" id="unitTaxProduct" value="#cartData.fldTax#">
                                     </div>
                                 </div>
                             </div>

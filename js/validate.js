@@ -51,11 +51,13 @@ function validation(){
     else{
         document.getElementById('priceError').textContent = '';
     }
-    if(productImg == '' && document.getElementById('productId').value == ""){
+    if (productImg == '' && document.getElementById('productId').value == "") {
         document.getElementById('imgError').textContent = 'Please upload image';
         valid = false;
-    }
-    else{
+    } else if (productImg != '' && !/\.(jpg|jpeg|png|gif)$/i.test(productImg)) {
+        document.getElementById('imgError').textContent = 'Please upload a valid image (jpg, jpeg, png, gif)';
+        valid = false;
+    } else {
         document.getElementById('imgError').textContent = '';
     }
     if(productTax == ''){

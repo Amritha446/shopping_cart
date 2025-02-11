@@ -20,6 +20,10 @@
                          <div><i class="fa-solid fa-cart-shopping me-2 mt-2 p-2" style="color: ##fff"></i></div>
                     </cfif>
 
+                    <cfif structKeyExists(session, "isAuthenticated") AND session.roleId EQ 1>
+                        <a href = "cartDashboard.cfm" class = "imageLink text-light mt-2 p-1">Admin</a>
+                    </cfif>
+
                     <a href="userProfile.cfm" class="profileButton">
                         <div class="profile d-flex me-5 mt-1 text-light p-2">
                             <div class="me-1 ">Profile</div>

@@ -70,7 +70,6 @@ function signUpFunction() {
         }
     });
 }
-
     
 function deleteCategory(event){
     if(confirm("Confirm delete?")){
@@ -99,8 +98,7 @@ function addCategoryFormSubmit(){
         success:function(response){
             location.reload();
            if (response === "Category addedd successfully") {
-                document.getElementsByClassName('successContent').textContent = "Addedd successfullly";
-                window.location.href="cartDashboard.cfm"
+                window.location.href="cartDashboard.cfm";
             } else {
                 alert(response);  
             }   
@@ -292,9 +290,9 @@ $(document).ready(function() {
                 const data = JSON.parse(response);
                 $("#subCategoryIdProduct").empty();
                 for(let i=0; i<data.DATA.length; i++) {
-                    let subCategoryName = data.DATA[i][0];
-                    let  subCategoryId= data.DATA[i][1];
-                    let optionTag = `<option value="${subCategoryId}">${subCategoryId}</option>`;
+                    let subCategoryId = data.DATA[i][0];
+                    let  subCategoryName= data.DATA[i][1];
+                    let optionTag = `<option value="${subCategoryId}">${subCategoryName}</option>`;
                     $("#subCategoryIdProduct").append(optionTag);
                 }
             }
@@ -596,13 +594,47 @@ function editUserAddress(){
             userPincode:document.getElementById('userPincode').value,
             userPhoneNumber:document.getElementById('userPhoneNumber').value,
         },
-        success:function(response){
-            if (JSON.parse(response) === "Address addedd successfully.") {
-                location.reload();
-                alert("Address addedd successfully!");
-            } else {
-                alert(response);
+        success:function(response1){
+            
+            let response = JSON.parse(response1);
+            document.getElementById('addressFirstNameError').innerHTML = '';
+            document.getElementById('addressLastNameError').innerHTML = '';
+            document.getElementById('addressLine1Error').innerHTML = '';
+            document.getElementById('addressLine2Error').innerHTML = '';
+            document.getElementById('userCityError').innerHTML = '';
+            document.getElementById('userStateError').innerHTML = '';
+            document.getElementById('userPincodeError').innerHTML = '';
+            document.getElementById('userPhoneNumberError').innerHTML = '';
+            if (response.userFirstName) {
+                document.getElementById('addressFirstNameError').innerHTML = response.userFirstName;
             }
+            if (response.userLastName) {
+                document.getElementById('addressLastNameError').innerHTML = response.userFirstName;
+            }
+            if (response.addressLine1) {
+                document.getElementById('addressLine1Error').innerHTML = response.addressLine1;
+            }
+            if (response.addressLine2) {
+                document.getElementById('addressLine2Error').innerHTML = response.addressLine2;
+            }
+            if (response.userCity) {
+                document.getElementById('userCityError').innerHTML = response.userCity;
+            }
+            if (response.userState) {
+                document.getElementById('userStateError').innerHTML = response.userState;
+            }
+            if (response.userPincode) {
+                document.getElementById('userPincodeError').innerHTML = response.userPincode;
+            }
+            if (response.userPhoneNumber) {
+                document.getElementById('userPhoneNumberError').innerHTML = response.userPhoneNumber;
+            }
+            else{    
+                window.location.href = "userProfile.cfm";
+            }
+        },
+        error: function() {
+            alert('An error occurred while submitting the form.');
         }
     })
 }
@@ -634,22 +666,27 @@ document.querySelectorAll('.address-radio').forEach(function (radioButton) {
 function paymentData() {
     let cvv = $('#paymentCardCvv').val();
     let cardNumber = document.getElementById('paymentCardNumber').value;
-    let productId = $('#productDetailsPassing').val();
+    let productIdd = $('#productDetailsPassing').val();
     let addressId = $('#addressDetailsPassing').val();
     let totalPriceText = $('#priceDetailsHeading').text().trim();
     let totalTaxText = $('#taxDetailsHeading').text().trim();
+    let unitPrice = document.getElementById('unitPriceProduct').value;
+    let unitTax = document.getElementById('unitTaxProduct').value;
 
     let cleanTotalPrice = totalPriceText.replace(/[^\d.-]/g, '');
     let cleanTotalTax = totalTaxText.replace(/[^\d.-]/g, '');
+    let cleanProductId = productIdd.replace(/[^\d.-]/g, '');
 
     let totalPrice = isNaN(parseFloat(cleanTotalPrice)) ? 0 : parseFloat(cleanTotalPrice);
     let totalTax = isNaN(parseFloat(cleanTotalTax)) ? 0 : parseFloat(cleanTotalTax);
+    let productId = isNaN(parseFloat(cleanProductId)) ? 0 : parseFloat(cleanProductId);
 
     document.querySelectorAll('.cartItem').forEach(cartItem => {
         const productId = cartItem.querySelector('.increment').getAttribute('value'); 
         const quantity = parseInt(cartItem.querySelector('.quantityNumber').textContent);
         updateCartQuantity(productId, quantity); 
     });
+    console.log(productId)
 
     let data = {
         cardNumber: cardNumber,
@@ -657,7 +694,9 @@ function paymentData() {
         productId: productId,
         addressId: addressId,
         totalPrice: totalPrice,
-        totalTax: totalTax
+        totalTax: totalTax,
+        unitPrice: unitPrice,
+        unitTax: unitTax
     };
     $.ajax({
         url: "Components/myCart.cfc?method=addOrderPayment",

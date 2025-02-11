@@ -7,7 +7,7 @@
         <cfoutput>
             <div class="container-fluid ">
                 <div class="header d-flex">
-                    <div class="headerText ms-5 mt-2">MyCart</div>
+                    <a href="homePage.cfm" class="imageLink"><div class="headerText ms-5 mt-2 col-6">MyCart</div></a>
                     <div class="logIn d-flex">
                         <a href="login.cfm" class="link d-flex">
                             <i class="fa-solid fa-user mb-1 mt-1" style="color:##fff"></i><div class="text-white ms-2">SignUp</div>
@@ -27,7 +27,7 @@
                             <input type="password" name="userPassword" class="inputs ms-3">
                             <div class="error text-danger" id="passError"></div>
                         </div>
-                        <button type="submit" name="submit" class="btn mt-3 ms-2" onClick = "return validateLogIn()">LogIn</button>
+                        <button type="submit" name="submit" class="btn mt-3 ms-2">LogIn</button>
                         <div class="lastSec mt-3">Dont't have an Account? <a href="signUp.cfm" class="link">SignUp Here!</a></div>
                     </form>
                 </div>

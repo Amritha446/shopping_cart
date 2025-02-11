@@ -113,40 +113,48 @@
                                 <div class="d-flex-column ">
                                     <div class="textHead">FIRST NAME:</div>
                                     <input type="text" name="addressFirstName" class="ms-1" id="addressFirstName">
+                                    <div class="error text-danger" id="addressFirstNameError"></div>
                                 </div>
                                 <div class="d-flex-column">
                                     <div class="textHead">LAST NAME:</div>
                                     <input type="text" name="addressLastName" class="ms-1" id="addressLastName" >
+                                    <div class="error text-danger" id="addressLastNameError"></div>
                                 </div>
                             </div>
                             <div class="d-flex ">
                                 <div class="d-flex-column ">
                                     <div class="textHead">ADDRESS LINE 1:</div>
                                     <input type="text" name="addressLine1" class="ms-1" id="addressLine1">
+                                    <div class="error text-danger" id="addressLine1Error"></div>
                                 </div>
                                 <div class="d-flex-column">
                                     <div class="textHead">ADDRESS LINE 2:</div>
                                     <input type="text" name="addressLine2" class="ms-1" id="addressLine2">
+                                    <div class="error text-danger" id="addressLine2Error"></div>
                                 </div>
                             </div>
                             <div class="d-flex ">
                                 <div class="d-flex-column ">
                                     <div class="textHead">CITY:</div>
                                     <input type="text" name="userCity" class="ms-1" id="userCity">
+                                    <div class="error text-danger" id="userCityError"></div>
                                 </div>
                                 <div class="d-flex-column">
                                     <div class="textHead">STATE:</div>
                                     <input type="text" name="userState" class="ms-1" id="userState" >
+                                    <div class="error text-danger" id="userStateError"></div>
                                 </div>
                             </div>
                             <div class="d-flex ">
                                 <div class="d-flex-column ">
                                     <div class="textHead">PINCODE:</div>
                                     <input type="text" name="userPincode" class="ms-1" id="userPincode">
+                                    <div class="error text-danger" id="userPincodeError"></div>
                                 </div>
                                 <div class="d-flex-column">
                                     <div class="textHead">PHONE NO:</div>
                                     <input type="text" name="userPhoneNumber" class="ms-1" id="userPhoneNumber" >
+                                    <div class="error text-danger" id="userPhoneNumberError"></div>
                                 </div>
                             </div>
                             <button type="submit" value="submit" class="btn mt-3 mb-5 ms-3" name="submit" onClick="editUserAddress()">SUBMIT</button>

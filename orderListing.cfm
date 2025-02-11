@@ -79,6 +79,9 @@
                                 <cfloop query="#orderedEachItemList#">
                                     <div class="orderedItemsBlock d-flex">
                                         <img src="assets/#orderedEachItemList.fldImageFileName#" alt="img" class="orderListImage ms-2 me-3">
+                                        <cfset originalDate = #orderedEachItemList.formattedDate#>
+                                        <cfset newDate = DateAdd("d", 7, originalDate)>
+                                        <cfset date = dateFormat(newDate,'d-m-Y')>
                                         <div class="d-flex-column col-2">
                                             <div>#orderedEachItemList.fldProductName#</div>
                                             <div class="">Quantity : #orderedEachItemList.fldQuantity#</div>
@@ -87,7 +90,7 @@
                                         </div> 
                                         <div class="d-flex-column ms-4 col-2">
                                             <div class="">Ordered On:</div>
-                                            <div class="">#orderedEachItemList.fldOrderDate#</div>
+                                            <div class="">#orderedEachItemList.formattedDate#</div>
                                         </div> 
                                         <div class="d-flex-column ms-4 col-3">
                                             <div class="">Contact Details:</div>
@@ -96,7 +99,7 @@
                                         </div> 
                                         <div class="d-flex-column ms-4 col-2">
                                             <div class="">Delivery date:</div>
-                                            <div class=""></div>
+                                            <div class="">#date#</div>
                                         </div> 
                                     </div>
                                 </cfloop>  
