@@ -163,7 +163,6 @@
                     </div>
                 </cfif>
 
-
                 <div class="modal fade" id="editUserAddress" tabindex="-1">
                     <div class="modal-dialog">
                         <div class="modal-content d-flex justify-content-center align-items-center">
