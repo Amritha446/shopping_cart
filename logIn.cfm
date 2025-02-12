@@ -1,0 +1,56 @@
+<!--- <html>
+    <head>
+        <title>Login page</title>
+        <cfinclude template="commonLink.cfm"> 
+        <script src="js/validateLogin.js"></script> 
+    </head>--->
+    <cfparam name="url.productId" default=0>
+    <cfparam name="url.cartToken" default=0>
+    <body>
+        <cfoutput>
+            <div class="container-fluid ">
+                <div class="header d-flex">
+                    <div class="headerText ms-5 mt-2">MyCart</div>
+                    <div class="logIn d-flex">
+                        <a href="login.cfm" class="link d-flex">
+                            <i class="fa-solid fa-user mb-1 mt-1" style="color:##fff"></i><div class="text-white ms-2">SignUp</div>
+                        </a>
+                    </div>
+                </div>     
+                <div class="mainSection mb-5 mt-5 justify-content-center align-items-center ps-5">
+                    <h5 class = "heading fs-3 mt-2 ms-5 ps-5">LOGIN</h5>
+                    <form method="post" class="ms-5 " name="form">
+                        <div class="input d-flex-column">
+                            <div class="text-secondary mt-2 ms-3"> Email/Phone No</div>
+                            <input type="text" name="userName" class="inputs ms-3">
+                            <div class="error text-danger" id="usersError"></div>
+                        </div>
+                        <div class="input">
+                            <div class="text-secondary mt-2 ms-3"> Password </div>
+                            <input type="password" name="userPassword" class="inputs ms-3">
+                            <div class="error text-danger" id="passError"></div>
+                        </div>
+                        <button type="submit" name="submit" class="btn mt-3 ms-2" onClick = "return validateLogIn()">LogIn</button>
+                        <div class="lastSec mt-3">Dont't have an Account? <a href="signUp.cfm" class="link">SignUp Here!</a></div>
+                    </form>
+                </div>
+            </div>
+            <cfif structKeyExists(form,"submit")>
+                <!--- <cfset loginObj=createObject("component","components.myCart")> --->
+                <cfset result=application.myCartObj.validateLogin(userName = form.userName , 
+                                        userPassword  = form.userPassword )>
+                <cfif result == "true">
+                    <cfif len(trim(url.productId)) EQ 0> 
+                        <cflocation  url="cartDashboard.cfm">
+                    <cfelse>
+                        <cfset application.myCartObj.addToCart(productId = url.productId,
+                                                                cartToken = url.cartToken)>
+                        <cflocation  url="cartPage.cfm"> 
+                    </cfif>
+                <cfelse>
+                    <div class="text-danger">Invalid Login attempt.</div>
+                </cfif>
+            </cfif>
+        </cfoutput>
+    </body>
+</html>
