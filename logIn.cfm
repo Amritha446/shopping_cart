@@ -27,13 +27,12 @@
                             <input type="password" name="userPassword" class="inputs ms-3">
                             <div class="error text-danger" id="passError"></div>
                         </div>
-                        <button type="submit" name="submit" class="btn mt-3 ms-2">LogIn</button>
+                        <button type="submit" name="submit" class="btn mt-3 ms-2" onClick="return validate()">LogIn</button>
                         <div class="lastSec mt-3">Dont't have an Account? <a href="signUp.cfm" class="link">SignUp Here!</a></div>
                     </form>
                 </div>
             </div>
             <cfif structKeyExists(form,"submit")>
-                <!--- <cfset loginObj=createObject("component","components.myCart")> --->
                 <cfset result=application.myCartObj.validateLogin(userName = form.userName , 
                                         userPassword  = form.userPassword )>
                 <cfif result == "true">

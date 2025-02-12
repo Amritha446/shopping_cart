@@ -14,7 +14,7 @@
         <cfargument name = "userName" required = "true" type = "string">
         <cfargument name = "userPassword" required = "true" type = "string">
         <cfset saltString = generateSecretKey(("AES"),128)> 
-        <cfif NOT isValid("email",arguments.userName) OR len(trim(arguments.userName)) LT 10>
+        <cfif NOT isValid("email",arguments.userName) AND len(trim(arguments.userName)) LT 10>
             <cfreturn false>
         <cfelseif len(trim(arguments.userPassword)) EQ 0>
             <cfreturn false>
@@ -1021,58 +1021,63 @@
         <cfargument name = "productId" required = "true" type = "numeric" default = 0>
         <cfargument name = "quantity" required = "false" type = "numeric" default = 1>
         <cfargument name = "cartToken" required = "false" type = "numeric" default = 0>  
-
-        <cfif structKeyExists(session, "isAuthenticated") AND session.isAuthenticated EQ true >
-            <cfquery name = "local.selectCartItem" datasource = "#application.datasource#">
-            SELECT 
-                fldUserId,
-                fldProductId,
-                fldQuantity
-            FROM
-                tblcart
-            WHERE
-                fldProductId = <cfqueryparam value = "#arguments.productId#" cfsqltype="integer">
-                AND fldUserId = <cfqueryparam value ="#session.userId#" cfsqltype="integer">
-            </cfquery>
-
-            <cfif (local.selectCartItem.recordCount EQ 0) AND( len(trim(arguments.productId)) NEQ 0)>
-                <cfquery name="local.addProductToCart" datasource = "#application.datasource#">
-                    INSERT INTO tblcart(
-                        fldUserId,
-                        fldProductId,
-                        fldQuantity
-                        ) 
-                    VALUES (
-                        <cfqueryparam value = "#session.userId#" cfsqltype="integer">,
-                        <cfqueryparam value = "#arguments.productId#" cfsqltype="integer">,
-                        1
-                    )
+        <cftry>
+            <cfif structKeyExists(session, "isAuthenticated") AND session.isAuthenticated EQ true >
+                
+                <cfquery name = "local.selectCartItem" datasource = "#application.datasource#">
+                SELECT 
+                    fldUserId,
+                    fldProductId,
+                    fldQuantity
+                FROM
+                    tblcart
+                WHERE
+                    fldProductId = <cfqueryparam value = "#arguments.productId#" cfsqltype="integer">
+                    AND fldUserId = <cfqueryparam value ="#session.userId#" cfsqltype="integer">
                 </cfquery>
-            <cfelseif (arguments.quantity EQ 1) AND (arguments.cartToken EQ 1)>
-                <cfquery name="local.updateProductToCart" datasource = "#application.datasource#">
-                    UPDATE
-                        tblcart
-                    SET
-                        fldQuantity = "#local.selectCartItem.fldQuantity#" + 1
-                    WHERE 
-                        fldUserId = <cfqueryparam value="#session.userId#" cfsqltype="integer">
-                        AND fldProductId = <cfqueryparam value="#arguments.productId#" cfsqltype="integer">
-                </cfquery>
+
+                <cfif (local.selectCartItem.recordCount EQ 0) AND( len(trim(arguments.productId)) NEQ 0)>
+                    <cfquery name="local.addProductToCart" datasource = "#application.datasource#">
+                        INSERT INTO tblcart(
+                            fldUserId,
+                            fldProductId,
+                            fldQuantity
+                            ) 
+                        VALUES (
+                            <cfqueryparam value = "#session.userId#" cfsqltype="integer">,
+                            <cfqueryparam value = "#arguments.productId#" cfsqltype="integer">,
+                            1
+                        )
+                    </cfquery>
+                <cfelseif (arguments.quantity EQ 1) AND (arguments.cartToken EQ 1)>
+                    <cfquery name="local.updateProductToCart" datasource = "#application.datasource#">
+                        UPDATE
+                            tblcart
+                        SET
+                            fldQuantity = "#local.selectCartItem.fldQuantity#" + 1
+                        WHERE 
+                            fldUserId = <cfqueryparam value="#session.userId#" cfsqltype="integer">
+                            AND fldProductId = <cfqueryparam value="#arguments.productId#" cfsqltype="integer">
+                    </cfquery>
+                <cfelse>
+                    <cfquery name="local.updateProductToCart" datasource = "#application.datasource#">
+                        UPDATE
+                            tblcart
+                        SET
+                            fldQuantity = <cfqueryparam value="#arguments.quantity#" cfsqltype="integer">
+                        WHERE 
+                            fldUserId = <cfqueryparam value="#session.userId#" cfsqltype="integer">
+                            AND  fldProductId = <cfqueryparam value="#arguments.productId#" cfsqltype="integer">
+                    </cfquery>
+                </cfif>
+                <cfreturn true>
             <cfelse>
-                <cfquery name="local.updateProductToCart" datasource = "#application.datasource#">
-                    UPDATE
-                        tblcart
-                    SET
-                        fldQuantity = <cfqueryparam value="#arguments.quantity#" cfsqltype="integer">
-                    WHERE 
-                        fldUserId = <cfqueryparam value="#session.userId#" cfsqltype="integer">
-                        AND  fldProductId = <cfqueryparam value="#arguments.productId#" cfsqltype="integer">
-                </cfquery>
+                <cfreturn false>
             </cfif>
-            <cfreturn true>
-        <cfelse>
+        <cfcatch type="any">
             <cfreturn false>
-        </cfif>
+        </cfcatch>
+        </cftry>
     </cffunction>
 
     <cffunction name = "viewCartData" access = "remote" returnType = "query" returnFormat = "json">
