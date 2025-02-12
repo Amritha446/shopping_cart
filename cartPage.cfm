@@ -23,6 +23,7 @@
                         <div class="me-1 ">Profile</div>
                         <i class="fa-regular fa-user mt-1"></i>
                     </div></a>
+                    <a href="orderListing.cfm" class="imageLink text-light me-3 mt-2 p-1">Orders</a>
                     <button type="button" class="logOutBtn p-1 col-1">
                         <div class="signUp d-flex">
                             <i class="fa-solid fa-right-from-bracket mb-1 mt-2" style="color:##fff"></i><div class="text-white footerContent mt-2 ms-1" onClick = "logoutUser()">LOGOUT</div>
@@ -49,6 +50,9 @@
                 </div>
                 <div class="d-flex">
                     <cfset cartData = application.myCartObj.viewCartData()>
+                    <cfif cartData.recordCount EQ 0>
+                        <h5 class="text-success ms-5 mt-5">Cart is empty!</h5>
+                    </cfif>
                     <input type = "hidden" id="cartIdFetch" value="#cartData.fldCart_Id#">
                     <div class="cartContainer d-flex-column">
                         <cfloop query="#cartData#">
@@ -82,8 +86,8 @@
                         </cfloop>  
                     </div>
                     <div class="priceDetails">
-                        <h6 class="text-success ms-5">Buy Together</h6>
-                        <div class="priceDetailsHeading ms-3">Total Price:</div>
+                        <h6 class="text-success ms-5 ps-4">Buy Together</h6>
+                        <div class="priceDetailsHeading ms-5 text-success">Total Price:</div>
                         <button type="button" class="placeOrder" data-bs-toggle="modal" data-bs-target="##cartItems" id="cartOrderBtn"> ORDER </button> 
                     </div>
                 </div>

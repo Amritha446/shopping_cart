@@ -79,7 +79,11 @@
                                 <cfloop query="#orderedEachItemList#">
                                     <div class="orderedItemsBlock d-flex">
                                         <img src="assets/#orderedEachItemList.fldImageFileName#" alt="img" class="orderListImage ms-2 me-3">
-                                        <cfset originalDate = #orderedEachItemList.formattedDate#>
+                                        <cfset originalDate = CreateDateTime(
+                                            ListGetAt(orderedEachItemList.formattedDate, 3, '-'), 
+                                            ListGetAt(orderedEachItemList.formattedDate, 2, '-'), 
+                                            ListGetAt(orderedEachItemList.formattedDate, 1, '-')
+                                        )>
                                         <cfset newDate = DateAdd("d", 7, originalDate)>
                                         <cfset date = dateFormat(newDate,'d-m-Y')>
                                         <div class="d-flex-column col-2">

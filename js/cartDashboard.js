@@ -686,7 +686,6 @@ function paymentData() {
         const quantity = parseInt(cartItem.querySelector('.quantityNumber').textContent);
         updateCartQuantity(productId, quantity); 
     });
-    console.log(productId)
 
     let data = {
         cardNumber: cardNumber,

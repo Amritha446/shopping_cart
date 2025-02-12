@@ -75,7 +75,6 @@
                 <!--- <div class="homeImg">
                     <img src="assets1/home.jpeg" alt="img" class="homeImg">
                 </div> --->
-
                 <div id="homeCarousel" class="carousel slide">
                     <div class="carousel-indicators">
                         <button type="button" data-bs-target="##homeCarousel" data-bs-slide-to="0" class="active" aria-current="true"></button>
@@ -103,7 +102,6 @@
                         <span class="visually-hidden">Next</span>
                     </button>
                 </div>
-
                 <div class="productListing d-flex-column">
                     <h6 class="mt-3 ms-3">RANDOM PRODUCTS</h6>
                     <cfif url.searchTerm NEQ "">

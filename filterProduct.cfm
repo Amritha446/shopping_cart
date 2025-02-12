@@ -68,7 +68,7 @@
                         <cfset viewData = application.myCartObj.viewSubCategoryData(categoryId = #viewCategory.fldCategory_Id#)>
                         <cfloop query="#viewData#">
                             <cfif viewData.fldSubCategory_Id EQ subCategoryId>
-                                <div class="productPath">
+                                <div class="productPath ms-3 p-2">
                                     <a href="homePage.cfm" class="navBarButton ms-2">home</a>
                                     ><a href="categoryBasedProduct.cfm?categoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = viewCategory.fldCategory_Id))#" class="navBarButton ms-2">#viewCategory.fldCategoryName#</a>
                                     ><a href="filterProduct.cfm?subCategoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = subCategoryId))#" class="navBarButton ms-2">#viewData.fldSubCategoryName#</a>
