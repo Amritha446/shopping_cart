@@ -25,9 +25,9 @@
                         </div>
                     </cfif>
                 </div>
-                <div class = "mainContent d-flex justify-content-center align-items-center h-50" id = "content">
+                <div class = " d-flex justify-content-center align-items-center h-50 mt-3 p-1" id = "content">
                     <input type="hidden" value="" name = "categoryId1" id = "categoryId1">
-                    <div class="d-flex-column">
+                    <div class="mainContent d-flex-column mt-3">
                         <div class = "categorySection d-flex">
                             <h5 id= "modalHeading">Catagory List</h5>
                             <form action = "addCategory.cfm">

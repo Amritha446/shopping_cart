@@ -39,6 +39,10 @@ body{
     margin-bottom:5%;
     color:#1f6625;
 }
+.mainContent{
+    height:auto;
+    margin-top:10px;
+}
 .contentBox{
     height:3vw;
     width:25vw;

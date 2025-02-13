@@ -775,7 +775,7 @@
 
     <cffunction name = "delProduct" access = "remote" returnType = "void" returnFormat = "json">
         <cfargument name = "productId" required = "true" type = "numeric">
-        <cftry>
+        <!--- <cftry> --->
             <cfquery name = "local.removeProduct" datasource = "#application.datasource#">
                 UPDATE 
                     tblproduct
@@ -794,10 +794,10 @@
                 WHERE
                     fldProductId = <cfqueryparam value="#arguments.productId#" cfsqltype = "integer">
             </cfquery>
-        <cfcatch type="any">
+        <!--- <cfcatch type="any">
             <cfreturn "An error occurred: #cfcatch.message#">
         </cfcatch>
-        </cftry>
+        </cftry> --->
     </cffunction>
 
     <cffunction name = "getProductImages" returnType = "array" access = "remote" returnFormat = "json">
@@ -1221,26 +1221,30 @@
             <cfelseif trim(len(arguments.cvv)) EQ 0>
                 <cfreturn "Enter card details">
             <cfelse>
-                <cfstoredproc procedure="sp_AddOrderPayment" datasource="#application.datasource#">
-                    <cfprocparam type="in" value="#session.userId#" cfsqltype="integer">
-                    <cfprocparam type="in" value="#arguments.addressId#" cfsqltype="integer">
-                    <cfprocparam type="in" value="#arguments.totalPrice#" cfsqltype="decimal">
-                    <cfprocparam type="in" value="#arguments.totalTax#" cfsqltype="decimal">
-                    <cfprocparam type="in" value="#arguments.productId#" cfsqltype="integer">
-                    <cfprocparam type="in" value="#arguments.cardNumber#" cfsqltype="bigint">
-                    <cfprocparam type="in" value="#arguments.cvv#" cfsqltype="integer">
-                    <cfprocparam type="in" value="#arguments.unitPrice#" cfsqltype="decimal">
-                    <cfprocparam type="in" value="#arguments.unitTax#" cfsqltype="decimal">
-                </cfstoredproc>
+                <cfif (arguments.cardNumber EQ 4321) AND (arguments.cvv EQ 434)>
+                    <cfstoredproc procedure="sp_AddOrderPayment" datasource="#application.datasource#">
+                        <cfprocparam type="in" value="#session.userId#" cfsqltype="integer">
+                        <cfprocparam type="in" value="#arguments.addressId#" cfsqltype="integer">
+                        <cfprocparam type="in" value="#arguments.totalPrice#" cfsqltype="decimal">
+                        <cfprocparam type="in" value="#arguments.totalTax#" cfsqltype="decimal">
+                        <cfprocparam type="in" value="#arguments.productId#" cfsqltype="integer">
+                        <cfprocparam type="in" value="#arguments.cardNumber#" cfsqltype="bigint">
+                        <cfprocparam type="in" value="#arguments.cvv#" cfsqltype="integer">
+                        <cfprocparam type="in" value="#arguments.unitPrice#" cfsqltype="decimal">
+                        <cfprocparam type="in" value="#arguments.unitTax#" cfsqltype="decimal">
+                    </cfstoredproc>
 
-                <cfmail to="myCart@myCart.com" 
-                        from="myCart@myCart.com" 
-                        subject="Order Confirmation - #arguments.productId#" 
-                        type="html">
-                    <p>Order Placed successfully</p>
-                </cfmail>
+                    <cfmail to="myCart@myCart.com" 
+                            from="myCart@myCart.com" 
+                            subject="Order Confirmation - #arguments.productId#" 
+                            type="html">
+                        <p>Order Placed successfully</p>
+                    </cfmail>
 
-                <cfset result = "Order placed successfully.">
+                    <cfset result = "Order placed successfully.">
+                <cfelse>
+                    <cfset result = "Invalid card details">
+                </cfif>
             </cfif>
         <cfcatch type="any">
             <cfset result = "#cfcatch.message#">

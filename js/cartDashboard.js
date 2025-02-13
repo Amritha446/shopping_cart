@@ -722,6 +722,7 @@ function downloadInvoice(event) {
         data:{orderId:event.target.value}
     })
 }
+
 function checkAddressBeforeOrder(event) {
     var addressRecordCount = event.target.getAttribute('data-recordcount');
     if (addressRecordCount == 0) {
