@@ -97,8 +97,8 @@ function addCategoryFormSubmit(){
         },
         success:function(response){
             location.reload();
-           if (response === "Category addedd successfully") {
-                window.location.href="cartDashboard.cfm";
+            if (response === "Category added successfully.") {
+            window.location.href = "cartDashboard.cfm";
             } else {
                 alert(response);  
             }   
@@ -166,7 +166,7 @@ function addSubCategoryFormSubmit(){
         },
         success:function(response){
             location.reload();
-           if (response === "Subcategory updated successfully") {
+            if (response === "Subcategory updated successfully") {
                 location.reload();
             } else {
                 alert(response);  
@@ -267,7 +267,7 @@ function deleteProduct(event){
             type:"POST",
             url:"Components/myCart.cfc?method=delProduct",
             data:{productId:event.target.value},
-            success:function(result){
+            success:function(){
                 event.target.parentNode.parentNode.remove()
             }
         })
@@ -646,7 +646,8 @@ function removeAddress(event){
             type:"GET",
             url:"Components/myCart.cfc?method=removeUserAddress",
             data:{addressId:event.target.value},
-            success:function(){
+            success:function(response){
+                alert(response);
                 location.reload(); 
             }
         })

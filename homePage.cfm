@@ -44,37 +44,35 @@
                             </a>
                         </div>
                     </cfif>
-
                 </div>
                 
                 <div class="navBar">
                     <cfset viewCategory = application.myCartObj.viewCategoryData()>
-                    <cfloop query="#viewCategory#">
-                        <div class="categoryDisplay ms-5 me-5 d-flex">
-                            <div class="categoryNameNavBar p-1" data-category-id="#viewCategory.fldCategory_Id#">
-                                <a href="categoryBasedProduct.cfm?categoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = viewCategory.fldCategory_Id))#" class="navBarButton">#viewCategory.fldCategoryName#</a>
-                                <div class="subCategoryMenu">
-                                    <cfset subCategories = application.myCartObj.viewSubCategoryData(categoryId = viewCategory.fldCategory_Id)>
-                                    <!--- <cfif structKeyExists(subCategories, "message")>
-                                        <div class="errorMessage">
-                                            #subCategories.message#
-                                        </div>
-                                    <cfelse> --->
-                                        <cfloop query="#subCategories#">
-                                            <a href="filterProduct.cfm?subCategoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = subCategories.fldSubCategory_Id))#" class="subcategory-item">
-                                                #subCategories.fldSubCategoryName#
-                                            </a>
+                    <cfset allSubCategories = application.myCartObj.viewSubCategoryData(categoryId = 0)>
+                    <cfif viewCategory.recordCount GT 0>
+                        <cfloop query="#viewCategory#">
+                            <div class="categoryDisplay ms-5 me-5 d-flex">
+                                <div class="categoryNameNavBar p-1" data-category-id="#viewCategory.fldCategory_Id#">
+                                    <a href="categoryBasedProduct.cfm?categoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = viewCategory.fldCategory_Id))#" class="navBarButton">#viewCategory.fldCategoryName#</a>
+                                    <div class="subCategoryMenu">
+                                        <cfloop query="#allSubCategories#">
+                                            <cfif allSubCategories.fldCategoryId EQ viewCategory.fldCategory_Id>
+                                                <a href="filterProduct.cfm?subCategoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = allSubCategories.fldSubCategory_Id))#" class="subcategoryItem">
+                                                    #allSubCategories.fldSubCategoryName#
+                                                </a>
+                                            </cfif>
                                         </cfloop>
-                                    <!--- </cfif> --->
+                                    </div>
                                 </div>
                             </div>
+                        </cfloop>
+                    <cfelse>
+                        <div class="errorMessage">
+                            Error:#viewCategory.messsage#
                         </div>
-                    </cfloop>
+                    </cfif>
                 </div>
 
-                <!--- <div class="homeImg">
-                    <img src="assets1/home.jpeg" alt="img" class="homeImg">
-                </div> --->
                 <div id="homeCarousel" class="carousel slide">
                     <div class="carousel-indicators">
                         <button type="button" data-bs-target="##homeCarousel" data-bs-slide-to="0" class="active" aria-current="true"></button>
@@ -86,10 +84,10 @@
                             <img src="assets1/home.jpeg" class="d-block w-100" alt="Image 1">
                         </div>
                         <div class="carousel-item">
-                            <img src="assets1/home1.jpg" class="d-block w-100" alt="Image 2">
+                            <img src="assets1/form2.jpg" class="d-block w-100" alt="Image 2">
                         </div>
                         <div class="carousel-item">
-                            <img src="assets1/form2.jpg" class="d-block w-100" alt="Image 3">
+                            <img src="assets1/home1.jpg" class="d-block w-100" alt="Image 3">
                         </div>
                     </div>
 

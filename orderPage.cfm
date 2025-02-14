@@ -32,18 +32,21 @@
                         </div>
                     </button>
                 </div>
+                
                 <div class="navBar">
                     <cfset viewCategory = application.myCartObj.viewCategoryData()>
+                    <cfset allSubCategories = application.myCartObj.viewSubCategoryData(categoryId = 0)>
                     <cfloop query="#viewCategory#">
                         <div class="categoryDisplay ms-5 me-5 d-flex">
                             <div class="categoryNameNavBar p-1" data-category-id="#viewCategory.fldCategory_Id#">
                                 <a href="categoryBasedProduct.cfm?categoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = viewCategory.fldCategory_Id))#" class="navBarButton">#viewCategory.fldCategoryName#</a>
                                 <div class="subCategoryMenu">
-                                    <cfset subCategories = application.myCartObj.viewSubCategoryData(categoryId = viewCategory.fldCategory_Id)>
-                                    <cfloop query="#subCategories#">
-                                        <a href="filterProduct.cfm?subCategoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = subCategories.fldSubCategory_Id))#" class="subcategory-item">
-                                            #subCategories.fldSubCategoryName#
-                                        </a>
+                                    <cfloop query="#allSubCategories#">
+                                        <cfif allSubCategories.fldCategoryId EQ viewCategory.fldCategory_Id>
+                                            <a href="filterProduct.cfm?subCategoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = allSubCategories.fldSubCategory_Id))#" class="subcategoryItem">
+                                                #allSubCategories.fldSubCategoryName#
+                                            </a>
+                                        </cfif>
                                     </cfloop>
                                 </div>
                             </div>

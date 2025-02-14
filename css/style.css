@@ -243,7 +243,7 @@ body{
 .subCategoryMenu a:hover {
     background-color: #8fdf99;
 }
-.subcategory-item {
+.subcategoryItem {
     padding: 10px;
     margin: 5px 0;
     background-color: #1f6625;
@@ -251,7 +251,7 @@ body{
     border-radius: 5px;
     cursor: pointer;
 }
-.subcategory-item:hover {
+.subcategoryItem:hover {
     background-color: #58c75e;
 }
 .homeImg{
@@ -269,19 +269,16 @@ body{
     text-decoration:none;
     color:#1f6625;
 }
-
 .product-container { 
     text-align: center;
     margin-left:70px;
     height:30vw;
     width:30vw;
 }
-
 .mainImage-container {
     overflow: hidden;
     width:30vw;
 }
-
 #mainImage {
     width: 80%;
     display: block;
@@ -406,6 +403,7 @@ body{
 }
 .carouselMainBox img {
     height:25vw;
+    width:100%;
     object-fit: cover;
 }
 .productListing {

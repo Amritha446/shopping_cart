@@ -33,6 +33,8 @@
                 <cfset local.encrypted_pass = Hash(#saltedPassword#, 'SHA-256')/>
                 <cfquery name = "local.queryCheck" datasource = "#application.datasource#">
                     SELECT fldUser_Id,
+                        fldFirstName,
+                        fldLastName,
                         fldEmail,
                         fldPhone,
                         fldRoleId
@@ -47,6 +49,7 @@
                     <cfset session.isAuthenticated = true>
                     <cfset session.userId = local.queryCheck.fldUser_Id>
                     <cfset session.roleId = local.queryCheck.fldRoleId>
+                    <cfset session.mail = local.queryCheck.fldFirstName & local.queryCheck.fldLastName>
                     <cfreturn true>
                 <cfelse>
                     <cfreturn false>
@@ -206,7 +209,10 @@
             </cfquery>
             <cfreturn local.viewCategory>
         <cfcatch type="any">
-            <cfreturn "An error occurred: #cfcatch.message#">
+            <cfset local.errorQuery = queryNew("messsage")>
+            <cfset queryAddRow(local.errorQuery, 1)>
+            <cfset querySetCell(local.errorQuery, "messsage", "An error occurred: #cfcatch.message#")>
+            <cfreturn local.errorQuery>
         </cfcatch>
         </cftry>
     </cffunction>
@@ -233,7 +239,7 @@
         </cftry>
     </cffunction>
 
-    <cffunction name = "delCategory" access = "remote" returnType = "void" returnFormat = "json">
+    <cffunction name = "delCategory" access = "remote" returnType = "string" returnFormat = "json">
         <cfargument name = "categoryId" required = "true" type = "numeric">
         <cftry>
             <cfif len(trim(arguments.categoryId)) EQ 0>
@@ -293,7 +299,7 @@
                                 WHERE fldCategoryId = <cfqueryparam value="#arguments.categoryId#" cfsqltype="integer">
                             )
                         )
-            </cfquery>
+                </cfquery>
             </cfif>
         <cfcatch type="any">
             <cfreturn "An error occurred: #cfcatch.message#">
@@ -377,17 +383,23 @@
                 <cfquery name = "local.viewSubCategory" datasource = "#application.datasource#">
                     SELECT 
                         fldSubCategory_Id,
-                        fldSubCategoryName
+                        fldSubCategoryName,
+                        fldCategoryId
                     FROM 
                         tblsubcategory
                     WHERE 
-                        fldCategoryId = <cfqueryparam value="#arguments.categoryId#" cfsqltype="integer">
-                        AND fldActive = 1
+                        fldActive = 1
+                        <cfif arguments.categoryId NEQ 0>
+                            AND fldCategoryId = <cfqueryparam value="#arguments.categoryId#" cfsqltype="integer">
+                        </cfif>
                 </cfquery>
                 <cfreturn local.viewSubCategory>
             </cfif>
         <cfcatch type="any">
-            <cfreturn "An error occurred: #cfcatch.message#">
+            <cfset local.errorQuery = queryNew("messsage")>
+            <cfset queryAddRow(local.errorQuery, 1)>
+            <cfset querySetCell(local.errorQuery, "messsage", "An error occurred: #cfcatch.message#")>
+            <cfreturn local.errorQuery>
         </cfcatch>
         </cftry>
     </cffunction>
@@ -414,7 +426,7 @@
         </cftry>
     </cffunction>
 
-    <cffunction name = "delSubCategory" access = "remote" returnType = "void" returnFormat = "json">
+    <cffunction name = "delSubCategory" access = "remote" returnType = "string" returnFormat = "json">
         <cfargument name = "subCategoryId" required = "true" type = "numeric">
         <cftry>
             <cfquery name = "local.removeSubCategory" datasource = "#application.datasource#">
@@ -466,7 +478,10 @@
             </cfquery>
             <cfreturn local.viewProductBrands>
         <cfcatch type="any">
-            <cfreturn "An error occurred: #cfcatch.message#">
+            <cfset local.errorQuery = queryNew("messsage")>
+            <cfset queryAddRow(local.errorQuery, 1)>
+            <cfset querySetCell(local.errorQuery, "messsage", "An error occurred: #cfcatch.message#")>
+            <cfreturn local.errorQuery>
         </cfcatch>
         </cftry>
     </cffunction>
@@ -647,7 +662,10 @@
             </cfquery>
             <cfreturn local.viewProductDetails>
         <cfcatch type="any">
-            <cfreturn "An error occurred: #cfcatch.message#">
+            <cfset local.errorQuery = queryNew("messsage")>
+            <cfset queryAddRow(local.errorQuery, 1)>
+            <cfset querySetCell(local.errorQuery, "messsage", "An error occurred: #cfcatch.message#")>
+            <cfreturn local.errorQuery>
         </cfcatch>
         </cftry>
     </cffunction>
@@ -666,7 +684,10 @@
             </cfquery>
             <cfreturn local.checkProduct>
         <cfcatch type="any">
-            <cfreturn "An error occurred: #cfcatch.message#">
+            <cfset local.errorQuery = queryNew("messsage")>
+            <cfset queryAddRow(local.errorQuery, 1)>
+            <cfset querySetCell(local.errorQuery, "messsage", "An error occurred: #cfcatch.message#")>
+            <cfreturn local.errorQuery>
         </cfcatch>
         </cftry>
     </cffunction>
@@ -685,7 +706,10 @@
             </cfquery>
             <cfreturn local.checkProduct>
         <cfcatch type="any">
-            <cfreturn "An error occurred: #cfcatch.message#">
+            <cfset local.errorQuery = queryNew("messsage")>
+            <cfset queryAddRow(local.errorQuery, 1)>
+            <cfset querySetCell(local.errorQuery, "messsage", "An error occurred: #cfcatch.message#")>
+            <cfreturn local.errorQuery>
         </cfcatch>
         </cftry>
     </cffunction>
@@ -773,9 +797,9 @@
         </cftry>
     </cffunction>
 
-    <cffunction name = "delProduct" access = "remote" returnType = "void" returnFormat = "json">
+    <cffunction name = "delProduct" access = "remote" returnType = "string" returnFormat = "json">
         <cfargument name = "productId" required = "true" type = "numeric">
-        <!--- <cftry> --->
+        <cftry>
             <cfquery name = "local.removeProduct" datasource = "#application.datasource#">
                 UPDATE 
                     tblproduct
@@ -790,14 +814,15 @@
                     tblproductimages
                 SET
                     fldActive = 0,
-                    fldUpdatedBy = <cfqueryparam value="#session.userId#" cfsqltype = "integer">
+                    fldUpdatedBy = <cfqueryparam value="#session.userId#" cfsqltype = "integer">,
+                    fldDeactivatedDate = NOW()
                 WHERE
                     fldProductId = <cfqueryparam value="#arguments.productId#" cfsqltype = "integer">
             </cfquery>
-        <!--- <cfcatch type="any">
+        <cfcatch type="any">
             <cfreturn "An error occurred: #cfcatch.message#">
         </cfcatch>
-        </cftry> --->
+        </cftry>
     </cffunction>
 
     <cffunction name = "getProductImages" returnType = "array" access = "remote" returnFormat = "json">
@@ -895,7 +920,7 @@
         </cftry>
     </cffunction>
 
-    <cffunction name="addToCart" access = "remote" returnType = "boolean" returnFormat = "json">
+    <cffunction name = "addToCart" access = "remote" returnType = "boolean" returnFormat = "json">
         <cfargument name = "productId" required = "true" type = "numeric" default = 0>
         <cfargument name = "quantity" required = "false" type = "numeric" default = 1>
         <cfargument name = "cartToken" required = "false" type = "numeric" default = 0>  
@@ -982,7 +1007,10 @@
             </cfquery>
             <cfreturn local.viewCart>
         <cfcatch type="any">
-            <cfreturn "An error occurred: #cfcatch.message#">
+            <cfset local.errorQuery = queryNew("messsage")>
+            <cfset queryAddRow(local.errorQuery, 1)>
+            <cfset querySetCell(local.errorQuery, "messsage", "An error occurred: #cfcatch.message#")>
+            <cfreturn local.errorQuery>
         </cfcatch>
         </cftry>
     </cffunction>
@@ -1022,7 +1050,10 @@
             </cfquery>
             <cfreturn local.userDetails>
         <cfcatch type="any">
-            <cfreturn "An error occurred: #cfcatch.message#">
+            <cfset local.errorQuery = queryNew("messsage")>
+            <cfset queryAddRow(local.errorQuery, 1)>
+            <cfset querySetCell(local.errorQuery, "messsage", "An error occurred: #cfcatch.message#")>
+            <cfreturn local.errorQuery>
         </cfcatch>
         </cftry>
     </cffunction>
@@ -1172,7 +1203,10 @@
             </cfquery>
             <cfreturn local.addressFetching>
         <cfcatch type="any">
-            <cfreturn "An error occurred: #cfcatch.message#">
+            <cfset local.errorQuery = queryNew("messsage")>
+            <cfset queryAddRow(local.errorQuery, 1)>
+            <cfset querySetCell(local.errorQuery, "messsage", "An error occurred: #cfcatch.message#")>
+            <cfreturn local.errorQuery>
         </cfcatch>
         </cftry>
     </cffunction>
@@ -1234,7 +1268,7 @@
                         <cfprocparam type="in" value="#arguments.unitTax#" cfsqltype="decimal">
                     </cfstoredproc>
 
-                    <cfmail to="myCart@myCart.com" 
+                    <cfmail to="#session.userName#@myCart.com" 
                             from="myCart@myCart.com" 
                             subject="Order Confirmation - #arguments.productId#" 
                             type="html">
@@ -1335,8 +1369,11 @@
             <cfelse>
                 <cfreturn orderHistoryData>
             </cfif>
-        <cfcatch>
-            <cfreturn "#cfcatch.message#" >
+        <cfcatch type="any">
+            <cfset local.errorQuery = queryNew("messsage")>
+            <cfset queryAddRow(local.errorQuery, 1)>
+            <cfset querySetCell(local.errorQuery, "messsage", "An error occurred: #cfcatch.message#")>
+            <cfreturn local.errorQuery>
         </cfcatch>
         </cftry>
     </cffunction>

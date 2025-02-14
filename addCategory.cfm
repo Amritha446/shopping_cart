@@ -35,7 +35,8 @@
                     <cflocation url="cartDashBoard.cfm">
                 <cfelse>
                     #result#
-                </cfif>--->
+                </cfif>
+            </cfif> --->
         </cfoutput>
     </body>
 </html>
