@@ -96,51 +96,55 @@ function addCategoryFormSubmit(){
             operation:"add"
         },
         success:function(response){
-            location.reload();
+            /* location.reload(); */
+            let result = JSON.parse(response);
             if (response === "Category added successfully.") {
             window.location.href = "cartDashboard.cfm";
             } else {
-                alert(response);  
+                document.getElementById('categoryErrorMsgAdd').innerHTML = response;  
             }   
         } 
     })
 }
 
-function editCategory(event){
-    document.getElementById('categoryId').value=event.target.value;
-    $.ajax({
-        type:"POST",
-        url:"Components/myCart.cfc?method=viewEachCategory", 
-        data:{categoryId:event.target.value},
-        success:function(result){
-            let formattedResult=JSON.parse(result);
-            let categoryName = formattedResult;
-            document.getElementById('categoryNameField').value = categoryName;
-        }
-        }
-    )
+function editCategory(event, categoryId) {
+    document.getElementById('categoryName_' + categoryId).style.display = 'none';
+    document.getElementById('categoryNameField_' + categoryId).style.display = 'block';
+    
+    document.getElementById('saveb_' + categoryId).style.display = 'inline-block';
 }
 
-function editCategorySubmit(event){
-    event.preventDefault()
+function saveCategory(event, categoryId) {
+    event.preventDefault();
+    const updatedCategoryName = document.getElementById('categoryNameField_' + categoryId).value;
+    if (!updatedCategoryName.trim()) {
+        document.getElementById('categoryErrorMsg').innerHTML = 'Category name cannot be empty.';
+        return;
+    }
     $.ajax({
-        type:"POST",
-        url:"Components/myCart.cfc?method=saveCategory", 
-        data:{categoryId:document.getElementById('categoryId').value,
-            categoryName:document.getElementById('categoryNameField').value,
-            operation:"update"
+        type: "POST",
+        url: "Components/myCart.cfc?method=saveCategory", 
+        data: {
+            categoryId: categoryId,
+            categoryName: updatedCategoryName,
+            operation: "update"
         },
-        success:function(response){
-            location.reload();
-            if (response === "Updated successfully") {
-                location.reload();
+        success: function(response) {
+            console.log(response)
+            let result = JSON.parse(response);
+            if (result == "Category updated successfully.") {
+                document.getElementById('categoryName_' + categoryId).innerText = updatedCategoryName;
+                document.getElementById('categoryName_' + categoryId).style.display = 'block';
+                document.getElementById('categoryNameField_' + categoryId).style.display = 'none';
+                document.getElementById('saveb_' + categoryId).style.display = 'none';
+                document.getElementById('categoryErrorMsg').innerHTML = '';
             } else {
-                alert(response);
-            } 
+                document.getElementById('categoryErrorMsg').innerHTML = response;
+            }
         }
-    })
+    });
 }
-
+    
 function redirectSubCategory(event){
     window.location.href = "subCategory.cfm?categoryId=" + event;
 }
@@ -165,28 +169,11 @@ function addSubCategoryFormSubmit(){
             operation:"add"
         },
         success:function(response){
-            location.reload();
             if (response === "Subcategory updated successfully") {
                 location.reload();
             } else {
-                alert(response);  
+                document.getElementById('subCategoryErrorMsg').innerHTML = response;
             }    
-        }
-    })
-}
-
-function editSubCategory(event){
-    document.getElementById('subCategoryId').value=event.target.value;
-    document.getElementById('addSubCategorySubmit').style.display="none";
-    document.getElementById('editSubCategorySubmit').style.display="block";
-    $.ajax({
-        type:"POST",
-        url:"Components/myCart.cfc?method=viewEachSubCategory", 
-        data:{subCategoryId:event.target.value},
-        success:function(result){
-            let formattedResult=JSON.parse(result);
-            let subCategoryName = formattedResult;
-            document.getElementById('subCategoryNameField').value = subCategoryName;
         }
     })
 }
@@ -204,11 +191,11 @@ function editSubCategoryFormSubmit(){
             operation:"update"
         },
         success:function(response){
-            location.reload();
-           if (response === "Sub-Category updated successfully!") {
+            /* location.reload(); */
+            if (response === "Sub-Category updated successfully!") {
                 location.reload();
             } else {
-                alert(response);  
+                document.getElementById('subCategoryErrorMsg').innerHTML = response; 
             }  
         }
     })
@@ -232,6 +219,8 @@ function deleteSubCategory(event){
 function createNewProduct(){
     document.getElementById('heading').textContent = "ADD PRODUCT";
     document.getElementById('createProductData').reset();
+    document.getElementById('selectedImagesList').style.display = "none";
+    document.getElementById('viewSelectedImgBtn').style.display = "none";
     $('.error').text("");
     $('#editProductDetails').modal('show'); 
 }
@@ -240,6 +229,8 @@ function editProductDetailsButton(event){
     document.getElementById('heading').textContent = "EDIT PRODUCT";
     document.getElementById('createProductData').reset();
     document.getElementById('productId').value= event.target.value; 
+    document.getElementById('selectedImagesList').style.display = "block";
+    document.getElementById('viewSelectedImgBtn').style.display = "block";
     $('.error').text("");
     $.ajax({
         type:"POST",
@@ -249,7 +240,6 @@ function editProductDetailsButton(event){
         },
         success:function(result){
             let formattedResult=JSON.parse(result);
-            console.log(formattedResult)
             document.getElementById('productId').value = formattedResult.DATA[0][0];
             document.getElementById('subCategoryIdProduct').value = formattedResult.DATA[0][1];
             document.getElementById('productName').value = formattedResult.DATA[0][2];
@@ -261,6 +251,41 @@ function editProductDetailsButton(event){
     })
 }
 
+function viewSelectedImages() {
+    let productId = document.getElementById('productId').value;
+    $.ajax({
+        type: "POST",
+        url: "Components/myCart.cfc?method=getProductImages",
+        data: { productId: productId },
+        success: function (result) {
+            document.getElementById('selectedImagesList').innerHTML = '';
+            let images = JSON.parse(result);
+            
+            if (images.length === 0) {
+                document.getElementById('selectedImagesList').innerHTML = 'No images found for this product.';
+            } else {   
+                let imageHtml = ''  ;      
+                images.forEach(function(image) {
+                    imageHtml += `<div class="d-flex-column">
+                        <img src="assets/${image.fldImageFileName}" alt="${image.fldImageFileName}" width="50" height="50" />
+                        <span>${image.fldImageFileName}</span>
+                        <button type="button" value="${image.fldProductImages_Id},${productId}" class="closeLink"><i class="fa-solid fa-xmark pe-none"></i></button>
+                    </div>`;
+                });
+                document.getElementById('selectedImagesList').innerHTML = imageHtml;
+                document.getElementById('selectedImagesList').addEventListener('click', function(event) {
+                    if (event.target && event.target.tagName === 'BUTTON' && event.target.classList.contains('closeLink')) {
+                        deleteImage(event);
+                    }
+                });
+            }
+        },    
+        error: function (xhr, status, error) {
+            document.getElementById('selectedImagesList').innerHTML = 'An error occurred while loading images.';
+        }
+    });
+} 
+    
 function deleteProduct(event){
     if(confirm("Confirm delete?")){
         $.ajax({

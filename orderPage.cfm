@@ -124,8 +124,18 @@
                         <cfelse>
                             <div class="alert alert-danger ms-4 mt-2" id="addressErrorMessage">No products found. Please add products before placing the order.</div>
                         </cfif>
+                        <form method="POST" name="form">
+                            <button type="submit" class="orderPlacingBtn" >ADD TO CART</button>
+                            <input type="hidden" value = "#cartData.fldProduct_Id#" name="addToCartHidden">
+                            <input type="hidden" name="cartToken" id="cartToken" value = 1>
+                        </form>
                     </div>  
                 </div>
+                <cfif structKeyExists(form, "addToCartHidden")>
+                    <cfset viewcart = application.myCartObj.addToCart(productId = form.addToCartHidden,
+                                                                 cartToken = form.cartToken)>
+                    <cflocation  url="cartPage.cfm">
+                </cfif>
 
                 <div class="modal fade" id="orderItems" tabindex="-1">
                     <div class="modal-dialog ">

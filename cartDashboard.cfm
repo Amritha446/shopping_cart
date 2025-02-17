@@ -36,19 +36,25 @@
                         </div>
 
                         <cfset viewCategory = application.myCartObj.viewCategoryData()>
-
                         <cfloop query = "#viewCategory#">
-                            <div class = "contentBox d-flex mb-3">
-                                <div class = "col-5 categoryName" id="categoryName">
+                            <div class="contentBox d-flex mb-3">
+                                <div class="col-5 categoryName" id="categoryName_#viewCategory.fldCategory_Id#">
                                     #viewCategory.fldCategoryName#
                                 </div>
-                                <div class="p-1 ">
-                                    <button type="button" class="edtButton" data-bs-toggle="modal" data-bs-target="##editContact" 
-                                    id="editb" value="#viewCategory.fldCategory_Id#" onClick = "editCategory(event)"><i class="fa-solid fa-pencil pe-none"></i></button>
+                                <div class="">
+                                    <input type="text" class="categoryName" id="categoryNameField_#viewCategory.fldCategory_Id#" 
+                                        value="#viewCategory.fldCategoryName#" style="display:none;width:150px;border:transparent;">
                                 </div>
-                                <div class = "p-1">
-                                    <button type="submit" class="dltButton" id="dltb" onClick="deleteCategory(event)" value="#viewCategory.fldCategory_Id#">
-                                        <i class="fa-regular fa-trash-can pe-none"></i>
+                                <div class="p-1">
+                                    <button type="button" class="edtButton" id="editb" value="#viewCategory.fldCategory_Id#" 
+                                        onClick="editCategory(event, #viewCategory.fldCategory_Id#)">
+                                        <i class="fa-solid fa-pencil pe-none"></i>
+                                    </button>
+                                </div>
+                                <div class="p-1">
+                                    <button type="button" class="dltButton" id="saveb_#viewCategory.fldCategory_Id#" 
+                                        onClick="saveCategory(event, #viewCategory.fldCategory_Id#)" style="display:none;">
+                                        <i class="fa-solid fa-check pe-none"></i>
                                     </button>
                                 </div>
                                 <div class = "p-1">  
@@ -56,10 +62,17 @@
                                         <i class="fa-solid fa-angle-right pe-none"></i>
                                     </button>
                                 </div>
+                                <div class="p-1">
+                                    <button type="submit" class="dltButton" id="dltb" onClick="deleteCategory(event)" 
+                                        value="#viewCategory.fldCategory_Id#">
+                                        <i class="fa-regular fa-trash-can pe-none"></i>
+                                    </button>
+                                </div>
                             </div>
                         </cfloop>
+                        <div id="categoryErrorMsg" class="text-danger"></div>
 
-                        <div class="modal fade" id="editContact" tabindex="-1">
+                        <!--- <div class="modal fade" id="editContact" tabindex="-1">
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modalData">
@@ -77,7 +90,7 @@
                                 </div>
                             </div>
                         </div>
-
+ --->
                     </div>
                 </div>
             </div>

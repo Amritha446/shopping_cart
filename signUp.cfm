@@ -25,12 +25,12 @@
                             <div class = "d-flex">
                                 <div class="input d-flex-column">
                                     <div class="text-secondary mt-3 ms-2"> First Name</div>
-                                    <input type="text" name="firstName" id="firstName" class="inputs me-2" required>
+                                    <input type="text" name="firstName" id="firstName" class="inputs me-2" maxlength="32" minlength="1" required>
                                     <div class="error text-danger" id="firstnameError"></div>
                                 </div>
                                 <div class="input d-flex-column">
                                     <div class="text-secondary mt-3 ms-2"> Last Name</div>
-                                    <input type="text" name="lastName" id="lastName" class="inputs ms-2" required>
+                                    <input type="text" name="lastName" id="lastName" class="inputs ms-2" maxlength="32" minlength="1" required>
                                     <div class="error text-danger" id="lastnameError"></div>
                                 </div>
                             </div>

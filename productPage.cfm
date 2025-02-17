@@ -106,17 +106,6 @@
                                     <div class="error text-danger ms-3" id="subCategoryError"></div>
                                 </div>
 
-                                <!--- <div class="d-flex-column" id = "multiSelect">
-                                    <cfset viewSubCategory = application.myCartObj.viewSubCategoryData(categoryId = URL.categoryId)>
-                                    <div class="textHead ">Sub-Category Name:</div>
-                                    <select id="subCategoryIdProduct" name="subCategoryIdProduct" class="ms-3">
-                                        <cfloop query = #viewSubCategory#>
-                                            <option value="#viewSubCategory.fldSubCategory_Id#">#viewSubCategory.fldSubCategoryName#</option>
-                                        </cfloop>
-                                    </select>
-                                    <div class="error text-danger ms-3" id="subCategoryError"></div>
-                                </div>
- --->
                                 <div class="d-flex-column">
                                     <div class="textHead">PRODUCT NAME</div>
                                     <input type="text" name="productName" class="editBtn2 ms-3" id="productName">
@@ -152,17 +141,21 @@
                                         <input type="file" class="editBtn1 ms-3 " name="productImg" id="productImg" multiple>
                                         <div class="error text-danger ms-3" id="imgError"></div>
                                     </div>
+                                    <button type="button" class="editImageFile mt-3 mb-5 ms-5" id="viewSelectedImgBtn" name="submit" onClick="viewSelectedImages()">VIEW SELECTED IMAGES</button>
                                 </div>
+                                
+                                <div id="selectedImagesList" class="mt-3"></div>
 
                                 <div class="d-flex-column">
                                     <div class="textHead">PRODUCT TAX</div>
                                     <input type="number" name="productTax" class="editBtn2 ms-3" id="productTax">
                                     <div class="error text-danger ms-3" id="taxError"></div>
                                 </div>
-
+                                
                                 <button type="submit" value="submit" class="btn mt-3 mb-5 ms-5" name="submit" onClick="return validation()" >SUBMIT</button>
                                 <button type="button" class="btn2 btn-secondary ms-5" data-bs-dismiss="modal" id="closeBtnId">Close</button>
                             </form>
+                            
                         </div>
                     </div>
                 </div>

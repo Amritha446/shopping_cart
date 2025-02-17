@@ -704,3 +704,9 @@ body{
     background-color:#b1f1bc ;
     width:75vw;
 }
+.editImageFile{
+    border:transparent;
+    border-radius: 10px;
+    background-color: #9ec7a2;
+    margin-right:10px;
+}

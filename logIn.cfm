@@ -30,23 +30,24 @@
                         <button type="submit" name="submit" class="btn mt-3 ms-2" onClick="return validate()">LogIn</button>
                         <div class="lastSec mt-3">Dont't have an Account? <a href="signUp.cfm" class="link">SignUp Here!</a></div>
                     </form>
+                    <cfif structKeyExists(form,"submit")>
+                    <cfset result=application.myCartObj.validateLogin(userName = form.userName , 
+                                            userPassword  = form.userPassword )>
+                    <cfif result == "true">
+                        <cfif structKeyExists(variables, "productId")> 
+                            <cfset application.myCartObj.addToCart(productId = variables.productId,
+                                                                    cartToken = url.cartToken)>
+                            <cflocation  url="cartPage.cfm"> 
+                        <cfelse>
+                            <cflocation  url="cartDashboard.cfm">
+                        </cfif>
+                        <cfelse>
+                            <div class="text-danger ms-5">Invalid Login attempt.</div>
+                        </cfif>
+                    </cfif>
                 </div>
             </div>
-            <cfif structKeyExists(form,"submit")>
-                <cfset result=application.myCartObj.validateLogin(userName = form.userName , 
-                                        userPassword  = form.userPassword )>
-                <cfif result == "true">
-                    <cfif structKeyExists(variables, "productId")> 
-                        <cfset application.myCartObj.addToCart(productId = variables.productId,
-                                                                cartToken = url.cartToken)>
-                        <cflocation  url="cartPage.cfm"> 
-                    <cfelse>
-                        <cflocation  url="cartDashboard.cfm">
-                    </cfif>
-                <cfelse>
-                    <div class="text-danger">Invalid Login attempt.</div>
-                </cfif>
-            </cfif>
+            
         </cfoutput>
     </body>
 </html>

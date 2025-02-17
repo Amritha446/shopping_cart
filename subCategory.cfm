@@ -51,7 +51,7 @@
                                 </div>
                             </div>
                         </cfloop>
-
+                        <div id = "subCategoryErrorMsg" class="text-danger"></div>
                         <div class="modal fade" id="editSubContact" tabindex="-1">
                             <div class="modal-dialog">
                                 <div class="modal-content">
