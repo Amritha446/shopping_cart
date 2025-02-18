@@ -42,7 +42,7 @@
                                 </div>
                                 <div class="input d-flex-column">
                                     <div class="text-secondary mt-3 ms-2"> Phone No</div>
-                                    <input type="text" name="phone" id="phone" class="inputs ms-2">
+                                    <input type="text" name="phone" id="phone" class="inputs ms-2" maxlength="13" minlength="10">
                                     <div class="error text-danger" id="phoneError"></div>
                                 </div>
                             </div>

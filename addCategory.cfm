@@ -24,7 +24,7 @@
                                     <button type="button" name="submit1" class="btn mt-3 ms-5">Close</button>
                                 </a>
                             </div>
-                            <div class="text-danger" name="categoryErrorMsgAdd"></div>
+                            
                         </div>
                     </form>
                 </div>

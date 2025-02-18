@@ -32,12 +32,19 @@ body{
 .mainHeading{
     color:white;
     margin-left:10vw;
-
+}
+.editBtn2,.categoryInbox{
+    border:1px solid #1f6625;
+    border-radius: 5px;
 }
 .heading{
     margin-left:12vw;
     margin-bottom:5%;
     color:#1f6625;
+}
+.mainContentDiv{
+    height:auto;
+    margin-top:10px;
 }
 .mainContent{
     height:auto;
@@ -603,9 +610,10 @@ body{
 }
 .orderSummary{
     width:35vw;
-    height:10vw;;
+    height:10vw;
     margin-left:30%;
     background-color: #1f6625;
+    margin-bottom:10%;
 }
 .orderedProductName{
     width:10vw;

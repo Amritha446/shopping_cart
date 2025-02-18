@@ -53,7 +53,7 @@ function signUpFunction() {
                 document.getElementById('passwordError').innerHTML = response.password;
             }
 
-            if(!response.success){
+            else if(!response.success){
                 document.getElementById('validationError').innerHTML = response.message;
             }
             else{    
@@ -72,11 +72,14 @@ function signUpFunction() {
 }
     
 function deleteCategory(event){
+    console.log(event.target.value)
     if(confirm("Confirm delete?")){
         $.ajax({
             type:"POST",
-            url:"Components/myCart.cfc?method=delCategory",
-            data:{categoryId:event.target.value},
+            url:"Components/myCart.cfc?method=delItem",
+            data:{itemId:event.target.value,
+                itemType:"category"
+            },
             success:function(result){
                 event.target.parentNode.parentNode.remove()
             }
@@ -96,12 +99,13 @@ function addCategoryFormSubmit(){
             operation:"add"
         },
         success:function(response){
-            /* location.reload(); */
+            console.log(response)
             let result = JSON.parse(response);
-            if (response === "Category added successfully.") {
-            window.location.href = "cartDashboard.cfm";
+            if (result == "Category added successfully.") {
+            console.log(result)
             } else {
-                document.getElementById('categoryErrorMsgAdd').innerHTML = response;  
+                document.getElementById('categoryErrorMsg').innerHTML = result;  
+                console.log(result)
             }   
         } 
     })
@@ -169,18 +173,24 @@ function addSubCategoryFormSubmit(){
             operation:"add"
         },
         success:function(response){
-            if (response === "Subcategory updated successfully") {
+            let result = JSON.parse(response);
+            if (result == "Subcategory added successfully") {
                 location.reload();
             } else {
-                document.getElementById('subCategoryErrorMsg').innerHTML = response;
+                document.getElementById('subCategoryErrorMsg').innerHTML = result;
             }    
         }
     })
 }
+function editSubCategory(){
+    document.getElementById('editSubCategorySubmit').style.display="block";
+    document.getElementById('addSubCategorySubmit').style.display="none";
+    document.getElementById('subCategoryId').value = event.target.value;
+}
 
 function editSubCategoryFormSubmit(){
     event.preventDefault()
-    /* document.getElementById('buttonName').textContent = "update"; */
+    console.log(document.getElementById('subCategoryId').value)
     let categoryId = document.getElementById('categoryFrmSubCategory').value;
     $.ajax({
         type:"POST",
@@ -191,11 +201,11 @@ function editSubCategoryFormSubmit(){
             operation:"update"
         },
         success:function(response){
-            /* location.reload(); */
-            if (response === "Sub-Category updated successfully!") {
+            let result = JSON.parse(response);
+            if (result == "Sub-category updated successfully!") {
                 location.reload();
             } else {
-                document.getElementById('subCategoryErrorMsg').innerHTML = response; 
+                document.getElementById('subCategoryErrorMsg').innerHTML = result; 
             }  
         }
     })
@@ -204,8 +214,10 @@ function deleteSubCategory(event){
     if(confirm("Confirm delete?")){
         $.ajax({
             type:"POST",
-            url:"Components/myCart.cfc?method=delSubCategory",
-            data:{subCategoryId:event.target.value},
+            url:"Components/myCart.cfc?method=delItem",
+            data:{itemId:event.target.value,
+                itemType:"subcategory"
+            },
             success:function(result){
                 event.target.parentNode.parentNode.remove()
             }
@@ -217,7 +229,7 @@ function deleteSubCategory(event){
 }
 
 function createNewProduct(){
-    document.getElementById('heading').textContent = "ADD PRODUCT";
+    document.getElementById('heading').textContent = "Add Product";
     document.getElementById('createProductData').reset();
     document.getElementById('selectedImagesList').style.display = "none";
     document.getElementById('viewSelectedImgBtn').style.display = "none";
@@ -226,7 +238,8 @@ function createNewProduct(){
 }
 
 function editProductDetailsButton(event){
-    document.getElementById('heading').textContent = "EDIT PRODUCT";
+    document.getElementById('heading').textContent = "Edit Product";
+    document.getElementById('selectedImagesList').innerHTML = "";
     document.getElementById('createProductData').reset();
     document.getElementById('productId').value= event.target.value; 
     document.getElementById('selectedImagesList').style.display = "block";
@@ -264,12 +277,14 @@ function viewSelectedImages() {
             if (images.length === 0) {
                 document.getElementById('selectedImagesList').innerHTML = 'No images found for this product.';
             } else {   
-                let imageHtml = ''  ;      
+                let imageHtml = '';      
                 images.forEach(function(image) {
+                    let deleteButtonHtml = image.fldDefaultImage === 1 ? '' : `<button type="button" value="${image.fldProductImages_Id},${productId}" class="closeLink"><i class="fa-solid fa-xmark pe-none"></i></button>`;
+                    
                     imageHtml += `<div class="d-flex-column">
                         <img src="assets/${image.fldImageFileName}" alt="${image.fldImageFileName}" width="50" height="50" />
                         <span>${image.fldImageFileName}</span>
-                        <button type="button" value="${image.fldProductImages_Id},${productId}" class="closeLink"><i class="fa-solid fa-xmark pe-none"></i></button>
+                        ${deleteButtonHtml} 
                     </div>`;
                 });
                 document.getElementById('selectedImagesList').innerHTML = imageHtml;
@@ -285,13 +300,16 @@ function viewSelectedImages() {
         }
     });
 } 
+
     
 function deleteProduct(event){
     if(confirm("Confirm delete?")){
         $.ajax({
             type:"POST",
-            url:"Components/myCart.cfc?method=delProduct",
-            data:{productId:event.target.value},
+            url:"Components/myCart.cfc?method=delItem",
+            data:{itemId:event.target.value,
+                itemType:"product"
+            },
             success:function(){
                 event.target.parentNode.parentNode.remove()
             }
@@ -313,56 +331,68 @@ $(document).ready(function() {
             },
             success: function(response) {
                 const data = JSON.parse(response);
-                $("#subCategoryIdProduct").empty();
-                for(let i=0; i<data.DATA.length; i++) {
-                    let subCategoryId = data.DATA[i][0];
-                    let  subCategoryName= data.DATA[i][1];
-                    let optionTag = `<option value="${subCategoryId}">${subCategoryName}</option>`;
-                    $("#subCategoryIdProduct").append(optionTag);
+                if (data.message === "Success") {
+                    $("#subCategoryIdProduct").empty();
+
+                    for (let i = 0; i < data.data.length; i++) {
+                        let subCategoryId = data.data[i].fldSubCategory_Id;
+                        let subCategoryName = data.data[i].fldSubCategoryName;
+                        let optionTag = `<option value="${subCategoryId}">${subCategoryName}</option>`;
+                        $("#subCategoryIdProduct").append(optionTag);
+                    }
+                } else {
+                    alert('Error: ' + data.message);
                 }
             }
-        });	
+        });    
     });
 });
 
+
 function loadProductImages() {
     let productId = event.target.value;
-    
+
     $.ajax({
-        url: './Components/myCart.cfc?method=getProductImages', 
+        url: './Components/myCart.cfc?method=getProductImages',
         data: { productId: productId },
         type: 'POST',
         success: function(response) {
             let images = JSON.parse(response);
             let carouselContent = '';
-            let activeClass = 'active'; // To mark the first image as active
+            let activeClass = 'active';
             for (let i = 0; i < images.length; i++) {
                 let image = images[i];
                 let defaultImageClass = image.fldDefaultImage == 1 ? 'default-image' : '';
+                let deleteButton = ''; 
                 
+                if (image.fldDefaultImage != 1) {
+                    deleteButton = `
+                        <button type="submit" class="ms-3 btnImg2" onClick="deleteImage()" 
+                        value="${image.fldProductImages_Id},${image.fldProductId}">Delete</button>
+                    `;
+                }
                 carouselContent += `
-                
                 <div class="carousel-item ${activeClass}">
                     <div class="d-flex imageButtonDiv">
                         <button type="submit" class="ms-3 btnImg1 " onClick="setDefaultImage()" 
                         value="${image.fldProductImages_Id},${image.fldProductId}">Default Set</button>
-                        <button type="submit" class=" ms-3 btnImg2" onClick="deleteImage()" 
-                        value="${image.fldProductImages_Id},${image.fldProductId}">Delete</button>
+                        
+                        ${deleteButton}  <!-- Insert the delete button only if it's not a default image -->
                     </div>
                     <img src="assets/${image.fldImageFileName}" class="d-block w-100 ${defaultImageClass}" alt="Image ${i+1}">
                     <button type="button" class="btn3 btn-secondary ms-4" data-bs-dismiss="modal" id="closeBtnId">Close</button>
                 </div>
-                
                 `;
                 
                 activeClass = '';
             }
 
             $('#carouselImages').html(carouselContent);
-            
+
         }
     });
 }
+    
     
 function setDefaultImage() {
     let currentId = event.target.value;

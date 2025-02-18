@@ -4,16 +4,17 @@
     <cfset this.sessionTimeout=createTimespan(0, 2, 0, 0)>
     
     <cffunction name = "onApplicationStart" access = "public" returnType = "boolean">
-        <cfset application.key = generateSecretKey("AES")>
+        <cfset application.key = "1e0Js/hDrE8mllZflN+WkQ==">
         <cfset application.myCartObj = createObject("component", "components.myCart")>
         <cfset application.datasource = "shoppingCart">
         <cfreturn true>
     </cffunction>
 
     <cffunction  name = "onRequest" returnType = "void">
-        <cfargument  name = "requestPage" required="true">
+        <cfargument name = "requestPage" required="true">
         <cfinclude template = "commonLink.cfm">
-        <cfinclude  template = "#arguments.requestPage#">
+        <cfinclude template = "#arguments.requestPage#">
+        <cfinclude template = "commonFooter.cfm">
     </cffunction>
 
     <cffunction name="onRequestStart" returnType="boolean">
@@ -62,11 +63,11 @@
         <cfreturn true>
     </cffunction>
 
-    <cffunction name="onError" access="public" returnType="void">
+    <!--- <cffunction name="onError" access="public" returnType="void">
         <cfargument name="exception" required="true" type="any">
         <cfargument name="eventName" required="true" type="string">
 
         <cfset location("./error.cfm?message=" & urlEncodedFormat(arguments.exception.message))>
-    </cffunction>
+    </cffunction> --->
     
 </cfcomponent>

@@ -38,138 +38,91 @@
                 </div>
                 <div class="navBar">
                     <cfset viewCategory = application.myCartObj.viewCategoryData()>
-                    <cfloop query="#viewCategory#">
-                        <div class="categoryDisplay ms-5 me-5 d-flex">
-                            <div class="categoryNameNavBar p-1" data-category-id="#viewCategory.fldCategory_Id#">
-                                <a href="categoryBasedProduct.cfm?categoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = viewCategory.fldCategory_Id))#" class="navBarButton">#viewCategory.fldCategoryName#</a>
-                                <div class="subCategoryMenu">
-                                    <cfset subCategories = application.myCartObj.viewSubCategoryData(categoryId = viewCategory.fldCategory_Id)>
-                                    <cfloop query="#subCategories#">
-                                        <a href="filterProduct.cfm?subCategoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = subCategories.fldSubCategory_Id))#" class="subcategoryItem">
-                                            #subCategories.fldSubCategoryName#
-                                        </a>
-                                    </cfloop>
+                    <cfset allSubCategories = application.myCartObj.viewSubCategoryData(categoryId = 0)>
+                    <cfif viewCategory.recordCount GT 0>
+                        <cfloop query="#viewCategory#">
+                            <div class="categoryDisplay ms-5 me-5 d-flex">
+                                <div class="categoryNameNavBar p-1" data-category-id="#viewCategory.fldCategory_Id#">
+                                    <a href="categoryBasedProduct.cfm?categoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = viewCategory.fldCategory_Id))#" class="navBarButton">#viewCategory.fldCategoryName#</a>
+                                    <div class="subCategoryMenu">
+                                        <cfif allSubCategories["message"] EQ "Success">
+                                            <cfloop array="#allSubCategories['data']#" index="subCategory">
+                                                <cfif subCategory['fldCategoryId'] EQ viewCategory.fldCategory_Id>
+                                                    <a href="filterProduct.cfm?subCategoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = subCategory['fldSubCategory_Id']))#" class="subcategoryItem">
+                                                        #subCategory['fldSubCategoryName']#
+                                                    </a>
+                                                </cfif>
+                                            </cfloop>
+                                        <cfelse>
+                                            <div class="errorMessage">
+                                                Error: #allSubCategories["message"]#
+                                            </div>
+                                        </cfif>
+                                    </div>
                                 </div>
                             </div>
+                        </cfloop>
+                    <cfelse>
+                        <div class="errorMessage">
+                            Error: #viewCategory.message#
                         </div>
-                    </cfloop>
+                    </cfif>
                 </div>
 
                 <div class="productListingBasedCategory">
                     <cfset categoryId = application.myCartObj.decryptUrl(encryptedData = URL.categoryId)>
-
                     <cfset viewCategory = application.myCartObj.viewCategoryData()>
+
                     <cfloop query="#viewCategory#">
                         <cfif viewCategory.fldCategory_Id EQ categoryId>
-                            <cfset viewData = application.myCartObj.viewSubCategoryData(categoryId = #viewCategory.fldCategory_Id#)>
+                            <cfset viewSubCategory = application.myCartObj.viewSubCategoryData(categoryId = viewCategory.fldCategory_Id)>
 
-                            <div class="productPath">
-                                <a href="homePage.cfm" class="navBarButton ms-2">home</a>
-                                ><a href="categoryBasedProduct.cfm?categoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = categoryId))#" class="navBarButton ms-2">#viewCategory.fldCategoryName#</a>
-                            </div>
-
-                            <cfloop query="#viewData#">
-                                <a href="filterProduct.cfm?subCategoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = viewData.fldSubCategory_Id))#" class="navBarButton ms-2"><h5>#viewData.fldSubCategoryName#</h5></a>
-                                <cfset viewProduct = application.myCartObj.viewProduct(subCategoryId = #viewData.fldSubCategory_Id#)>
-                                <cfif url.searchTerm NEQ "">
-                                    <cfset viewProduct = application.myCartObj.viewProduct(searchTerm=url.searchTerm)>
-                                </cfif>
-                                <div class="productContainer">
-                                    <cfset currentRow = 1>
-                                    <cfloop query="viewProduct">
-                                        <cfif (currentRow mod 6) EQ 1>
-                                            <cfif currentRow GT 1>
-                                                </div> 
-                                            </cfif>
-                                            <div class="productRow d-flex">
-                                        </cfif>
-                                        <div class="productBox d-flex-column">
-                                            <a href="productDetails.cfm?productId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = viewProduct.fldProduct_Id))#&random=1" class="imageLink">
-                                            <img src="assets/#viewProduct.imageFileName#" alt="img" class="productBoxImage">
-                                            <div class="ms-4 font-weight-bold h5">#viewProduct.fldProductName#</div>
-                                            <div class="ms-4 h6 ">#viewProduct.fldBrandName#</div>
-                                            <div class="ms-4 small">$#viewProduct.fldPrice#</div>
-                                        </a>
-                                        </div>
-                                        <cfset currentRow = currentRow + 1>
-                                    </cfloop>
+                            <cfif viewSubCategory["message"] EQ "Success">
+                                <div class="productPath">
+                                    <a href="homePage.cfm" class="navBarButton ms-2">home</a>
+                                    > <a href="categoryBasedProduct.cfm?categoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = categoryId))#" class="navBarButton ms-2">#viewCategory.fldCategoryName#</a>
                                 </div>
-                            </cfloop>
+
+                                <cfloop array="#viewSubCategory['data']#" index="subCategory">
+                                    <a href="filterProduct.cfm?subCategoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = subCategory['fldSubCategory_Id']))#" class="navBarButton ms-2">
+                                        <h5>#subCategory['fldSubCategoryName']#</h5>
+                                    </a>
+
+                                    <cfset viewProduct = application.myCartObj.viewProduct(subCategoryId = subCategory['fldSubCategory_Id'])>
+
+                                    <cfif url.searchTerm NEQ "">
+                                        <cfset viewProduct = application.myCartObj.viewProduct(searchTerm=url.searchTerm)>
+                                    </cfif>
+
+                                    <div class="productContainer">
+                                        <cfset currentRow = 1>
+                                        <cfloop query="viewProduct">
+                                            <cfif (currentRow mod 6) EQ 1>
+                                                <cfif currentRow GT 1>
+                                                    </div>
+                                                </cfif>
+                                                <div class="productRow d-flex">
+                                            </cfif>
+                                            <div class="productBox d-flex-column">
+                                                <a href="productDetails.cfm?productId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = viewProduct.fldProduct_Id))#&random=1" class="imageLink">
+                                                    <img src="assets/#viewProduct.imageFileName#" alt="img" class="productBoxImage">
+                                                    <div class="ms-4 font-weight-bold h5">#viewProduct.fldProductName#</div>
+                                                    <div class="ms-4 h6 ">#viewProduct.fldBrandName#</div>
+                                                    <div class="ms-4 small">$#viewProduct.fldPrice#</div>
+                                                </a>
+                                            </div>
+                                            <cfset currentRow = currentRow + 1>
+                                        </cfloop>
+                                    </div>
+                                </cfloop>
+                            <cfelse>
+                                <div class="errorMessage">
+                                    Error: #viewSubCategory['message']#
+                                </div>
+                            </cfif>
                         </cfif>
                     </cfloop>
                 </div>
-                <div class="footerSection D-FLEX">
-                    <div class="footerHeading ms-5 mt-4">
-                        <a href="logIn.cfm" class="footerHeading">BECOME A SELLER</a>
-                    </div>
-                    <div class="footerHeading ms-5 mt-4">
-                        ADVERTISE
-                    </div>
-                    <div class="footerHeading ms-5 mt-4">
-                        GIFT CARD
-                    </div>
-                    <div class="footerHeading ms-5 mt-4">
-                        HELP CENTER
-                    </div>
-                    <div class="footerHeading ms-5 mt-4">
-                       <img src="assets1/6.PNG" class="ms-5" alt="img">
-                    </div>
-                </div>
-                <div class="footer d-flex">
-                    <div class="d-flex-column footerBlock mt-3 ms-5 me-3">
-                        <div class="footerHeading mb-3"> ABOUT</div>
-                        <div class="footerContent mb-3">CONTACT US</div>
-                        <div class="footerContent mb-3">ABOUT US</div>
-                        <div class="footerContent mb-3"> CAREERS</div>
-                        <div class="footerContent mb-3">FLIPKART STORIES</div>
-                        <div class="footerContent mb-3">PRESS</div>
-                    </div>
-                    <div class="d-flex-column footerBlock mt-3 ms-5 me-3">
-                        <div class="footerHeading mb-3"> GROUP COMPANIES</div>
-                        <div class="footerContent mb-3">MYNTRAA</div>
-                        <div class="footerContent mb-3">SHOPSY</div>
-                    </div>
-                    <div class="d-flex-column footerBlock mt-3 ms-5 me-3">
-                        <div class="footerHeading mb-3"> CONSUMER POLICY</div>
-                        <div class="footerContent mb-3">CONTACT US</div>
-                        <div class="footerContent mb-3">ABOUT US</div>
-                        <div class="footerContent mb-3"> CAREERS</div>
-                        <div class="footerContent mb-3">FLIPKART STORIES</div>
-                        <div class="footerContent mb-3">PRESS</div>
-                    </div>
-                    <div class="d-flex-column footerBlock mt-3 ms-5 me-3">
-                        <div class="footerHeading mb-3"> HELP</div>
-                        <div class="footerContent mb-3">PAYMENTS</div>
-                        <div class="footerContent mb-3">SHIPPING</div>
-                        <div class="footerContent mb-3">CANCELLATION</div>
-                        <div class="footerContent mb-3">RETURNS</div>
-                        <div class="footerContent mb-3">FAQ</div>
-                    </div>
-                    <div class="d-flex-column footerBlock mt-3 ms-5 me-3">
-                        <div class="footerHeading mb-3">SOCIAL</div>
-                        <div class="footerContent mb-3">CONTACT US</div>
-                        <div class="footerContent mb-3">ABOUT US</div>
-                        <div class="footerContent mb-3"> CAREERS</div>
-                        <div class="footerContent mb-3">FLIPKART STORIES</div>
-                        <div class="footerContent mb-3">PRESS</div>
-                    </div>
-                    <div class="d-flex-column footerBlock mt-3 ms-5 me-3">
-                        <div class="footerHeading mb-3"> OTHER APPS</div>
-                        <div class="footerContent mb-3">FLIPKART</div>
-                        <div class="footerContent mb-3">AMAZON</div>
-                        <div class="footerContent mb-3">MYNTRAA</div>
-                        <div class="footerContent mb-3">SHOPSY</div>
-                    </div>
-                    <div class="d-flex-column footerBlock mt-3 ms-5 me-3">
-                        <div class="footerHeading mb-3"> POLICY DETAILS</div>
-                        <div class="footerContent mb-3">CONTACT US</div>
-                        <div class="footerContent mb-3">ABOUT US</div>
-                        <div class="footerContent mb-3"> CAREERS</div>
-                        <div class="footerContent mb-3">FLIPKART STORIES</div>
-                        <div class="footerContent mb-3">PRESS</div>
-                    </div>
-                </div>
-            </div>
-        </cfoutput>
-    </body>
-</html>
+            </cfoutput>
+
+
