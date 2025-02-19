@@ -112,28 +112,35 @@
                                                 <div class="modal-content">
                                                     <form method="post" name="form" action="filterProduct.cfm?subCategoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = subCategory['fldSubCategory_Id']))#">
                                                         <div class="d-flex-column ms-2 mt-2 p-2">
-                                                            <label for="selectedValue">Select min value:</label>
-                                                            <select name="min" id="selectedValueMin" class="mb-1">
-                                                                <option value="0" default>0</option>
-                                                                <option value="5000">5000</option>
-                                                                <option value="15000">15000</option>
-                                                                <option value="35000">35000</option>
-                                                                <option value="50000">50000</option>
-                                                            </select>
-                                                            <label for="selectedValue">Select max value:</label>
-                                                            <select name="max" id="selectedValueMax" class="mt-1 mb-2">
-                                                                <option value="0" default>0</option>
-                                                                <option value="10000">10000</option>
-                                                                <option value="20000">20000</option>
-                                                                <option value="40000">40000</option>
-                                                                <option value="80000">80000</option>
-                                                                <option value="150000">150000</option>
-                                                            </select>
-                                                            <input type="number" name="minRange" placeholder="Min" class="ms-2" value="0">
-                                                            <div class="ms-5 filterText"> To </div>
-                                                            <input type="number" name="maxRange" placeholder="Max" class="ms-2" value="0">
+                                                            <label for="selectedValue" class="ms-1 mt-2 mb-2">Price Range:</label>
+                                                            <div class="d-flex">
+                                                                <input type="number" name="minRange" placeholder="Min" class="ms-2" value="0">
+                                                                <div class="ms-4 me-2 filterText"> To </div>
+                                                                <input type="number" name="maxRange" placeholder="Max" class="ms-2" value="0">
+                                                            </div>
+                                                            <div class="mt-3">
+                                                                <label for="selectedValue">Min value:</label>
+                                                                <select name="min" id="selectedValueMin" class="mb-1 ">
+                                                                    <option value="0" default>0</option>
+                                                                    <option value="5000">5000</option>
+                                                                    <option value="15000">15000</option>
+                                                                    <option value="35000">35000</option>
+                                                                    <option value="50000">50000</option>
+                                                                </select>
+                                                                <label for="selectedValue" class="ms-3">Max value:</label>
+                                                                <select name="max" id="selectedValueMax" class="mt-1 mb-2">
+                                                                    <option value="0" default>0</option>
+                                                                    <option value="10000">10000</option>
+                                                                    <option value="20000">20000</option>
+                                                                    <option value="40000">40000</option>
+                                                                    <option value="80000">80000</option>
+                                                                    <option value="150000">150000</option>
+                                                                </select>
+                                                                <button type="submit" class=" selectBtn" name="filterSubmit">Submit</button>
+                                                            </div>
+                                                            
                                                             <input type="hidden" name="subCategoryId" id="subC" value="#subCategory['fldSubCategory_Id']#">
-                                                            <button type="submit" class="mt-2 " name="filterSubmit">Submit</button>
+                                                            
                                                         </div>
                                                     </form>
                                                 </div>  
@@ -158,7 +165,7 @@
                                         <div class="productContainer mt-2 ms-5">
                                             <cfset currentRow = 1>
                                             <cfloop query="viewProduct">
-                                                <cfif (currentRow mod 6) EQ 1>
+                                                <cfif (currentRow mod 5) EQ 1>
                                                     <cfif currentRow GT 1>
                                                         </div>
                                                     </cfif>
@@ -174,7 +181,7 @@
                                                 </div>
                                                 <cfset currentRow = currentRow + 1>
                                             </cfloop>
-                                        </div>
+                                        </div>  
                                     </cfif>
                                 </cfloop>
                             <cfelse>

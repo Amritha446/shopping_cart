@@ -105,53 +105,36 @@
                         <span class="visually-hidden">Next</span>
                     </button>
                 </div>
+                
+
                 <div class="productListing d-flex-column">
                     <h6 class="mt-3 ms-3">RANDOM PRODUCTS</h6>
                     <cfif url.searchTerm NEQ "">
                         <cfset viewProduct = application.myCartObj.viewProduct(searchTerm=url.searchTerm)>
                     <cfelse>
-                        <cfset viewProduct = application.myCartObj.viewProduct()>
+                        <!--- <cfparam name="url.page" default="1"> 
+                        <cfset limit = 5> 
+                        <cfset offset = (url.page - 1) * limit> 
+
+                        <cfset viewProduct = application.myCartObj.viewProduct(limit=limit, offset=offset)>  --->
+                        <cfset viewProduct = application.myCartObj.viewProduct(randomProducts = true)>                   
                     </cfif>
                     <cfif viewProduct.recordCount GT 0>
                         <div class="productContainer">
                             <cfloop query="viewProduct"> 
-                                <cfif currentRow LTE 5>
-                                    <cfif (currentRow mod 5) EQ 1>
-                                        <cfif currentRow GT 1>
-                                            </div>
-                                        </cfif>
-                                        <div class="productRow d-flex"> 
-                                    </cfif>
-                                    
-                                    <div class="productBox d-flex-column">
-                                        <a href="productDetails.cfm?productId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = viewProduct.fldProduct_Id))#&random=1" class="imageLink">
-                                            <img src="assets/#viewProduct.imageFileName#" alt="img" class="productBoxImage">
-                                            <div class="ms-4 font-weight-bold h5">#viewProduct.fldProductName#</div>
-                                            <div class="ms-4 h6 ">#viewProduct.fldBrandName#</div>
-                                            <div class="ms-4 small">$#viewProduct.fldPrice#</div>
-                                        </a>
-                                    </div>
-                                </cfif>
-
-                                <!-- hidden products -->
-                                <cfif currentRow GT 5>
-                                    <div class="productBox d-flex-column hiddenProduct">
-                                        <a href="productDetails.cfm?productId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = viewProduct.fldProduct_Id))#&random=1" class="imageLink">
-                                            <img src="assets/#viewProduct.imageFileName#" alt="img" class="productBoxImage">
-                                            <div class="ms-4 font-weight-bold h5">#viewProduct.fldProductName#</div>
-                                            <div class="ms-4 h6 ">#viewProduct.fldBrandName#</div>
-                                            <div class="ms-4 small">$#viewProduct.fldPrice#</div>
-                                        </a>
-                                    </div>
-                                </cfif>
-                                <cfset currentRow = currentRow + 1>
+                                <div class="productBox d-flex-column">
+                                    <a href="productDetails.cfm?productId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = viewProduct.fldProduct_Id))#&random=1" class="imageLink">
+                                        <img src="assets/#viewProduct.imageFileName#" alt="img" class="productBoxImage">
+                                        <div class="ms-4 font-weight-bold h5">#viewProduct.fldProductName#</div>
+                                        <div class="ms-4 h6 ">#viewProduct.fldBrandName#</div>
+                                        <div class="ms-4 small">$#viewProduct.fldPrice#</div>
+                                    </a>
+                                </div>
                             </cfloop>
-                            <cfif currentRow GT 5>
-                                <button type="button" class="viewMoreButton" onclick="toggleProducts()">View More</button>
-                            </cfif>
-                        </div> 
+                        </div>  
                     <cfelse>
                         <h6 class="mt-3 ms-3 text-danger">NO RESULT'S FOUND WITH #url.searchTerm#..</h6>
                     </cfif>
                 </div>
             </cfoutput>
+            <cfinclude template = "commonFooter.cfm">

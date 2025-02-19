@@ -73,9 +73,9 @@
                         <input type="search" name="searchId" placeholder = "Search with Order Id.." class="orderedItemsSearch">
                     </form>
                     <cfif url.searchId NEQ "">
-                        <cfset orderedItemList = application.myCartObj.orderHistoryDisplay(searchId = url.searchId)>
+                        <cfset orderedItemList = application.myCartObj.fetchOrderDetails(searchId = url.searchId)>
                     <cfelse>
-                        <cfset orderedItemList = application.myCartObj.orderHistoryDisplay()>
+                        <cfset orderedItemList = application.myCartObj.fetchOrderDetails()>
                     </cfif>
 
                     <cfset lastOrderId = "">
@@ -83,7 +83,7 @@
                         <cfif orderedItemList.fldOrder_Id NEQ lastOrderId>>
                             <div class="d-flex-column">
                                 <cfset lastOrderId = orderedItemList.fldOrder_Id> 
-                                <cfset orderedEachItemList = application.myCartObj.orderHistoryDisplay(orderIdList = #orderedItemList.fldOrder_Id#)>
+                                <cfset orderedEachItemList = application.myCartObj.fetchOrderDetails(orderIdList = #orderedItemList.fldOrder_Id#)>
                                 <div class="d-flex orderListHeading">
                                     <div class="">ORDER ID : #orderedEachItemList.fldOrder_Id#</div>
                                     <button type="button" class="invoiceDownload" onClick="downloadInvoice(event)" value="#orderedEachItemList.fldOrder_Id#" title="Download Invoice">

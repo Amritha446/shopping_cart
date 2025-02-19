@@ -718,3 +718,12 @@ body{
     background-color: #9ec7a2;
     margin-right:10px;
 }
+.selectBtn{
+    width:5vw;
+    height:3vw;
+    background-color: #90b993;
+    border-color:transparent;
+    border-radius:12px ;
+    margin-left:2vw;
+    margin-top:10px;
+}

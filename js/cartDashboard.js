@@ -91,6 +91,7 @@ function deleteCategory(event){
 }
 
 function addCategoryFormSubmit(){
+    event.preventDefault();
     $.ajax({
         type:"POST",
         url:"Components/myCart.cfc?method=saveCategory", 
@@ -102,14 +103,14 @@ function addCategoryFormSubmit(){
             console.log(response)
             let result = JSON.parse(response);
             if (result == "Category added successfully.") {
-            console.log(result)
+                location.reload();
             } else {
                 document.getElementById('categoryErrorMsg').innerHTML = result;  
-                console.log(result)
+                console.log(response)
             }   
         } 
     })
-}
+}  
 
 function editCategory(event, categoryId) {
     document.getElementById('categoryName_' + categoryId).style.display = 'none';
@@ -159,11 +160,12 @@ function createSubCategory(){
     $('#editSubContact').modal('show')
     document.getElementById('editSubCategorySubmit').style.display="none";
     document.getElementById('addSubCategorySubmit').style.display="block";
-
 }
 
 function addSubCategoryFormSubmit(){
     let categoryId = document.getElementById('categoryFrmSubCategory').value;
+    document.getElementById('subCategoryErrorMsg').innerHTML = "";
+    console.log('hi')
     $.ajax({
         type:"POST",
         url:"Components/myCart.cfc?method=saveSubCategory", 
@@ -178,10 +180,13 @@ function addSubCategoryFormSubmit(){
                 location.reload();
             } else {
                 document.getElementById('subCategoryErrorMsg').innerHTML = result;
+               
+                console.log(result)
             }    
         }
     })
 }
+
 function editSubCategory(){
     document.getElementById('editSubCategorySubmit').style.display="block";
     document.getElementById('addSubCategorySubmit').style.display="none";
@@ -377,7 +382,7 @@ function loadProductImages() {
                         <button type="submit" class="ms-3 btnImg1 " onClick="setDefaultImage()" 
                         value="${image.fldProductImages_Id},${image.fldProductId}">Default Set</button>
                         
-                        ${deleteButton}  <!-- Insert the delete button only if it's not a default image -->
+                        ${deleteButton} 
                     </div>
                     <img src="assets/${image.fldImageFileName}" class="d-block w-100 ${defaultImageClass}" alt="Image ${i+1}">
                     <button type="button" class="btn3 btn-secondary ms-4" data-bs-dismiss="modal" id="closeBtnId">Close</button>
@@ -758,10 +763,11 @@ function paymentData() {
         type: "POST",
         data: data,
         success: function(response) {
-           if (JSON.parse(response) === "Order placed successfully.") {
+            let result = JSON.parse(response);
+            if (result == "Order placed successfully.") {
                 window.location.href = "paymentPage.cfm";
             } else {
-                alert(response);
+                alert(result);
             }
         },
         error: function (xhr, ajaxOptions, thrownError) {
@@ -774,7 +780,7 @@ function paymentData() {
 function downloadInvoice(event) {
     $.ajax({
         type:"POST",
-        url:"Components/myCart.cfc?method=orderHistoryDisplay",
+        url:"Components/myCart.cfc?method=downloadOrderData",
         data:{orderId:event.target.value}
     })
 }

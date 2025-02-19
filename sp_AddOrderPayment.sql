@@ -1,5 +1,4 @@
 DELIMITER $$
-
 CREATE PROCEDURE sp_AddOrderPayment(
     IN p_UserId INT,
     IN p_AddressId INT,
@@ -11,13 +10,7 @@ CREATE PROCEDURE sp_AddOrderPayment(
     OUT v_OrderId VARCHAR(64)  
 )
 BEGIN
-    DECLARE v_ProductId INT;
-    DECLARE v_Quantity INT;
-    DECLARE v_TotalCartItems INT;
-    DECLARE v_Index INT DEFAULT 0;
-    
     SET v_OrderId = UUID();
-    
     INSERT INTO tblorder (
         fldOrder_Id,
         fldUserId,
@@ -32,7 +25,6 @@ BEGIN
         p_TotalPrice,
         p_TotalTax
     );
-
     IF p_ProductId IS NOT NULL AND p_ProductId != 0 THEN
         INSERT INTO tblorderitems (
             fldOrderId,
@@ -49,39 +41,25 @@ BEGIN
             p_UnitTax
         );
     ELSE
-        SELECT COUNT(*) INTO v_TotalCartItems
-        FROM tblcart
-        WHERE fldUserId = p_UserId;
-        
-        WHILE v_Index < v_TotalCartItems DO
-            SELECT fldProductId, fldQuantity
-            INTO v_ProductId, v_Quantity
-            FROM tblcart
-            WHERE fldUserId = p_UserId
-            LIMIT v_Index, 1;
-            
-            INSERT INTO tblorderitems (
-                fldOrderId,
-                fldProductId,
-                fldQuantity,
-                fldUnitPrice,
-                fldUnitTax
-            )
-            SELECT 
-                p.fldUnitPrice,
-                p.fldUnitTax,
-                c.fldQuantity,
-                v_OrderId,
-                c.fldProductId
-            FROM 
-                tblcart c
-                INNER JOIN tblproduct p on p.fldProduct_Id = c.fldProductId
-            WHERE 
-                fldUserId = p_UserId
-            ;
-            
-            SET v_Index = v_Index + 1;
-        END WHILE;
+		INSERT INTO tblorderitems (
+			fldOrderId,
+			fldProductId,
+			fldQuantity,
+			fldUnitPrice,
+			fldUnitTax
+		)
+		SELECT
+			v_OrderId, 
+			c.fldProductId,
+			c.fldQuantity,
+			p.fldPrice,
+			p.fldTax
+		FROM 
+			tblcart c
+			INNER JOIN tblproduct p on p.fldProduct_Id = c.fldProductId
+		WHERE 
+			fldUserId = p_UserId
+		;
     END IF;
     
     DELETE FROM tblcart WHERE fldUserId = p_UserId;

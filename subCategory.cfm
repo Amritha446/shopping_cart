@@ -90,6 +90,7 @@
                         </cfif>
 
                         <div id = "subCategoryErrorMsg" class="text-danger"></div>
+
                         <div class="modal fade" id="editSubContact" tabindex="-1">
                             <div class="modal-dialog">
                                 <div class="modal-content">
@@ -117,8 +118,10 @@
                                                 </div>
                                                 <button type="button" name="editSubCategorySubmit" class="btn mt-5 ms-5" onClick ="editSubCategoryFormSubmit()"
                                                     id="editSubCategorySubmit" value="">UPDATE</button>
-                                                <button type="submit" name="addSubCategorySubmit" class="btn mt-5 ms-5"
-                                                    id="addSubCategorySubmit" value="" onClick="addSubCategoryFormSubmit()">ADD</button>
+                                                <button type="button" name="addSubCategorySubmit" class="btn mt-5 ms-5"
+                                                    id="addSubCategorySubmit" value="" onClick="addSubCategoryFormSubmit()">
+                                                    ADD
+                                                </button>
                                             </div>
                                         </form>
                                     </div>

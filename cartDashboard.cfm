@@ -67,6 +67,7 @@
                                 </div>
                             </div>
                         </cfloop>
+
                         <div id="categoryErrorMsg" class="text-danger"></div>
 
                         <div class="modal fade" id="addContact" tabindex="-1">

@@ -14,7 +14,7 @@
         <cfargument name = "requestPage" required="true">
         <cfinclude template = "commonLink.cfm">
         <cfinclude template = "#arguments.requestPage#">
-        <cfinclude template = "commonFooter.cfm">
+        <!--- <cfinclude template = "commonFooter.cfm"> --->
     </cffunction>
 
     <cffunction name="onRequestStart" returnType="boolean">
@@ -25,31 +25,31 @@
             <cfset onApplicationStart()>
         </cfif>
 
-        <cfset local.publicPages = ["/Amritha_CF/testTask/myCart/shopping_cart/Components/myCart.cfc",
-            "/Amritha_CF/testTask/myCart/shopping_cart/login.cfm",
-            "/Amritha_CF/testTask/myCart/shopping_cart/signUp.cfm",
-            "/Amritha_CF/testTask/myCart/shopping_cart/homePage.cfm",
-            "/Amritha_CF/testTask/myCart/shopping_cart/categoryBasedProduct.cfm",
-            "/Amritha_CF/testTask/myCart/shopping_cart/productDetails.cfm",
-            "/Amritha_CF/testTask/myCart/shopping_cart/filterProduct.cfm"]>
-        <cfset local.adminPages = ["/Amritha_CF/testTask/myCart/shopping_cart/cartDashboard.cfm",
-            "/Amritha_CF/testTask/myCart/shopping_cart/addCategory.cfm",
-            "/Amritha_CF/testTask/myCart/shopping_cart/productPage.cfm",
-            "/Amritha_CF/testTask/myCart/shopping_cart/subCategory.cfm"]>
+        <cfset local.publicPages = ["/Components/myCart.cfc",
+                                "/login.cfm",
+                                "/signUp.cfm",
+                                "/homePage.cfm",
+                                "/categoryBasedProduct.cfm",
+                                "/productDetails.cfm",
+                                "/filterProduct.cfm"]>
+        <cfset local.adminPages = ["/cartDashboard.cfm",
+                                "/addCategory.cfm",
+                                "/productPage.cfm",
+                                "/subCategory.cfm"]>
         
         <cfif ArrayContains(local.adminPages,arguments.requestPage)>
             <cfif structKeyExists(session, "isAuthenticated") AND session.isAuthenticated EQ true >
                 <cfif session.roleId EQ 1>
                     <cfreturn true> 
                 <cfelse>
-                    <cflocation url = "/Amritha_CF/testTask/myCart/shopping_cart/homePage.cfm">
+                    <cflocation url = "/homePage.cfm">
                 </cfif>
             <cfelse>
-                <cflocation url = "/Amritha_CF/testTask/myCart/shopping_cart/homePage.cfm">
+                <cflocation url = "/homePage.cfm">
            </cfif>
-        <cfelseif ArrayContains(["/Amritha_CF/testTask/myCart/shopping_cart/logIn.cfm","/Amritha_CF/testTask/myCart/shopping_cart/signUp.cfm"],arguments.requestPage)>
+        <cfelseif ArrayContains(["/logIn.cfm","/signUp.cfm"],arguments.requestPage)>
             <cfif structKeyExists(session, "isAuthenticated") AND session.isAuthenticated EQ true >
-                <cflocation url ="/Amritha_CF/testTask/myCart/shopping_cart/homePage.cfm">
+                <cflocation url ="/homePage.cfm">
             </cfif>
         <cfelseif ArrayContains(local.publicPages,arguments.requestPage)>
             <cfreturn true>
@@ -57,17 +57,17 @@
             <cfif structKeyExists(session, "isAuthenticated") AND session.isAuthenticated EQ true >
                 <cfreturn true>
             <cfelse>
-                <cflocation url ="/Amritha_CF/testTask/myCart/shopping_cart/logIn.cfm">  
+                <cflocation url ="/logIn.cfm">  
             </cfif> 
         </cfif>
         <cfreturn true>
     </cffunction>
 
-    <!--- <cffunction name="onError" access="public" returnType="void">
+    <cffunction name="onError" access="public" returnType="void">
         <cfargument name="exception" required="true" type="any">
         <cfargument name="eventName" required="true" type="string">
 
         <cfset location("./error.cfm?message=" & urlEncodedFormat(arguments.exception.message))>
-    </cffunction> --->
+    </cffunction>
     
 </cfcomponent>

@@ -255,30 +255,6 @@
         </cfif>
     </cffunction>
 
-    <!--- <cffunction name = "viewSubCategoryData" access = "remote" returnType = "query" returnFormat = "json">
-        <cfargument name = "categoryId" required = "true" type = "numeric">
-        <cfif val(arguments.categoryId) EQ false>
-            <cfset resultQuery = queryNew("message")>
-            <cfset queryAddRow(resultQuery)>
-            <cfset querySetCell(resultQuery, "message", "Invalid attempt - categoryId is required")>
-            <cfreturn resultQuery>
-        <cfelse>
-            <cfquery name = "local.viewSubCategory" datasource = "#application.datasource#">
-                SELECT 
-                    fldSubCategory_Id,
-                    fldSubCategoryName,
-                    fldCategoryId
-                FROM 
-                    tblsubcategory
-                WHERE 
-                    fldActive = 1
-                    <cfif arguments.categoryId NEQ 0>
-                        AND fldCategoryId = <cfqueryparam value="#arguments.categoryId#" cfsqltype="integer">
-                    </cfif>
-            </cfquery>
-            <cfreturn local.viewSubCategory>
-        </cfif>
-    </cffunction> --->
     <cffunction name="viewSubCategoryData" access="remote" returnType="struct" returnFormat="json">
         <cfargument name="categoryId" required="true" type="numeric">
         <cfset var result = structNew()>
@@ -440,6 +416,9 @@
         <cfargument name = "maxRange" type = "numeric" required = "false" default = 0>
         <cfargument name = "random" type = "numeric" required = "false" default = 0>
         <cfargument name = "searchTerm" type = "string" required = "false" default = "">
+        <cfargument name="limit" type="numeric" required="false" default="5">  
+        <cfargument name="offset" type="numeric" required="false" default="0">
+        <cfargument name="randomProducts" type="boolean" required="false" default="false">
         <cfquery name="local.viewProductDetails" datasource = "#application.datasource#">
             SELECT 
                 p.fldProduct_Id, 
@@ -486,11 +465,15 @@
                     p.fldPrice ASC
                 <cfelseif arguments.sort EQ 1>
                     p.fldPrice DESC
+                <cfelseif arguments.randomProducts EQ true>
+                    RAND()
                 <cfelse>
                     p.fldProduct_Id
                 </cfif>,
                 i.fldDefaultImage DESC,
                 i.fldProductImages_Id ASC
+                LIMIT <cfqueryparam value="#arguments.offset#" cfsqltype="integer">,
+                <cfqueryparam value="#arguments.limit#" cfsqltype="integer">    
         </cfquery>
         <cfreturn local.viewProductDetails>
     </cffunction>
@@ -1000,23 +983,29 @@
                         <cfprocparam type="in" value="#arguments.totalPrice#" cfsqltype="decimal">
                         <cfprocparam type="in" value="#arguments.totalTax#" cfsqltype="decimal">
                         <cfprocparam type="in" value="#arguments.productId#" cfsqltype="integer">
-                        <cfprocparam type="in" value="#arguments.cardNumber#" cfsqltype="bigint">
-                        <cfprocparam type="in" value="#arguments.cvv#" cfsqltype="integer">
                         <cfprocparam type="in" value="#arguments.unitPrice#" cfsqltype="decimal">
                         <cfprocparam type="in" value="#arguments.unitTax#" cfsqltype="decimal">
                         <cfprocparam type="out" variable="v_OrderId" cfsqltype="varchar">
                     </cfstoredproc>
-
                     <cfset orderId = v_OrderId>
-                    <cfset orderDetails = orderHistoryDisplay(orderId = orderId)>
+                    
+                    <cfset orderDetails = fetchOrderDetails(orderId = orderId)>
 
+                    <cfset productDetailsHTML = "<ul>" />
+                    
+                    <cfloop query="#orderDetails#">
+                        <cfset productDetailsHTML = productDetailsHTML & "<li>#fldProductName# (Qty: #fldQuantity#) - $ #fldUnitPrice#</li>" />
+                    </cfloop>
+                    
+                    <cfset productDetailsHTML = productDetailsHTML & "</ul>" />
                     <cfmail to="#session.mail#"
                             from="myCart@myCart.com" 
-                            subject="Order Confirmation "
+                            subject="Order Confirmation"
                             type="html">
-                        <p>Hi #session.userName#</p>  
-                        
+                        <p>Hi #session.userName#</p>
                         <p>Thank you for your purchase!</p>
+                        <p>Your order details are as follows:</p>
+                        #productDetailsHTML#
                     </cfmail>
 
                     <cfset result = "Order placed successfully.">
@@ -1031,8 +1020,7 @@
         <cfreturn result>
     </cffunction>
 
-
-    <cffunction name="orderHistoryDisplay" access="remote" returnType = "query" returnFormat="json">
+    <cffunction  name="fetchOrderDetails" access="public" returnType = "query">
         <cfargument name = "orderId" required = "false" type = "string" default="">
         <cfargument name = "orderIdList" required = "false" type = "string" default="">
         <cfargument name = "searchId" required = "false" type = "string" default="">
@@ -1076,44 +1064,45 @@
             ORDER BY 
                 o.fldOrderDate DESC;
         </cfquery>
+        <cfreturn orderHistoryData>
+    </cffunction>
 
-        <cfif structKeyExists(arguments, "orderId") AND trim(len(arguments.orderId))>
-            <cfdocument format="pdf" filename="../assets1/createdPdf.pdf" overwrite="yes">
-                <cfoutput>
-                    <h3>Invoice for Order : #orderHistoryData.fldOrder_Id#</h3>
-                    <p>Order Date: #orderHistoryData.formattedDate#</p>
-                    <p>Total Price: $#orderHistoryData.fldTotalPrice#</p>
-                    <p>Shipping Address: #orderHistoryData.addressFirstName# #orderHistoryData.addressLastName#</p>
-                    <p>Shipping Address: #orderHistoryData.fldAdressLine1#, #orderHistoryData.fldCity#, #orderHistoryData.fldState# #orderHistoryData.fldPincode#</p>
-                    <p>Phone: #orderHistoryData.fldPhoneNumber#</p>
-                    
-                    <h2>Ordered Items:</h2>
-                    <table border="1" cellpadding="5" cellspacing="0">
-                        <thead>
+    <cffunction name="downloadOrderData" access="remote" returnType = "query" returnFormat="json">
+        <cfargument name = "orderId" required = "true" type = "string" default="">
+        <cfset orderHistoryData = fetchOrderDetails(orderId)>
+        <cfdocument format="pdf" filename="../assets1/createdPdf.pdf" overwrite="yes">
+            <cfoutput>
+                <h3>Invoice for Order : #orderHistoryData.fldOrder_Id#</h3>
+                <p>Order Date: #orderHistoryData.formattedDate#</p>
+                <p>Total Price: $#orderHistoryData.fldTotalPrice#</p>
+                <p>Shipping Address: #orderHistoryData.addressFirstName# #orderHistoryData.addressLastName#</p>
+                <p>Shipping Address: #orderHistoryData.fldAdressLine1#, #orderHistoryData.fldCity#, #orderHistoryData.fldState# #orderHistoryData.fldPincode#</p>
+                <p>Phone: #orderHistoryData.fldPhoneNumber#</p>
+                
+                <h2>Ordered Items:</h2>
+                <table border="1" cellpadding="5" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Product Name</th>
+                            <th>Quantity</th>
+                            <th>Unit Price ($)</th>
+                            <th>Product Tax (%)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <cfloop query="#orderHistoryData#">
                             <tr>
-                                <th>Product Name</th>
-                                <th>Quantity</th>
-                                <th>Unit Price ($)</th>
-                                <th>Product Tax (%)</th>
+                                <td>#orderHistoryData.fldProductName#</td>
+                                <td>#orderHistoryData.fldQuantity#</td>
+                                <td>$#orderHistoryData.fldUnitPrice#</td>
+                                <td>#orderHistoryData.productTax#%</td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            <cfloop query="#orderHistoryData#">
-                                <tr>
-                                    <td>#orderHistoryData.fldProductName#</td>
-                                    <td>#orderHistoryData.fldQuantity#</td>
-                                    <td>$#orderHistoryData.fldUnitPrice#</td>
-                                    <td>#orderHistoryData.productTax#%</td>
-                                </tr>
-                            </cfloop>
-                        </tbody>
-                    </table>
-                </cfoutput>
-            </cfdocument>
-            <cfabort>
-        <cfelse>
-            <cfreturn orderHistoryData>
-        </cfif>
+                        </cfloop>
+                    </tbody>
+                </table>
+            </cfoutput>
+        </cfdocument>
+        <cfabort>
     </cffunction>
 
     <cffunction name="delItem" access="remote" returnType="string" returnFormat="json">
@@ -1145,6 +1134,7 @@
                     LEFT JOIN tblsubcategory s ON p.fldSubCategoryid = s.fldSubCategory_Id
                     WHERE 
                         s.fldCategoryId = <cfqueryparam value="#arguments.itemId#" cfsqltype="integer">
+                        AND pi.fldDefaultImage = 0
                 </cfquery>
                 
             <cfelseif arguments.itemType EQ "subcategory">
@@ -1158,6 +1148,7 @@
                         s.fldUpdatedBy = <cfqueryparam value="#session.userId#" cfsqltype="integer">,
                         p.fldActive = 0,
                         p.fldUpdatedBy = <cfqueryparam value="#session.userId#" cfsqltype="integer">
+                        
                     WHERE 
                         s.fldSubCategory_Id = <cfqueryparam value="#arguments.itemId#" cfsqltype="integer">
                 </cfquery>
@@ -1168,6 +1159,7 @@
                     LEFT JOIN tblproduct p ON pi.fldProductId = p.fldProduct_Id
                     WHERE 
                         p.fldSubCategoryid = <cfqueryparam value="#arguments.itemId#" cfsqltype="integer">
+                        AND pi.fldDefaultImage = 0
                 </cfquery>
                 
             <cfelseif arguments.itemType EQ "product">
@@ -1187,6 +1179,7 @@
                         FROM tblproductimages pi
                     WHERE 
                         pi.fldProductId = <cfqueryparam value="#arguments.itemId#" cfsqltype="integer">
+                        AND pi.fldDefaultImage = 0
                 </cfquery>
             </cfif>
 

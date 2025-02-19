@@ -124,5 +124,6 @@
                     </cfloop>
                 </div>
             </cfoutput>
+        <cfinclude template = "commonFooter.cfm">
 
 
