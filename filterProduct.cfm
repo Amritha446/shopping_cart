@@ -1,3 +1,5 @@
+
+
 </head>
     <body>
         <cfoutput>
@@ -146,42 +148,52 @@
                                                 </div>  
                                             </div>
                                         </div>
+                                        
+                                        <cfset limit = 5>
+                                        <cfset offset = 0>
 
+                                        <cfif structKeyExists(form, "viewMoreClicked")>
+                                            <cfset offset = form.offset + limit>
+                                        <cfelse>
+                                            <cfset offset = 0>
+                                        </cfif>
                                         <cfif structKeyExists(form, "filterSubmit")> 
+                                            <cfset viewProductCount = application.myCartObj.viewProduct(subCategoryId = subCategoryId,
+                                                                                                        limit = 100)>
                                             <cfset viewProduct = application.myCartObj.viewProduct(subCategoryId = subCategoryId, 
                                                                                                     min = form.min, 
                                                                                                     max = form.max, 
                                                                                                     minRange = form.minRange, 
-                                                                                                    maxRange = form.maxRange)>                                                           
+                                                                                                    maxRange = form.maxRange,
+                                                                                                    limit = limit,
+                                                                                                    offset = offset)>                                                           
                                         <cfelse>
-                                            <cfset viewProduct = application.myCartObj.viewProduct(subCategoryId = subCategory['fldSubCategory_Id'], 
-                                                                                                    sort = url.sort)>
+                                            <cfset viewProductCount = application.myCartObj.viewProduct(subCategoryId = subCategoryId,
+                                                                                                 limit = 100)>
+                                            <cfset viewProduct = application.myCartObj.viewProduct( subCategoryId = subCategory['fldSubCategory_Id'],
+                                                                                                limit = limit,
+                                                                                                offset = offset,
+                                                                                                sort = url.sort
+                                                                                                )>
                                         </cfif>
-
                                         <cfif url.searchTerm NEQ "">
                                             <cfset viewProduct = application.myCartObj.viewProduct(searchTerm = url.searchTerm)>
                                         </cfif>
-
-                                        <div class="productContainer mt-2 ms-5">
-                                            <cfset currentRow = 1>
+                                        
+                                        <div id="productContainer" class="productContainer mt-2 ms-5">
                                             <cfloop query="viewProduct">
-                                                <cfif (currentRow mod 5) EQ 1>
-                                                    <cfif currentRow GT 1>
-                                                        </div>
-                                                    </cfif>
-                                                    <div class="productRow d-flex">
-                                                </cfif>
-                                                <div class="productBox d-flex-column">
+                                                <div class="productBox d-flex-column" id="product_#viewProduct.currentRow#">
                                                     <a href="productDetails.cfm?productId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = viewProduct.fldProduct_Id))#&random=1" class="imageLink">
                                                         <img src="assets/#viewProduct.imageFileName#" alt="img" class="productBoxImage">
                                                         <div class="ms-4 font-weight-bold h5">#viewProduct.fldProductName#</div>
-                                                        <div class="ms-4 h6 ">#viewProduct.fldBrandName#</div>
+                                                        <div class="ms-4 h6">#viewProduct.fldBrandName#</div>
                                                         <div class="ms-4 small">$#viewProduct.fldPrice#</div>
                                                     </a>
                                                 </div>
-                                                <cfset currentRow = currentRow + 1>
-                                            </cfloop>
-                                        </div>  
+                                            </cfloop>         
+                                        </div>
+                                        <button type="button" id="viewMoreBtn" class="selectBtn" onClick = "loadMoreProducts('#subcategoryId#')">View</button>
+
                                     </cfif>
                                 </cfloop>
                             <cfelse>

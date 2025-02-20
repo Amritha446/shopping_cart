@@ -110,14 +110,13 @@
                 <div class="productListing d-flex-column">
                     <h6 class="mt-3 ms-3">RANDOM PRODUCTS</h6>
                     <cfif url.searchTerm NEQ "">
-                        <cfset viewProduct = application.myCartObj.viewProduct(searchTerm=url.searchTerm)>
+                        <cfset viewProductCount = application.myCartObj.viewProduct(searchTerm=url.searchTerm,
+                                                                                    limit = 100)>
+                        <cfset viewProduct = application.myCartObj.viewProduct(searchTerm=url.searchTerm,
+                                                                                limit = viewProductCount.recordCount)>                                                       
                     <cfelse>
-                        <!--- <cfparam name="url.page" default="1"> 
-                        <cfset limit = 5> 
-                        <cfset offset = (url.page - 1) * limit> 
-
-                        <cfset viewProduct = application.myCartObj.viewProduct(limit=limit, offset=offset)>  --->
-                        <cfset viewProduct = application.myCartObj.viewProduct(randomProducts = true)>                   
+                        <cfset viewProduct = application.myCartObj.viewProduct(randomProducts = true,
+                                                                                limit = 10)>                   
                     </cfif>
                     <cfif viewProduct.recordCount GT 0>
                         <div class="productContainer">

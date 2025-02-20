@@ -794,6 +794,46 @@ function checkAddressBeforeOrder(event) {
         $('#orderItems').modal('show');
     }
 }
+
+let offset = 0;
+function loadMoreProducts(subcategoryId) {
+    document.getElementById('viewMoreBtn').disabled = true;
+    var limit = 5; 
+
+    offset = offset + limit;
+    $.ajax({
+        type:"POST",
+        url:"Components/myCart.cfc?method=viewProduct",
+        data:{offset:offset,
+            limit:limit,
+            subcategoryId:subcategoryId
+        },
+        success: function(response) {
+            let result = JSON.parse(response);
+            console.log(result)
+            result.DATA.forEach((product, index) => {
+                let div = `
+                    <div class="productBox d-flex-column">
+                        <a href="productDetails.cfm?productId=${product[0]}&random=1" class="imageLink">
+                            <img src="assets/${product[9]}" alt="img" class="productBoxImage">
+                            <div class="ms-4 font-weight-bold h5">${product[2]}</div>
+                            <div class="ms-4 h6 ">${product[3]}</div>
+                            <div class="ms-4 small">${product[5]}</div>
+                        </a>
+                    </div>
+                `
+            $('#productContainer').append(div);
+            });
+        },
+    })
+    
+
+   
+}
+
+
+
+
     
 
 
