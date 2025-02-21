@@ -3,8 +3,11 @@
         <cfoutput>
             <cfparam name="url.searchTerm" default="">
             <cfparam name="url.random" default=0>
-            <cfset productId = application.myCartObj.decryptUrl(encryptedData = url.productId)>
-
+            <cfif isValid("integer", url.productId)>
+                <cfset productId = url.productId>
+            <cfelse>
+                <cfset productId = application.myCartObj.decryptUrl(encryptedData = url.productId)>
+            </cfif>
             <div class="container-fluid ">
                 <div class="header d-flex text-align-center">
                     <a href="homePage.cfm" class="imageLink"><div class="headerText ms-5 mt-2 col-6">MyCart</div></a>

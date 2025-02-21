@@ -64,7 +64,6 @@ BEGIN
     
     DELETE FROM tblcart WHERE fldUserId = p_UserId;
 
-    SELECT 'Order placed successfully.' AS message;
 END $$
 
 DELIMITER ;

@@ -431,8 +431,12 @@ body{
     width: 15%; 
     margin: 25px;
     box-sizing: border-box;
-    transition: transform 0.3s ease;
     height:20%;
+    transition: background-color 0.3s ease;
+
+}
+.productBox:hover{
+    transform: scale(1.1);
 }
 .productBox1 {
     width: 25%; 
@@ -449,6 +453,11 @@ body{
     width:5%;
     border:transparent;
     color:#1f6625;
+}
+.defaultLink{
+    border:transparent;
+    color:#1f6625;
+    margin-left:10px;
 }
 .priceDetails:hover {
     transform: scale(1.05);
@@ -726,4 +735,13 @@ body{
     border-radius:12px ;
     margin-left:2vw;
     margin-top:10px;
+}
+.viewCategoryBtn{
+    width:5vw;
+    height:3vw;
+    background-color: #90b993;
+    border-color:transparent;
+    border-radius:12px ;
+    margin-left:95%;
+    margin-top:-10px;
 }

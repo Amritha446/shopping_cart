@@ -80,12 +80,21 @@
 
                     <cfset lastOrderId = "">
                     <cfloop query = "#orderedItemList#">
-                        <cfif orderedItemList.fldOrder_Id NEQ lastOrderId>>
-                            <div class="d-flex-column">
+                        <cfif orderedItemList.fldOrder_Id NEQ lastOrderId>
+                            <div class="d-flex-column mb-3">
                                 <cfset lastOrderId = orderedItemList.fldOrder_Id> 
-                                <cfset orderedEachItemList = application.myCartObj.fetchOrderDetails(orderIdList = #orderedItemList.fldOrder_Id#)>
+                                <cfparam name="url.page" default="1">
+                                <cfparam name="url.limit" default="5">
+                                <cfset page = url.page>
+                                <cfset limit = url.limit>
+                                <cfset offset = (page - 1) * limit>
+                                <cfset orderedEachItemListCount = application.myCartObj.fetchOrderDetails(limit = 100)>
+                                <cfset orderedEachItemList = application.myCartObj.fetchOrderDetails(orderIdList = #orderedItemList.fldOrder_Id#,
+                                                                                                    limit = limit,
+                                                                                                    offset = offset
+                                                                                                    )>
                                 <div class="d-flex orderListHeading">
-                                    <div class="">ORDER ID : #orderedEachItemList.fldOrder_Id#</div>
+                                    <div class="orderDiv">ORDER ID : #orderedEachItemList.fldOrder_Id#</div>
                                     <button type="button" class="invoiceDownload" onClick="downloadInvoice(event)" value="#orderedEachItemList.fldOrder_Id#" title="Download Invoice">
                                         <i class="fa-solid fa-download bg-light pe-none"></i> 
                                     </button>
@@ -102,28 +111,41 @@
                                         <cfset date = dateFormat(newDate,'d-m-Y')>
                                         <div class="d-flex-column col-2">
                                             <div>#orderedEachItemList.fldProductName#</div>
-                                            <div class="">Quantity : #orderedEachItemList.fldQuantity#</div>
-                                            <div class="">Unit Price : #orderedEachItemList.fldUnitPrice#</div>
-                                            <div class="">Unit Tax : #orderedEachItemList.productTax# % </div>
+                                            <div class="orderDiv">Quantity : #orderedEachItemList.fldQuantity#</div>
+                                            <div class="orderDiv">Unit Price : #orderedEachItemList.fldUnitPrice#</div>
+                                            <div class="orderDiv">Unit Tax : #orderedEachItemList.productTax# % </div>
                                         </div> 
                                         <div class="d-flex-column ms-4 col-2">
-                                            <div class="">Ordered On:</div>
-                                            <div class="">#orderedEachItemList.formattedDate#</div>
+                                            <div class="orderDiv">Ordered On:</div>
+                                            <div class="orderDiv">#orderedEachItemList.formattedDate#</div>
                                         </div> 
                                         <div class="d-flex-column ms-4 col-3">
-                                            <div class="">Contact Details:</div>
-                                            <div class="">Mob No: #orderedEachItemList.fldPhoneNumber#</div>
-                                            <div class="">Address: #orderedItemList.fldAdressLine1# #orderedEachItemList.fldAdressLine2#</div>
+                                            <div class="orderDiv">Contact Details:</div>
+                                            <div class="orderDiv">Mob No: #orderedEachItemList.fldPhoneNumber#</div>
+                                            <div class="orderDiv">Address: #orderedItemList.fldAdressLine1# #orderedEachItemList.fldAdressLine2#</div>
                                         </div> 
                                         <div class="d-flex-column ms-4 col-2">
-                                            <div class="">Delivery date:</div>
-                                            <div class="">#date#</div>
+                                            <div class="orderDiv">Delivery date:</div>
+                                            <div class="orderDiv">#date#</div>
                                         </div> 
                                     </div>
                                 </cfloop>  
+                                <cfset totalRecords = orderedEachItemListCount.recordCount>
+                                <cfset totalPages = CEIL(totalRecords / limit)>
+
+                                <cfif page > 1>
+                                    <a href="?page=#page-1#&limit=#limit#">Previous</a>
+                                </cfif>
+
+                                <cfif page < totalPages>
+                                    <a href="?page=#page+1#&limit=#limit#">Next</a>
+                                </cfif>
+
+                                <p>Page #page# of #totalPages#</p>
                             </div>
                         </cfif>
                     </cfloop>
                 </div>
+
             </div>
         </cfoutput>

@@ -1024,6 +1024,9 @@
         <cfargument name = "orderId" required = "false" type = "string" default="">
         <cfargument name = "orderIdList" required = "false" type = "string" default="">
         <cfargument name = "searchId" required = "false" type = "string" default="">
+        <cfargument name="limit" required="false" type="numeric" default="5">
+        <cfargument name="offset" required="false" type="numeric" default="0">
+
         
         <cfquery name = "orderHistoryData" datasource = "#application.datasource#">
             SELECT 
@@ -1062,7 +1065,9 @@
                     AND fldOrder_Id = <cfqueryparam value = "#arguments.orderIdList#" cfsqltype = "varchar">
                 </cfif>
             ORDER BY 
-                o.fldOrderDate DESC;
+                o.fldOrderDate DESC
+                LIMIT <cfqueryparam value="#arguments.offset#" cfsqltype="numeric">,
+                <cfqueryparam value="#arguments.limit#" cfsqltype="numeric">
         </cfquery>
         <cfreturn orderHistoryData>
     </cffunction>

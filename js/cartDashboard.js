@@ -270,6 +270,7 @@ function editProductDetailsButton(event){
 }
 
 function viewSelectedImages() {
+    event.stopPropagation();
     let productId = document.getElementById('productId').value;
     $.ajax({
         type: "POST",
@@ -285,17 +286,25 @@ function viewSelectedImages() {
                 let imageHtml = '';      
                 images.forEach(function(image) {
                     let deleteButtonHtml = image.fldDefaultImage === 1 ? '' : `<button type="button" value="${image.fldProductImages_Id},${productId}" class="closeLink"><i class="fa-solid fa-xmark pe-none"></i></button>`;
-                    
+                    let defaultButton = image.fldDefaultImage === 1 ? '' : `<button type="button" value="${image.fldProductImages_Id},${productId}" class="DefaultLink">Default</button>`;
                     imageHtml += `<div class="d-flex-column">
                         <img src="assets/${image.fldImageFileName}" alt="${image.fldImageFileName}" width="50" height="50" />
                         <span>${image.fldImageFileName}</span>
                         ${deleteButtonHtml} 
+                        ${defaultButton}
                     </div>`;
                 });
                 document.getElementById('selectedImagesList').innerHTML = imageHtml;
                 document.getElementById('selectedImagesList').addEventListener('click', function(event) {
-                    if (event.target && event.target.tagName === 'BUTTON' && event.target.classList.contains('closeLink')) {
-                        deleteImage(event);
+                    if (event.target && event.target.tagName === 'BUTTON') {
+                        event.stopPropagation(); 
+                        
+                        if (event.target.classList.contains('closeLink')) {
+                            deleteImage(event);
+                        } 
+                        else if (event.target.classList.contains('DefaultLink')) {
+                            setDefaultImage(event);
+                        }
                     }
                 });
             }
@@ -305,8 +314,7 @@ function viewSelectedImages() {
         }
     });
 } 
-
-    
+ 
 function deleteProduct(event){
     if(confirm("Confirm delete?")){
         $.ajax({
@@ -796,29 +804,36 @@ function checkAddressBeforeOrder(event) {
 }
 
 let offset = 0;
-function loadMoreProducts(subcategoryId) {
-    document.getElementById('viewMoreBtn').disabled = true;
+function loadMoreProducts(subcategoryId,sort,count,min,max,minRange,maxRange) {
     var limit = 5; 
-
     offset = offset + limit;
+    if (count < offset+5) {
+        document.getElementById('viewMoreBtn').style.display = "none";
+    } else {
+        document.getElementById('viewMoreBtn').style.display = "block";
+    }
     $.ajax({
         type:"POST",
         url:"Components/myCart.cfc?method=viewProduct",
         data:{offset:offset,
             limit:limit,
-            subcategoryId:subcategoryId
+            subcategoryId:subcategoryId,
+            sort:sort,
+            min:min,
+            max:max,
+            minRange:minRange,
+            maxRange:maxRange
         },
         success: function(response) {
             let result = JSON.parse(response);
-            console.log(result)
-            result.DATA.forEach((product, index) => {
+            result.DATA.forEach((product) => {
                 let div = `
                     <div class="productBox d-flex-column">
                         <a href="productDetails.cfm?productId=${product[0]}&random=1" class="imageLink">
                             <img src="assets/${product[9]}" alt="img" class="productBoxImage">
                             <div class="ms-4 font-weight-bold h5">${product[2]}</div>
                             <div class="ms-4 h6 ">${product[3]}</div>
-                            <div class="ms-4 small">${product[5]}</div>
+                            <div class="ms-4 small">$${product[5]}</div>
                         </a>
                     </div>
                 `
@@ -826,9 +841,6 @@ function loadMoreProducts(subcategoryId) {
             });
         },
     })
-    
-
-   
 }
 
 

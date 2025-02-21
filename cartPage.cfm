@@ -2,7 +2,7 @@
     <body>
         <cfoutput>
             <cfparam name="url.searchTerm" default="">
-            <div class="container-fluid ">
+            <div class="container-fluid mb-3">
                 
                 <div class="header d-flex text-align-center">
                     <a href="homePage.cfm" class="imageLink"><div class="headerText ms-5 mt-2 col-6">MyCart</div></a>
@@ -180,3 +180,4 @@
                 </div>
             </div>    
         </cfoutput>
+        <cfinclude template = "commonFooter.cfm">

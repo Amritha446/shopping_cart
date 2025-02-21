@@ -23,7 +23,7 @@
                         <cfset viewProduct = application.myCartObj.viewProduct(subCategoryId = url.subCategoryId)>
                         <cfloop query = "#viewProduct#">
                             <div class = "contentBox h-50 d-flex mb-3 bg-success"> 
-                                <div class = "d-flex-column productData">
+                                <div class = "d-flex-column productData col-5">
                                     <div class="ms-4 font-weight-bold h5">#viewProduct.fldProductName#</div>
                                     <div class="ms-4 h6 ">#viewProduct.fldBrandName#</div>
                                     <div class="ms-4 small">#viewProduct.fldPrice#</div>
@@ -73,6 +73,15 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="modal fade" id="editImageDetails" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content d-flex justify-content-center align-items-center ms-5">
+                        <div id="selectedImagesList" class="mt-1 ms-5"></div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="modal fade" id="editProductDetails" tabindex="-1">
                     <div class="modal-dialog">
                         <div class="modal-content d-flex justify-content-center align-items-center ms-5">
@@ -165,8 +174,9 @@
                                     </div>
                                 </div>
 
-                                <button type="button" class="editImageFile mt-3 mb-5 ms-5" id="viewSelectedImgBtn" name="submit" onClick="viewSelectedImages()">VIEW SELECTED IMAGES</button>
-                                <div id="selectedImagesList" class="mt-1 ms-5"></div>
+                                <!--- <button type="button" class="editImageFile mt-3 mb-5 ms-5" id="viewSelectedImgBtn" name="submit" onClick="viewSelectedImages()" data-bs-toggle="modal" data-bs-target="##editImageDetails">VIEW SELECTED IMAGES</button> --->
+                               <button type="button" class="editImageFile mt-3 mb-5 ms-5" id="viewSelectedImgBtn" name="submit" onClick="viewSelectedImages(event)" data-bs-toggle="modal" data-bs-target="##editImageDetails">VIEW SELECTED IMAGES</button>
+
                                 <div class="ms-5"><button type="submit" value="submit" class="btn mt-3 mb-5 ms-5" name="submit" onClick="return validation()" >SUBMIT</button></div>
                                 <!--- <button type="button" class="btn2 btn-secondary ms-5" data-bs-dismiss="modal" id="closeBtnId">Close</button> --->
                             </form>

@@ -176,6 +176,7 @@
                                                                                                 sort = url.sort
                                                                                                 )>
                                         </cfif>
+                                        
                                         <cfif url.searchTerm NEQ "">
                                             <cfset viewProduct = application.myCartObj.viewProduct(searchTerm = url.searchTerm)>
                                         </cfif>
@@ -192,8 +193,8 @@
                                                 </div>
                                             </cfloop>         
                                         </div>
-                                        <button type="button" id="viewMoreBtn" class="selectBtn" onClick = "loadMoreProducts('#subcategoryId#')">View</button>
-
+                                        <button type="button" id="viewMoreBtn" class="viewCategoryBtn" 
+                                        onClick = "loadMoreProducts('#subcategoryId#','#url.sort#','#viewProductCount.recordCount#','#url.min#','#url.max#','#url.minRange#','#url.maxRange#')">View</button>
                                     </cfif>
                                 </cfloop>
                             <cfelse>
