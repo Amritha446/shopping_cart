@@ -4,9 +4,8 @@
             <cfparam name="url.searchTerm" default="">
             <cfparam name="url.searchId" default="">
             <div class="container-fluid ">
-                
                 <div class="header d-flex text-align-center">
-                    <a href="homePage.cfm" class="imageLink"><div class="headerText ms-5 mt-2 col-6">MyCart</div></a>
+                    <a href="homePage.cfm" class="imageLink"><div class="headerText ms-5 mt-2 me-5">MyCart</div></a>
                     <div class="input-group mt-2 ms-5 ">
                         <form action="homePage.cfm?searchTerm=#url.searchTerm#" method="get">
                             <input class="form-control border rounded-pill" type="search" name="searchTerm" value="#(structKeyExists(url, 'searchTerm') ? url.searchTerm : '')#" id="example-search-input" placeholder="Serach..">
@@ -72,27 +71,34 @@
                     <form method = "GET" action="orderListing.cfm?serachId=#url.searchId#" value="#(structKeyExists(url, 'searchId') ? url.searchId : '')#">
                         <input type="search" name="searchId" placeholder = "Search with Order Id.." class="orderedItemsSearch">
                     </form>
+                    <cfparam name="url.searchId" default="">
+                    <cfparam name="url.page" default="1">
+                    
+                    <cfset pageSize = 5>
+                    <cfset currentPage = #url.page#>
+                    <cfset offset = (currentPage - 1) * pageSize>
+
                     <cfif url.searchId NEQ "">
                         <cfset orderedItemList = application.myCartObj.fetchOrderDetails(searchId = url.searchId)>
                     <cfelse>
-                        <cfset orderedItemList = application.myCartObj.fetchOrderDetails()>
+                        <cfset orderedItemList = application.myCartObj.fetchOrderDetails(limit = pageSize, offset = offset)>
                     </cfif>
 
+                    <cfset totalOrders = application.myCartObj.fetchOrderDetails().recordCount>
+                    <cfset totalPages = floor(((totalOrders + pageSize) - 1) / pageSize)>
+
                     <cfset lastOrderId = "">
+                    <cfset orderDetails = {}>
+
+                    <cfloop query="#orderedItemList#">
+                        <cfset orderDetails[orderedItemList.fldOrder_Id] = application.myCartObj.fetchOrderDetails(orderIdList = orderedItemList.fldOrder_Id)>
+                    </cfloop>
+
                     <cfloop query = "#orderedItemList#">
                         <cfif orderedItemList.fldOrder_Id NEQ lastOrderId>
                             <div class="d-flex-column mb-3">
-                                <cfset lastOrderId = orderedItemList.fldOrder_Id> 
-                                <cfparam name="url.page" default="1">
-                                <cfparam name="url.limit" default="5">
-                                <cfset page = url.page>
-                                <cfset limit = url.limit>
-                                <cfset offset = (page - 1) * limit>
-                                <cfset orderedEachItemListCount = application.myCartObj.fetchOrderDetails(limit = 100)>
-                                <cfset orderedEachItemList = application.myCartObj.fetchOrderDetails(orderIdList = #orderedItemList.fldOrder_Id#,
-                                                                                                    limit = limit,
-                                                                                                    offset = offset
-                                                                                                    )>
+                                <cfset lastOrderId = orderedItemList.fldOrder_Id>
+                                <cfset orderedEachItemList = orderDetails[orderedItemList.fldOrder_Id]>
                                 <div class="d-flex orderListHeading">
                                     <div class="orderDiv">ORDER ID : #orderedEachItemList.fldOrder_Id#</div>
                                     <button type="button" class="invoiceDownload" onClick="downloadInvoice(event)" value="#orderedEachItemList.fldOrder_Id#" title="Download Invoice">
@@ -103,8 +109,8 @@
                                     <div class="orderedItemsBlock d-flex">
                                         <img src="assets/#orderedEachItemList.fldImageFileName#" alt="img" class="orderListImage ms-2 me-3">
                                         <cfset originalDate = CreateDateTime(
-                                            ListGetAt(orderedEachItemList.formattedDate, 3, '-'), 
-                                            ListGetAt(orderedEachItemList.formattedDate, 2, '-'), 
+                                            ListGetAt(orderedEachItemList.formattedDate, 3, '-'),
+                                            ListGetAt(orderedEachItemList.formattedDate, 2, '-'),
                                             ListGetAt(orderedEachItemList.formattedDate, 1, '-')
                                         )>
                                         <cfset newDate = DateAdd("d", 7, originalDate)>
@@ -129,23 +135,25 @@
                                             <div class="orderDiv">#date#</div>
                                         </div> 
                                     </div>
-                                </cfloop>  
-                                <cfset totalRecords = orderedEachItemListCount.recordCount>
-                                <cfset totalPages = CEIL(totalRecords / limit)>
-
-                                <cfif page > 1>
-                                    <a href="?page=#page-1#&limit=#limit#">Previous</a>
-                                </cfif>
-
-                                <cfif page < totalPages>
-                                    <a href="?page=#page+1#&limit=#limit#">Next</a>
-                                </cfif>
-
-                                <p>Page #page# of #totalPages#</p>
+                                </cfloop>
                             </div>
                         </cfif>
                     </cfloop>
-                </div>
+                    <div class="orderPagination">
+                        <cfif (currentPage GT 1) AND (url.searchId EQ "")>
+                            <a href="orderListing.cfm?searchId=#url.searchId#&page=#(currentPage - 1)#" class="paginaionLink">Previous</a>
+                        <cfelse>
+                            <span class="paginaionLink disabled">Previous</span>
+                        </cfif>
 
+                        <span>Page #currentPage# </span>
+                        
+                        <cfif (currentPage LT totalPages) AND (url.searchId EQ "")>
+                            <a href="orderListing.cfm?searchId=#url.searchId#&page=#(currentPage + 1)#" class="paginaionLink">Next</a>
+                        <cfelse>
+                            <span class="paginaionLink disabled">Next</span>
+                        </cfif>
+                    </div>
+                </div>
             </div>
         </cfoutput>

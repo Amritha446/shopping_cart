@@ -136,14 +136,28 @@
                     </cfif>
                     
                     <div class="d-flex-column productDetails">
-                        <cfset subCategoryFetching = application.myCartObj.subCategoryFetching(subCategoryId = #viewProduct.fldSubCategoryId#)>
-                        <cfset categoryFetching = application.myCartObj.categoryFetching(categoryId = #subCategoryFetching.fldCategoryId#)>
-                        <div class="productPath p-1 ">
-                            <a href="homePage.cfm" class="navBarButton ms-2">home</a>
-                            ><a href="categoryBasedProduct.cfm?categoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = categoryFetching.fldCategory_Id))#" class="navBarButton ms-2">#categoryFetching.fldCategoryName#</a>
-                            ><a href="filterProduct.cfm?subCategoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = viewProduct.fldSubCategoryId))#" class="navBarButton ms-2">#subCategoryFetching.fldSubCategoryName#</a>
-                            ><a href="productDetails.cfm?productId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = productId))#" class="navBarButton ms-2">#viewProduct.fldBrandName#</a>
-                        </div>
+                        <cfset subCategoryFetching = application.myCartObj.viewSubCategoryData(subCategoryId = #viewProduct.fldSubCategoryId#)>
+                        <cfset categoryData = {}>
+
+                        <cfloop array="#subCategoryFetching['data']#" index="subCategoryData">
+                            <cfset categoryFetching = application.myCartObj.viewCategoryData(categoryId = #subCategoryData["fldCategoryId"]#)>
+                            <cfset categoryData[subCategoryData["fldCategoryId"]] = categoryFetching>
+                        </cfloop>
+
+                        <cfloop array="#subCategoryFetching['data']#" index="subCategoryData">
+                            <div class="productPath p-1 ">
+                                <a href="homePage.cfm" class="navBarButton ms-2">home</a>
+                                > 
+                                <a href="categoryBasedProduct.cfm?categoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = categoryData[subCategoryData['fldCategoryId']].fldCategory_Id))#" class="navBarButton ms-2">
+                                    #categoryData[subCategoryData['fldCategoryId']].fldCategoryName#
+                                </a>
+                                > 
+                                <a href="filterProduct.cfm?subCategoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = viewProduct.fldSubCategoryId))#" class="navBarButton ms-2">#subCategoryData["fldSubCategoryName"]#</a>
+                                > 
+                                <a href="productDetails.cfm?productId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = productId))#" class="navBarButton ms-2">#viewProduct.fldBrandName#</a>
+                            </div>
+                        </cfloop>
+                        
                         <div class="productName">#viewProduct.fldProductName#</div>
                         <div class="productBrandName">#viewProduct.fldBrandName#</div>
                         <div class="productDescription">About Product:#viewProduct.fldDescription#</div>

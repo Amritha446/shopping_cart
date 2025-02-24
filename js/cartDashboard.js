@@ -52,7 +52,6 @@ function signUpFunction() {
             if (response.password) {
                 document.getElementById('passwordError').innerHTML = response.password;
             }
-
             else if(!response.success){
                 document.getElementById('validationError').innerHTML = response.message;
             }

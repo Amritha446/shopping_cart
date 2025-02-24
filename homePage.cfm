@@ -110,8 +110,7 @@
                 <div class="productListing d-flex-column">
                     <h6 class="mt-3 ms-3">RANDOM PRODUCTS</h6>
                     <cfif url.searchTerm NEQ "">
-                        <cfset viewProductCount = application.myCartObj.viewProduct(searchTerm=url.searchTerm,
-                                                                                    limit = 100)>
+                        <cfset viewProductCount = application.myCartObj.viewProduct(searchTerm=url.searchTerm)>
                         <cfset viewProduct = application.myCartObj.viewProduct(searchTerm=url.searchTerm,
                                                                                 limit = viewProductCount.recordCount)>                                                       
                     <cfelse>

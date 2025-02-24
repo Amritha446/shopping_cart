@@ -745,3 +745,15 @@ body{
     margin-left:95%;
     margin-top:-10px;
 }
+.orderPagination{
+    margin-left:40%;
+    margin-bottom:2%;
+    margin-top:1%;
+}
+.paginaionLink{
+    text-decoration:none;
+    color:#1f6625;
+    padding:5px;
+    border:1px solid #1f6625;
+    border-radius:5px;
+}

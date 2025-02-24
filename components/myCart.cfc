@@ -183,6 +183,7 @@
     </cffunction>
 
     <cffunction name = "viewCategoryData" access = "public" returnType = "query" returnFormat = "json">
+        <cfargument name = "categoryId" required = "false" type = "numeric" default=0>
         <cfquery name = "local.viewCategory" datasource = "#application.datasource#">
             SELECT 
                 fldCategory_Id,
@@ -191,6 +192,9 @@
                 tblcategory
             WHERE 
                 fldActive = 1
+                <cfif arguments.categoryId NEQ 0>
+                    AND fldCategory_Id = <cfqueryparam value="#arguments.categoryId#" cfsqltype="integer">
+                </cfif>
         </cfquery>
         <cfreturn local.viewCategory>
     </cffunction>
@@ -256,7 +260,8 @@
     </cffunction>
 
     <cffunction name="viewSubCategoryData" access="remote" returnType="struct" returnFormat="json">
-        <cfargument name="categoryId" required="true" type="numeric">
+        <cfargument name="categoryId" required="false" type="numeric" default=0>
+        <cfargument name = "subCategoryId" type = "numeric" required = "false" default=0>
         <cfset var result = structNew()>
         <cfif isValid("integer",arguments.categoryId) EQ false>
             <cfset result["message"] = "Invalid attempt - categoryId is required">
@@ -274,6 +279,9 @@
                     fldActive = 1
                     <cfif arguments.categoryId NEQ 0>
                         AND fldCategoryId = <cfqueryparam value="#arguments.categoryId#" cfsqltype="integer">
+                    </cfif>
+                    <cfif arguments.subCategoryId NEQ 0>
+                        AND fldSubCategory_Id = <cfqueryparam value="#arguments.subCategoryId#" cfsqltype="integer">
                     </cfif>
             </cfquery>
             <cfset result["message"] = "Success">
@@ -416,7 +424,7 @@
         <cfargument name = "maxRange" type = "numeric" required = "false" default = 0>
         <cfargument name = "random" type = "numeric" required = "false" default = 0>
         <cfargument name = "searchTerm" type = "string" required = "false" default = "">
-        <cfargument name="limit" type="numeric" required="false" default="5">  
+        <cfargument name="limit" type="numeric" required="false" default=0>  
         <cfargument name="offset" type="numeric" required="false" default="0">
         <cfargument name="randomProducts" type="boolean" required="false" default="false">
         <cfquery name="local.viewProductDetails" datasource = "#application.datasource#">
@@ -472,38 +480,12 @@
                 </cfif>,
                 i.fldDefaultImage DESC,
                 i.fldProductImages_Id ASC
-                LIMIT <cfqueryparam value="#arguments.offset#" cfsqltype="integer">,
-                <cfqueryparam value="#arguments.limit#" cfsqltype="integer">    
+                <cfif arguments.limit NEQ 0>
+                    LIMIT <cfqueryparam value="#arguments.offset#" cfsqltype="integer">,
+                    <cfqueryparam value="#arguments.limit#" cfsqltype="integer">
+                </cfif>      
         </cfquery>
         <cfreturn local.viewProductDetails>
-    </cffunction>
-
-    <cffunction name = "subCategoryFetching" access = "remote" returnType = "query" returnFormat = "json">
-        <cfargument name = "subCategoryId" type = "string" required = "true">
-        <cfquery name = "local.checkProduct" datasource = "#application.datasource#">
-            SELECT 
-                fldCategoryId,
-                fldSubCategoryName
-            FROM 
-                tblsubcategory
-            WHERE 
-                fldSubCategory_Id = <cfqueryparam value="#arguments.subCategoryId#" cfsqltype="integer">
-        </cfquery>
-        <cfreturn local.checkProduct>
-    </cffunction>
-
-    <cffunction name="categoryFetching" access = "remote" returnType = "query" returnFormat = "json">
-        <cfargument name = "categoryId" type = "string" required = "true">
-        <cfquery name = "local.checkProduct" datasource = "#application.datasource#">
-            SELECT 
-                fldCategory_Id,
-                fldCategoryName
-            FROM 
-                tblcategory
-            WHERE 
-                fldCategory_Id = <cfqueryparam value = "#arguments.categoryId#" cfsqltype = "integer">
-        </cfquery>
-        <cfreturn local.checkProduct>
     </cffunction>
 
     <cffunction name = "editProduct" access = "remote" returnType = "string" returnFormat = "json">
@@ -1024,10 +1006,9 @@
         <cfargument name = "orderId" required = "false" type = "string" default="">
         <cfargument name = "orderIdList" required = "false" type = "string" default="">
         <cfargument name = "searchId" required = "false" type = "string" default="">
-        <cfargument name="limit" required="false" type="numeric" default="5">
+        <cfargument name="limit" required="false" type="numeric" default=0>
         <cfargument name="offset" required="false" type="numeric" default="0">
 
-        
         <cfquery name = "orderHistoryData" datasource = "#application.datasource#">
             SELECT 
                 o.fldOrder_Id,
@@ -1066,8 +1047,10 @@
                 </cfif>
             ORDER BY 
                 o.fldOrderDate DESC
-                LIMIT <cfqueryparam value="#arguments.offset#" cfsqltype="numeric">,
-                <cfqueryparam value="#arguments.limit#" cfsqltype="numeric">
+                <cfif arguments.limit NEQ 0>
+                    LIMIT <cfqueryparam value="#arguments.offset#" cfsqltype="numeric">,
+                    <cfqueryparam value="#arguments.limit#" cfsqltype="numeric">
+                </cfif>
         </cfquery>
         <cfreturn orderHistoryData>
     </cffunction>

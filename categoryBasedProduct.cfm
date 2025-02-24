@@ -88,7 +88,8 @@
                                         <h5>#subCategory['fldSubCategoryName']#</h5>
                                     </a>
 
-                                    <cfset viewProduct = application.myCartObj.viewProduct(subCategoryId = subCategory['fldSubCategory_Id'])>
+                                    <cfset viewProduct = application.myCartObj.viewProduct(subCategoryId = subCategory['fldSubCategory_Id'],
+                                                                                            limit = 5)>
 
                                     <cfif url.searchTerm NEQ "">
                                         <cfset viewProduct = application.myCartObj.viewProduct(searchTerm=url.searchTerm)>
