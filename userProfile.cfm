@@ -29,38 +29,7 @@
                     </button>
                 </div>
 
-                <div class="navBar">
-                    <cfset viewCategory = application.myCartObj.viewCategoryData()>
-                    <cfset allSubCategories = application.myCartObj.viewSubCategoryData(categoryId = 0)>
-                    <cfif viewCategory.recordCount GT 0>
-                        <cfloop query="#viewCategory#">
-                            <div class="categoryDisplay ms-5 me-5 d-flex">
-                                <div class="categoryNameNavBar p-1" data-category-id="#viewCategory.fldCategory_Id#">
-                                    <a href="categoryBasedProduct.cfm?categoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = viewCategory.fldCategory_Id))#" class="navBarButton">#viewCategory.fldCategoryName#</a>
-                                    <div class="subCategoryMenu">
-                                        <cfif allSubCategories["message"] EQ "Success">
-                                            <cfloop array="#allSubCategories['data']#" index="subCategory">
-                                                <cfif subCategory["fldCategoryId"] EQ viewCategory.fldCategory_Id>
-                                                    <a href="filterProduct.cfm?subCategoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = subCategory['fldSubCategory_Id']))#" class="subcategoryItem">
-                                                        #subCategory['fldSubCategoryName']#
-                                                    </a>
-                                                </cfif>
-                                            </cfloop>
-                                        <cfelse>
-                                            <div class="errorMessage">
-                                                Error: #allSubCategories["message"]#
-                                            </div>
-                                        </cfif>
-                                    </div>
-                                </div>
-                            </div>
-                        </cfloop>
-                    <cfelse>
-                        <div class="errorMessage">
-                            Error: #viewCategory.message#
-                        </div>
-                    </cfif>
-                </div>
+                <cfinclude template = "navbar.cfm">
 
                 <div class="nameSection justify-content-center text-align-center d-flex">
                     <cfset viewUserDetails = application.myCartObj.userDetailsFetching()>
@@ -80,7 +49,7 @@
                     <cfset viewUserAddress = application.myCartObj.fetchUserAddress()>
                     <cfloop query="#viewUserAddress#">
                         <div class="addressAddSection d-flex ms-4 mt-2 ">
-                            <div class="d-flex-column">
+                            <div class="d-flex flex-column">
                                 <div class="d-flex ms-4">#viewUserAddress.fldFirstName#  #viewUserAddress.fldLastName#  </div>
                                 <div class="d-flex ms-4">#viewUserAddress.fldAdressLine1# , #viewUserAddress.fldAdressLine2# ,
                                 #viewUserAddress.fldCity# , #viewUserAddress.fldState#</div>
@@ -98,21 +67,21 @@
                     <div class="modal-dialog">
                         <div class="modal-content d-flex justify-content-center align-items-center">
                             <div class="d-flex ">
-                                <div class="d-flex-column ">
+                                <div class="d-flex flex-column ">
                                     <div class="textHead">FIRST NAME:</div>
                                     <input type="text" name="userFirstName" class="ms-1" id="userFirstNameProfile">
                                 </div>
-                                <div class="d-flex-column">
+                                <div class="d-flex flex-column">
                                     <div class="textHead">LAST NAME:</div>
                                     <input type="text" name="userLastName" class="ms-1" id="userLastNameProfile">
                                 </div>
                             </div>
                             <div class="d-flex ">
-                                <div class="d-flex-column ">
+                                <div class="d-flex flex-column ">
                                     <div class="textHead">EMAIL:</div>
                                     <input type="text" name="userPhoneNumber" class="ms-1" id="userPhoneNumberProfile">
                                 </div>
-                                <div class="d-flex-column">
+                                <div class="d-flex flex-column">
                                     <div class="textHead">PHONE NO:</div>
                                     <input type="text" name="userEmail" class="ms-1" id="userEmailProfile" >
                                 </div>
@@ -126,48 +95,48 @@
                     <div class="modal-dialog">
                         <div class="modal-content d-flex justify-content-center align-items-center">
                             <div class="d-flex ">
-                                <div class="d-flex-column ">
+                                <div class="d-flex flex-column ">
                                     <div class="textHead">FIRST NAME:</div>
                                     <input type="text" name="addressFirstName" class="ms-1" id="addressFirstName">
                                     <div class="error text-danger" id="addressFirstNameError"></div>
                                 </div>
-                                <div class="d-flex-column">
+                                <div class="d-flex flex-column">
                                     <div class="textHead">LAST NAME:</div>
                                     <input type="text" name="addressLastName" class="ms-1" id="addressLastName" >
                                     <div class="error text-danger" id="addressLastNameError"></div>
                                 </div>
                             </div>
                             <div class="d-flex ">
-                                <div class="d-flex-column ">
+                                <div class="d-flex flex-column ">
                                     <div class="textHead">ADDRESS LINE 1:</div>
                                     <input type="text" name="addressLine1" class="ms-1" id="addressLine1">
                                     <div class="error text-danger" id="addressLine1Error"></div>
                                 </div>
-                                <div class="d-flex-column">
+                                <div class="d-flex flex-column">
                                     <div class="textHead">ADDRESS LINE 2:</div>
                                     <input type="text" name="addressLine2" class="ms-1" id="addressLine2">
                                     <div class="error text-danger" id="addressLine2Error"></div>
                                 </div>
                             </div>
                             <div class="d-flex ">
-                                <div class="d-flex-column ">
+                                <div class="d-flex flex-column ">
                                     <div class="textHead">CITY:</div>
                                     <input type="text" name="userCity" class="ms-1" id="userCity">
                                     <div class="error text-danger" id="userCityError"></div>
                                 </div>
-                                <div class="d-flex-column">
+                                <div class="d-flex flex-column">
                                     <div class="textHead">STATE:</div>
                                     <input type="text" name="userState" class="ms-1" id="userState" >
                                     <div class="error text-danger" id="userStateError"></div>
                                 </div>
                             </div>
                             <div class="d-flex ">
-                                <div class="d-flex-column ">
+                                <div class="d-flex flex-column ">
                                     <div class="textHead">PINCODE:</div>
                                     <input type="text" name="userPincode" class="ms-1" id="userPincode">
                                     <div class="error text-danger" id="userPincodeError"></div>
                                 </div>
-                                <div class="d-flex-column">
+                                <div class="d-flex flex-column">
                                     <div class="textHead">PHONE NO:</div>
                                     <input type="text" name="userPhoneNumber" class="ms-1" id="userPhoneNumber" >
                                     <div class="error text-danger" id="userPhoneNumberError"></div>

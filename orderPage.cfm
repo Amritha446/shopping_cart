@@ -7,7 +7,6 @@
             <cfparam name="url.addressId" default="">
             <cfparam name="url.productId" default="">
             <div class="container-fluid ">
-                <cfset cartData = application.myCartObj.viewCartData()>
                 <div class="header d-flex text-align-center">
                     <a href="homePage.cfm" class="imageLink"><div class="headerText ms-5 mt-2 col-6">MyCart</div></a>
                     <div class="input-group mt-2 ms-5 ">
@@ -17,7 +16,7 @@
                     </div>
 
                     <cfif structKeyExists(session, "isAuthenticated") AND session.isAuthenticated EQ true>
-                        <div><a href="cartPage.cfm"><i class="fa badge fa-lg mt-3" value=#cartData.recordCount#>&##xf07a;</i></a></div>
+                        <div><a href="cartPage.cfm"><i class="fa badge fa-lg mt-3" value=#session.cartCount#>&##xf07a;</i></a></div>
                     <cfelse>
                          <div><i class="fa-solid fa-cart-shopping me-2 mt-2 p-2" style="color: ##fff"></i></div>
                     </cfif>
@@ -33,38 +32,7 @@
                     </button>
                 </div>
                 
-                <div class="navBar">
-                    <cfset viewCategory = application.myCartObj.viewCategoryData()>
-                    <cfset allSubCategories = application.myCartObj.viewSubCategoryData(categoryId = 0)>
-                    <cfif viewCategory.recordCount GT 0>
-                        <cfloop query="#viewCategory#">
-                            <div class="categoryDisplay ms-5 me-5 d-flex">
-                                <div class="categoryNameNavBar p-1" data-category-id="#viewCategory.fldCategory_Id#">
-                                    <a href="categoryBasedProduct.cfm?categoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = viewCategory.fldCategory_Id))#" class="navBarButton">#viewCategory.fldCategoryName#</a>
-                                    <div class="subCategoryMenu">
-                                        <cfif allSubCategories["message"] EQ "Success">
-                                            <cfloop array="#allSubCategories['data']#" index="subCategory">
-                                                <cfif subCategory["fldCategoryId"] EQ viewCategory.fldCategory_Id>
-                                                    <a href="filterProduct.cfm?subCategoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = subCategory['fldSubCategory_Id']))#" class="subcategoryItem">
-                                                        #subCategory['fldSubCategoryName']#
-                                                    </a>
-                                                </cfif>
-                                            </cfloop>
-                                        <cfelse>
-                                            <div class="errorMessage">
-                                                Error: #allSubCategories["message"]#
-                                            </div>
-                                        </cfif>
-                                    </div>
-                                </div>
-                            </div>
-                        </cfloop>
-                    <cfelse>
-                        <div class="errorMessage">
-                            Error: #viewCategory.message#
-                        </div>
-                    </cfif>
-                </div>
+                <cfinclude template = "navbar.cfm">
                 
                 <div class="orderSummary mb-5">
                     <h5 class="ms-5 ps-5 mt-3 text-light p-2">ORDER SUMMARY</h5>
@@ -73,7 +41,7 @@
                         <cfif viewUserAddress.recordCount EQ 0>
                             
                         <cfelse>
-                            <div class="addressAddSection d-flex-column mt-2 ">
+                            <div class="addressAddSection d-flex flex-column mt-2 ">
                                 <div class="fs-6 ms-4 text-success">SELECTED ADDRESS</div>
                                 <div class="d-flex ms-4">#viewUserAddress.fldFirstName#  #viewUserAddress.fldLastName#  </div>
                                 <div class="d-flex ms-4">#viewUserAddress.fldAdressLine1# , #viewUserAddress.fldAdressLine2# ,
@@ -82,7 +50,7 @@
                             </div>
                         </cfif>
                     </div>
-                    <div class="productOrder d-flex-column ">
+                    <div class="productOrder d-flex flex-column ">
                         <cfif URL.productId NEQ "">
                             <cfset cartData = application.myCartObj.viewProduct(productId = URL.productId)>
                         <cfelse>
@@ -93,7 +61,7 @@
                         <div class="fs-6 text-success orderedProductName ms-4 mt-4">PRODUCT DETAILS</div>
                         <cfloop query="#cartData#">
                             <div class="cartItem d-flex">
-                                <div class="d-flex-column mt-3">
+                                <div class="d-flex flex-column mt-3">
                                     <div class="d-flex orderListing justify-content-space-between">
                                         <cfif len(trim(URL.productId))>
                                             <img src="assets/#cartData.imageFileName#" alt="img" class="productBoxImage1"> 
@@ -114,7 +82,7 @@
                                         </cfif>
                                         <button class="increment ms-2" onClick="incrementQuantity(event)" value="#cartData.fldProduct_Id#">+</button>
                                     </div>
-                                    <div class="d-flex-column productMainDetails">
+                                    <div class="d-flex flex-column productMainDetails">
                                         <div class="productPrice ms-3">Unit Price:$#cartData.fldPrice#</div>
                                         <div class="productTax ms-3">Actual Price:$#cartData.fldPrice#</div>
                                         <div class="productActualPrice ms-3">Product Tax:#cartData.fldTax#%</div>
@@ -136,6 +104,7 @@
                         <cfelse>
                             <div class="alert alert-danger ms-4 mt-2" id="addressErrorMessage">No products found. Please add products before placing the order.</div>
                         </cfif>
+                        <div class="paymentError text-danger ms-5 ps-5" id="paymentError"></div>
                         <form method="POST" name="form">
                             <button type="submit" class="orderPlacingBtn" >ADD TO CART</button>
                             <input type="hidden" value = "#cartData.fldProduct_Id#" name="addToCartHidden">
@@ -156,7 +125,7 @@
                                 <div class="orderBox">
                                     <div class="cardDetails ">
                                         <h6 class="text-success ms-5">CARD DETAILS</h6>
-                                        <div class="d-flex-column">
+                                        <div class="d-flex flex-column">
                                             <div>
                                                 <div class="textHead">CARD NUMBER</div>
                                                 <input type="number" name="paymentCardNumber" class="ms-1" id="paymentCardNumber" placeholder="0000-000">

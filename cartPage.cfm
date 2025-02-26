@@ -13,8 +13,7 @@
                     </div> 
 
                     <cfif structKeyExists(session, "isAuthenticated") AND session.isAuthenticated EQ true>
-                        <cfset cartData = application.myCartObj.viewCartData()>
-                        <div><a href="cartPage.cfm"><i class="fa badge fa-lg mt-3" value=#cartData.recordCount#>&##xf07a;</i></a></div>
+                        <div><a href="cartPage.cfm"><i class="fa badge fa-lg mt-3" value=#session.cartCount#>&##xf07a;</i></a></div>
                     <cfelse>
                          <div><i class="fa-solid fa-cart-shopping me-2 mt-2 p-2" style="color: ##fff"></i></div>
                     </cfif>
@@ -30,51 +29,20 @@
                         </div>
                     </button>
                 </div>
-                <div class="navBar">
-                    <cfset viewCategory = application.myCartObj.viewCategoryData()>
-                    <cfset allSubCategories = application.myCartObj.viewSubCategoryData(categoryId = 0)>
-                    <cfif viewCategory.recordCount GT 0>
-                        <cfloop query="#viewCategory#">
-                            <div class="categoryDisplay ms-5 me-5 d-flex">
-                                <div class="categoryNameNavBar p-1" data-category-id="#viewCategory.fldCategory_Id#">
-                                    <a href="categoryBasedProduct.cfm?categoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = viewCategory.fldCategory_Id))#" class="navBarButton">#viewCategory.fldCategoryName#</a>
-                                    <div class="subCategoryMenu">
-                                        <cfif allSubCategories["message"] EQ "Success">
-                                            <cfloop array="#allSubCategories['data']#" index="subCategory">
-                                                <cfif subCategory["fldCategoryId"] EQ viewCategory.fldCategory_Id>
-                                                    <a href="filterProduct.cfm?subCategoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = subCategory['fldSubCategory_Id']))#" class="subcategoryItem">
-                                                        #subCategory['fldSubCategoryName']#
-                                                    </a>
-                                                </cfif>
-                                            </cfloop>
-                                        <cfelse>
-                                            <div class="errorMessage">
-                                                Error: #allSubCategories["message"]#
-                                            </div>
-                                        </cfif>
-                                    </div>
-                                </div>
-                            </div>
-                        </cfloop>
-                    <cfelse>
-                        <div class="errorMessage">
-                            Error: #viewCategory.message#
-                        </div>
-                    </cfif>
-                </div>
+                <cfinclude template = "navbar.cfm">
                 <div class="d-flex">
                     <cfset cartData = application.myCartObj.viewCartData()>
                     <cfif cartData.recordCount EQ 0>
                         <h5 class="text-success ms-5 mt-5">Cart is empty!</h5>
                     </cfif>
                     <input type = "hidden" id="cartIdFetch" value="#cartData.fldCart_Id#">
-                    <div class="cartContainer d-flex-column">
+                    <div class="cartContainer d-flex flex-column">
                         <cfloop query="#cartData#">
-                            <div class="cartItem d-flex-column ms-5" >
-                                <div class="d-flex-column productBox1">
+                            <div class="cartItem d-flex flex-column ms-5" >
+                                <div class="d-flex flex-column productBox1">
                                     <img src="assets/#cartData.fldImageFileName#" alt="img" class="productBoxImage"> 
-                                    <div class="ms-4 font-weight-bold h5">#cartData.fldProductName#</div>
-                                    <div class="quantityBlock ms-5">
+                                    <div class="ms-4 font-weight-bold h5 ">#cartData.fldProductName#</div>
+                                    <div class="quantityBlock ms-4">
                                         <button class="decrement me-2" value="#cartData.fldProduct_Id#" onClick="decrementQuantity(event)">-</button>
                                         <span class="quantityNumber">#cartData.fldQuantity#</span>
                                         <button class="increment ms-2" value="#cartData.fldProduct_Id#" onClick="incrementQuantity(event)">+</button>
@@ -89,7 +57,7 @@
                                     </div>
                                     
                                 </div>
-                                <div class="d-flex-column productMainDetails">
+                                <div class="d-flex flex-column productMainDetails">
                                     <div class="productPrice ms-3" id="orderedProductPriceId">Unit Price:$#cartData.fldPrice#</div>
                                     <div class="productTax ms-3" id="orderedProductTaxId">Actual Price:$#cartData.fldPrice#</div>
                                     <div class="productActualPrice ms-3" id="orderedProductActualId">Product Tax:#cartData.fldTax#%</div>
@@ -114,7 +82,7 @@
                                 <form action="orderPage.cfm" method="get">
                                     <cfloop query="#viewUserAddress#">
                                         <div class="addressAddSection d-flex ms-4 mt-2">
-                                            <div class="d-flex-column">
+                                            <div class="d-flex flex-column">
                                                 <input type="radio" name="addressId" value="#viewUserAddress.fldAddress_Id#" class="address-radio" required>
                                                 <div class="d-flex ms-4">#viewUserAddress.fldFirstName# #viewUserAddress.fldLastName#</div>
                                                 <div class="d-flex ms-4">#viewUserAddress.fldAdressLine1# , #viewUserAddress.fldAdressLine2# , #viewUserAddress.fldCity# , #viewUserAddress.fldState#</div>
@@ -135,41 +103,41 @@
                     <div class="modal-dialog">
                         <div class="modal-content d-flex justify-content-center align-items-center">
                             <div class="d-flex ">
-                                <div class="d-flex-column ">
+                                <div class="d-flex flex-column ">
                                     <div class="textHead">FIRST NAME:</div>
                                     <input type="text" name="addressFirstName" class="ms-1" id="addressFirstName">
                                 </div>
-                                <div class="d-flex-column">
+                                <div class="d-flex flex-column">
                                     <div class="textHead">LAST NAME:</div>
                                     <input type="text" name="addressLastName" class="ms-1" id="addressLastName" >
                                 </div>
                             </div>
                             <div class="d-flex ">
-                                <div class="d-flex-column ">
+                                <div class="d-flex flex-column ">
                                     <div class="textHead">ADDRESS LINE 1:</div>
                                     <input type="text" name="addressLine1" class="ms-1" id="addressLine1">
                                 </div>
-                                <div class="d-flex-column">
+                                <div class="d-flex flex-column">
                                     <div class="textHead">ADDRESS LINE 2:</div>
                                     <input type="text" name="addressLine2" class="ms-1" id="addressLine2">
                                 </div>
                             </div>
                             <div class="d-flex ">
-                                <div class="d-flex-column ">
+                                <div class="d-flex flex-column ">
                                     <div class="textHead">CITY:</div>
                                     <input type="text" name="userCity" class="ms-1" id="userCity">
                                 </div>
-                                <div class="d-flex-column">
+                                <div class="d-flex flex-column">
                                     <div class="textHead">STATE:</div>
                                     <input type="text" name="userState" class="ms-1" id="userState" >
                                 </div>
                             </div>
                             <div class="d-flex ">
-                                <div class="d-flex-column ">
+                                <div class="d-flex flex-column ">
                                     <div class="textHead">PINCODE:</div>
                                     <input type="text" name="userPincode" class="ms-1" id="userPincode">
                                 </div>
-                                <div class="d-flex-column">
+                                <div class="d-flex flex-column">
                                     <div class="textHead">PHONE NO:</div>
                                     <input type="text" name="userPhoneNumber" class="ms-1" id="userPhoneNumber" >
                                 </div>

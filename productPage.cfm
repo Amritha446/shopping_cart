@@ -18,12 +18,14 @@
                         <div class = "categorySection d-flex">
                             <h5 id= "modalHeading" class = "ms-5 mt-4">PRODUCT LIST</h5>
                             <button type="submit" class="addSubCategoryBtn ms-4 mb-3 mt-4" onClick="createNewProduct()"
-                                id="createNewProductBtn">Add</button> 
+                                id="createNewProductBtn">
+                                Add
+                            </button>
                         </div>
                         <cfset viewProduct = application.myCartObj.viewProduct(subCategoryId = url.subCategoryId)>
                         <cfloop query = "#viewProduct#">
                             <div class = "contentBox h-50 d-flex mb-3 bg-success"> 
-                                <div class = "d-flex-column productData col-5">
+                                <div class = "d-flex flex-column productData col-5">
                                     <div class="ms-4 font-weight-bold h5">#viewProduct.fldProductName#</div>
                                     <div class="ms-4 h6 ">#viewProduct.fldBrandName#</div>
                                     <div class="ms-4 small">#viewProduct.fldPrice#</div>
@@ -54,9 +56,12 @@
                 <div class="modal fade" id="imgDetails" tabindex="-1">
                     <div class="modal-dialog">
                         <div class="modal-content">
-                            <div class = "imgBox d-flex-column"> 
+                     
+                            <button type="button" class="btn-close ms-auto p-3" data-bs-dismiss="modal" aria-label="Close"></button>
+                    
+                            <div class = "d-flex flex-column"> 
                                 <div class="imageShow" id="imageShow">
-                                    <div id="carouselExampleIndicators" class="carousel slide" >
+                                    <div id="carouselExampleIndicators" class="carousel slide">
                                         <div class="carousel-inner" id="carouselImages">
                                         </div>
                                         <button class="carousel-control-prev" type="button" data-bs-target="##carouselExampleIndicators" data-bs-slide="prev">
@@ -123,7 +128,7 @@
                                 </div>
 
 
-                                <div class="d-flex-column mt-3 ms-4">
+                                <div class="d-flex flex-column mt-3 ms-4">
                                     <div class="d-flex">
                                         <div class="textHead col-3">Product Name:</div>
                                         <input type="text" name="productName" class="editBtn2 ms-3" id="productName" maxlength="100">
@@ -137,12 +142,12 @@
                                         <cfset brandName = application.myCartObj.viewBrands()>
                                         <cfloop query = #brandName#>
                                             <option value="#brandName.fldBrand_Id#">#brandName.fldBrandName#</option>
-                                        </cfloop>
+                                        </cfloop> 
                                     </select>
                                     <div class="error text-danger ms-3" id="brandError"></div>
                                 </div>
 
-                                <div class="d-flex-column mt-3 ms-4">
+                                <div class="d-flex flex-column mt-3 ms-4">
                                     <div class="d-flex">
                                         <div class="textHead col-3">Product Description:</div>
                                         <input type="text" name="productDescrptn" class="editBtn2 ms-3" id="productDescrptn" maxlength="300">
@@ -150,7 +155,7 @@
                                     <div class="error text-danger ms-3" id="descriptionError"></div>
                                 </div>
 
-                                <div class="d-flex-column mt-3 ms-4">
+                                <div class="d-flex flex-column mt-3 ms-4">
                                     <div class="d-flex">
                                         <div class="textHead col-3">Product Price:</div>
                                         <input type="number" name="productPrice" class="editBtn2 ms-3" id="productPrice">
@@ -158,7 +163,7 @@
                                     <div class="error text-danger ms-3" id="priceError"></div>
                                 </div>
 
-                                <div class="d-flex-column mt-3 ms-4">
+                                <div class="d-flex flex-column mt-3 ms-4">
                                     <div class="d-flex">
                                         <div class="textHead col-3">Product Tax:</div>
                                         <input type="number" name="productTax" class="editBtn2 ms-3" id="productTax" maxlength="100">
@@ -167,7 +172,7 @@
                                 </div>
 
                                 <div class="d-flex mt-3 ms-4">
-                                    <div class="d-flex-column">
+                                    <div class="d-flex flex-column">
                                         <div class="textHead col-7">Upload Product Image</div>
                                         <input type="file" class="editBtn1 ms-4 mt-1" name="productImg" id="productImg" multiple>
                                         <div class="error text-danger ms-3" id="imgError"></div>
@@ -190,7 +195,7 @@
                     categoryId = form.categoryIdProduct,
                     subCategoryId = form.subCategoryIdProduct,
                     productName = form.productName,
-                    productBrandId = form.productBrand,
+                    productBrand = form.productBrand,
                     productPrice = form.productPrice,
                     productDescrptn = form.productDescrptn,
                     productImg = form.productImg,
@@ -208,7 +213,7 @@
                 subCategoryId = form.subCategoryIdProduct,
                 productId = form.productId,
                 productName = form.productName,
-                productBrandId = form.productBrand,
+                productBrand = form.productBrand,
                 productPrice = form.productPrice,
                 productDescrptn = form.productDescrptn,
                 productImg = form.productImg,

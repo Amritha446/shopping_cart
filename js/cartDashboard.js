@@ -286,7 +286,7 @@ function viewSelectedImages() {
                 images.forEach(function(image) {
                     let deleteButtonHtml = image.fldDefaultImage === 1 ? '' : `<button type="button" value="${image.fldProductImages_Id},${productId}" class="closeLink"><i class="fa-solid fa-xmark pe-none"></i></button>`;
                     let defaultButton = image.fldDefaultImage === 1 ? '' : `<button type="button" value="${image.fldProductImages_Id},${productId}" class="DefaultLink">Default</button>`;
-                    imageHtml += `<div class="d-flex-column">
+                    imageHtml += `<div class="d-flex flex-column">
                         <img src="assets/${image.fldImageFileName}" alt="${image.fldImageFileName}" width="50" height="50" />
                         <span>${image.fldImageFileName}</span>
                         ${deleteButtonHtml} 
@@ -379,27 +379,27 @@ function loadProductImages() {
                 
                 if (image.fldDefaultImage != 1) {
                     deleteButton = `
-                        <button type="submit" class="ms-3 btnImg2" onClick="deleteImage()" 
+                        <button type="submit" class="btnImg2" onClick="deleteImage()" 
                         value="${image.fldProductImages_Id},${image.fldProductId}">Delete</button>
                     `;
                 }
                 carouselContent += `
                 <div class="carousel-item ${activeClass}">
-                    <div class="d-flex imageButtonDiv">
-                        <button type="submit" class="ms-3 btnImg1 " onClick="setDefaultImage()" 
+                    <div class="d-flex justify-content-evenly mb-2">
+                        <button type="submit" class="btnImg1 " onClick="setDefaultImage()" 
                         value="${image.fldProductImages_Id},${image.fldProductId}">Default Set</button>
                         
                         ${deleteButton} 
                     </div>
-                    <img src="assets/${image.fldImageFileName}" class="d-block w-100 ${defaultImageClass}" alt="Image ${i+1}">
-                    <button type="button" class="btn3 btn-secondary ms-4" data-bs-dismiss="modal" id="closeBtnId">Close</button>
+                    <img src="assets/${image.fldImageFileName}" class="d-block ${defaultImageClass} mx-auto border border-1 p-3" alt="Image ${i+1}" height="200" width="200">
+                    
                 </div>
                 `;
                 
                 activeClass = '';
             }
 
-            $('#carouselImages').html(carouselContent);
+            $('#carouselImages').append(carouselContent);
 
         }
     });
@@ -714,7 +714,6 @@ function removeAddress(event){
             url:"Components/myCart.cfc?method=removeUserAddress",
             data:{addressId:event.target.value},
             success:function(response){
-                alert(response);
                 location.reload(); 
             }
         })
@@ -774,11 +773,11 @@ function paymentData() {
             if (result == "Order placed successfully.") {
                 window.location.href = "paymentPage.cfm";
             } else {
-                alert(result);
+                /* alert(result); */
+                document.getElementById('paymentError').textContent = result;
             }
         },
         error: function (xhr, ajaxOptions, thrownError) {
-            alert(xhr.status);
             alert(thrownError);
           }
     });
@@ -827,7 +826,7 @@ function loadMoreProducts(subcategoryId,sort,count,min,max,minRange,maxRange) {
             let result = JSON.parse(response);
             result.DATA.forEach((product) => {
                 let div = `
-                    <div class="productBox d-flex-column">
+                    <div class="productBox d-flex flex-column">
                         <a href="productDetails.cfm?productId=${product[0]}&random=1" class="imageLink">
                             <img src="assets/${product[9]}" alt="img" class="productBoxImage">
                             <div class="ms-4 font-weight-bold h5">${product[2]}</div>

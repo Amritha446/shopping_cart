@@ -17,7 +17,7 @@
                 <div class="mainSection mb-5 mt-5 justify-content-center align-items-center ps-5">
                     <h5 class = "heading fs-3 mt-2 ms-5 ps-5">LOGIN</h5>
                     <form method="post" class="ms-5 " name="form">
-                        <div class="input d-flex-column">
+                        <div class="input d-flex flex-column">
                             <div class="text-secondary mt-2 ms-3"> Email/Phone No</div>
                             <input type="text" name="userName" class="inputs ms-3">
                             <div class="error text-danger" id="usersError"></div>

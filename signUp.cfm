@@ -23,24 +23,24 @@
                         <p class=" headingSignup fs-3 mt-2 ms-5 ps-5">USER DETAILS</p>
                         <form method="post" class="ms-4 signUpForm" enctype="multipart/form-data" name="form">
                             <div class = "d-flex">
-                                <div class="input d-flex-column">
+                                <div class="input d-flex flex-column">
                                     <div class="text-secondary mt-3 ms-2"> First Name</div>
                                     <input type="text" name="firstName" id="firstName" class="inputs me-2" maxlength="32" minlength="1" required>
                                     <div class="error text-danger" id="firstnameError"></div>
                                 </div>
-                                <div class="input d-flex-column">
+                                <div class="input d-flex flex-column">
                                     <div class="text-secondary mt-3 ms-2"> Last Name</div>
                                     <input type="text" name="lastName" id="lastName" class="inputs ms-2" maxlength="32" minlength="1" required>
                                     <div class="error text-danger" id="lastnameError"></div>
                                 </div>
                             </div>
                             <div class = "d-flex">
-                                <div class="input d-flex-column">
+                                <div class="input d-flex flex-column">
                                     <div class="text-secondary mt-3 ms-2"> Email Id</div>
                                     <input type="text" name="mail" id="mail" class="inputs me-2">
                                     <div class="error text-danger" id="mailError"></div>
                                 </div>
-                                <div class="input d-flex-column">
+                                <div class="input d-flex flex-column">
                                     <div class="text-secondary mt-3 ms-2"> Phone No</div>
                                     <input type="text" name="phone" id="phone" class="inputs ms-2" maxlength="13" minlength="10">
                                     <div class="error text-danger" id="phoneError"></div>
@@ -52,7 +52,7 @@
                                     <input type="password" name="userPassword" id="userPassword" class="inputs me-2">
                                     <div class="error text-danger" id="passwordError"></div>
                                 </div>
-                                <div class="input d-flex-column">
+                                <div class="input d-flex flex-column">
                                 <div class="text-secondary mt-3 ms-2"> Confirm Password</div>
                                     <input type="password" name="userPassword2" class="inputs ms-2">
                                     <div class="error text-danger" id="pass2Error"></div>

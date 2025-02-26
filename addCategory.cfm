@@ -13,7 +13,7 @@
                 </div>
                 <div class="mainContent">
                     <form method="post" name="form" enctype="multipart/form-data" id="createCategory">
-                        <div class="addBox d-flex-column h-50">
+                        <div class="addBox d-flex flex-column h-50">
                             <div class="d-flex">
                                 <div class="text-secondary mt-4 ms-5"> Enter Category Name: </div>
                                 <input type="text" name="categoryName" class="inputs ms-5" id="categoryNameAdd">

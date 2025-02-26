@@ -17,45 +17,16 @@
                 <cfset categoryId = URL.categoryId>
                 <div class = "mainContent d-flex justify-content-center align-items-center mt-5" id = "content">
                     <input type="hidden" value="" name = "categoryId1" id = "categoryId1">
-                    <div class="d-flex-column">
-                        <div class = "categorySection d-flex">
+                    <div class="d-flex flex-column">
+                        <div class = "categorySection d-flex justify-content-center">
                             <h5 id= "modalHeading">SUB-CATEGORY LIST</h5>
                             <button type="submit" class="addSubCategoryBtn ms-4 mb-3" id="addCategoryBtn" onClick="createSubCategory()">Add</button>
                         </div>
 
-                        <!--- <cfset objCreate = createObject("component","components.myCart")>
-                        <cfset viewSubCategory = application.myCartObj.viewSubCategoryData(categoryId=categoryId)>
-                        <cfloop query = "#viewSubCategory#"> 
-                            <div class = "contentBox d-flex mb-3">
-                                <div class = "col-5 categoryName" id="subCategoryName">
-                                    #viewSubCategory.fldSubCategoryName# 
-                                </div>
-                                <div class=" p-1 ">
-                                    <button type="button" class="edtButton" data-bs-toggle="modal" data-bs-target="##editSubContact" 
-                                    id="editBtn"  value="#viewSubCategory.fldSubCategory_Id#" onClick = "editSubCategory()"><i class="fa-solid fa-pencil pe-none"></i></button>
-                                </div>
-                                <div class = " p-1">
-                                    <button type="submit" class="dltButton" id="dltBtn" onClick="deleteSubCategory(event)" value="#viewSubCategory.fldSubCategory_Id#" >
-                                        <i class="fa-regular fa-trash-can pe-none"></i>
-                                    </button>
-                                </div>
-                                <div class = " p-1">
-                                    <form action = "productPage.cfm" method="GET">
-                                        <button type="submit" class="viewButton" 
-                                        id="viewBtn1" value ="#viewSubCategory.fldSubCategory_Id#">
-                                            <i class="fa-solid fa-angle-right"></i>
-                                        </button>
-                                        <input type="hidden" value="#url.categoryId#" name="categoryId">
-                                        <input type="hidden" value="#viewSubCategory.fldSubCategory_Id#" name="subCategoryId" >
-                                    </form>
-                                </div>
-                            </div>
-                        </cfloop> --->
                         <cfset objCreate = createObject("component", "components.myCart")>
                         <cfset viewSubCategory = application.myCartObj.viewSubCategoryData(categoryId = categoryId)>
 
                         <cfif viewSubCategory["message"] EQ "Success">
-                            <!-- Loop through the 'data' array from the struct -->
                             <cfloop array="#viewSubCategory['data']#" index="subCategory">
                                 <div class="contentBox d-flex mb-3">
                                     <div class="col-5 categoryName" id="subCategoryName">
@@ -96,9 +67,9 @@
                                 <div class="modal-content">
                                     <div class="modalData">
                                         <form method="post" name="form" enctype="multipart/form-data" id="createSubCategory">
-                                            <div class="input d-flex-column">
+                                            <div class="input d-flex flex-column">
                                                 <div class="d-flex">
-                                                    <div class = "d-flex-column">
+                                                    <div class = "d-flex flex-column">
                                                         <div class="text-secondary mt-4 ms-5"> Enter Category Name: </div>
                                                         <cfset objCreate = createObject("component","components.myCart")>
                                                         <cfset viewCategory = application.myCartObj.viewCategoryData()>
@@ -109,7 +80,7 @@
                                                             </cfloop>
                                                         </select>
                                                     </div>
-                                                    <div class = "d-flex-column">
+                                                    <div class = "d-flex flex-column">
                                                         <div class="text-secondary mt-4 ms-5"> Enter Sub-Category Name: </div>
                                                         <input type="hidden" value="#categoryId#" name = "categoryIdUrl" id = "categoryIdUrl">
                                                         <input type="hidden" value="" name = "subCategoryId" id = "subCategoryId">

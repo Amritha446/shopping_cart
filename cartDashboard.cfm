@@ -27,7 +27,7 @@
                 </div>
                 <div class = "mainContentDiv d-flex justify-content-center align-items-center mt-3 p-1" id = "content">
                     <input type="hidden" value="" name = "categoryId1" id = "categoryId1">
-                    <div class="mainContent d-flex-column mt-3">
+                    <div class="mainContent d-flex flex-column mt-3">
                         <div class = "categorySection d-flex">
                             <h5 id= "modalHeading">Catagory List</h5>
                             <button type="submit" class="addCategoryBtn ms-4 mb-3" id="addCategoryBtn" data-bs-toggle="modal" data-bs-target="##addContact" >Add</button>
@@ -75,7 +75,7 @@
                                 <div class="modal-content">
                                     <div class="modalData">
                                         <form method="post" name="form" enctype="multipart/form-data" id="createCategory">
-                                            <div class="input d-flex-column">
+                                            <div class="input d-flex flex-column">
                                                 <div class="d-flex">
                                                     <div class="text-secondary mt-4 ms-5"> Enter Category Name: </div>
                                                     <input type="text" name="categoryName" class="inputs ms-5" id="categoryNameAdd">

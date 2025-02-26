@@ -13,10 +13,9 @@
                         </form>
                     </div>
                     <cfif structKeyExists(session, "isAuthenticated") AND session.isAuthenticated EQ true>
-                        <cfset cartData = application.myCartObj.viewCartData()>
-                        <div><a href="cartPage.cfm"><i class="fa badge fa-lg mt-3" value=#cartData.recordCount#>&##xf07a;</i></a></div>
+                        <div><a href="cartPage.cfm"><i class="fa badge fa-lg mt-3" value=#session.cartCount#>&##xf07a;</i></a></div>
                     <cfelse>
-                         <div><i class="fa-solid fa-cart-shopping me-2 mt-2 p-2" style="color: ##fff"></i></div>
+                        <div><i class="fa-solid fa-cart-shopping me-2 mt-2 p-2" style="color: ##fff"></i></div>
                     </cfif>
 
                     <cfif structKeyExists(session, "isAuthenticated") AND session.roleId EQ 1>
@@ -44,39 +43,7 @@
                         </div>
                     </cfif>
                 </div>
-                
-                <div class="navBar">
-                    <cfset viewCategory = application.myCartObj.viewCategoryData()>
-                    <cfset allSubCategories = application.myCartObj.viewSubCategoryData(categoryId = 0)>
-                    <cfif viewCategory.recordCount GT 0>
-                        <cfloop query="#viewCategory#">
-                            <div class="categoryDisplay ms-5 me-5 d-flex">
-                                <div class="categoryNameNavBar p-1" data-category-id="#viewCategory.fldCategory_Id#">
-                                    <a href="categoryBasedProduct.cfm?categoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = viewCategory.fldCategory_Id))#" class="navBarButton">#viewCategory.fldCategoryName#</a>
-                                    <div class="subCategoryMenu">
-                                        <cfif allSubCategories["message"] EQ "Success">
-                                            <cfloop array="#allSubCategories['data']#" index="subCategory">
-                                                <cfif subCategory["fldCategoryId"] EQ viewCategory.fldCategory_Id>
-                                                    <a href="filterProduct.cfm?subCategoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = subCategory['fldSubCategory_Id']))#" class="subcategoryItem">
-                                                        #subCategory['fldSubCategoryName']#
-                                                    </a>
-                                                </cfif>
-                                            </cfloop>
-                                        <cfelse>
-                                            <div class="errorMessage">
-                                                Error: #allSubCategories["message"]#
-                                            </div>
-                                        </cfif>
-                                    </div>
-                                </div>
-                            </div>
-                        </cfloop>
-                    <cfelse>
-                        <div class="errorMessage">
-                            Error: #viewCategory.message#
-                        </div>
-                    </cfif>
-                </div>
+                <cfinclude template = "navbar.cfm">
 
                 <div id="homeCarousel" class="carousel slide">
                     <div class="carousel-indicators">
@@ -96,18 +63,17 @@
                         </div>
                     </div>
 
-                    <button class="carousel-control-prev" type="button" data-bs-target="##homeCarousel" data-bs-slide="prev">
+                    <!--- <button class="carousel-control-prev" type="button" data-bs-target="##homeCarousel" data-bs-slide="prev">
                         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                         <span class="visually-hidden">Previous</span>
                     </button>
                     <button class="carousel-control-next" type="button" data-bs-target="##homeCarousel" data-bs-slide="next">
                         <span class="carousel-control-next-icon" aria-hidden="true"></span>
                         <span class="visually-hidden">Next</span>
-                    </button>
+                    </button> --->
                 </div>
-                
 
-                <div class="productListing d-flex-column">
+                <div class="productListing d-flex flex-column">
                     <h6 class="mt-3 ms-3">RANDOM PRODUCTS</h6>
                     <cfif url.searchTerm NEQ "">
                         <cfset viewProductCount = application.myCartObj.viewProduct(searchTerm=url.searchTerm)>
@@ -115,12 +81,12 @@
                                                                                 limit = viewProductCount.recordCount)>                                                       
                     <cfelse>
                         <cfset viewProduct = application.myCartObj.viewProduct(randomProducts = true,
-                                                                                limit = 10)>                   
+                                                                                limit = 10)>                 
                     </cfif>
                     <cfif viewProduct.recordCount GT 0>
                         <div class="productContainer">
                             <cfloop query="viewProduct"> 
-                                <div class="productBox d-flex-column">
+                                <div class="productBox d-flex flex-column">
                                     <a href="productDetails.cfm?productId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = viewProduct.fldProduct_Id))#&random=1" class="imageLink">
                                         <img src="assets/#viewProduct.imageFileName#" alt="img" class="productBoxImage">
                                         <div class="ms-4 font-weight-bold h5">#viewProduct.fldProductName#</div>

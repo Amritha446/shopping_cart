@@ -14,7 +14,7 @@
                     </div>
                     <cfif structKeyExists(session, "isAuthenticated") AND session.isAuthenticated EQ true>
                         <cfset cartData = application.myCartObj.viewCartData()>
-                        <div><a href="cartPage.cfm"><i class="fa badge fa-lg mt-3" value=#cartData.recordCount#>&##xf07a;</i></a></div>
+                        <div><a href="cartPage.cfm"><i class="fa badge fa-lg mt-3" value=#session.cartCount#>&##xf07a;</i></a></div>
                     <cfelse>
                          <div><i class="fa-solid fa-cart-shopping me-2 mt-2 p-2" style="color: ##fff"></i></div>
                     </cfif>
@@ -45,38 +45,7 @@
                 <cfparam name="url.minRange" default=0>
                 <cfparam name="url.maxRange" default=0>
 
-                <div class="navBar">
-                    <cfset viewCategory = application.myCartObj.viewCategoryData()>
-                    <cfset allSubCategories = application.myCartObj.viewSubCategoryData(categoryId = 0)>
-                    <cfif viewCategory.recordCount GT 0>
-                        <cfloop query="#viewCategory#">
-                            <div class="categoryDisplay ms-5 me-5 d-flex">
-                                <div class="categoryNameNavBar p-1" data-category-id="#viewCategory.fldCategory_Id#">
-                                    <a href="categoryBasedProduct.cfm?categoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = viewCategory.fldCategory_Id))#" class="navBarButton">#viewCategory.fldCategoryName#</a>
-                                    <div class="subCategoryMenu">
-                                        <cfif allSubCategories["message"] EQ "Success">
-                                            <cfloop array="#allSubCategories['data']#" index="subCategory">
-                                                <cfif subCategory['fldCategoryId'] EQ viewCategory.fldCategory_Id>
-                                                    <a href="filterProduct.cfm?subCategoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = subCategory['fldSubCategory_Id']))#" class="subcategoryItem">
-                                                        #subCategory['fldSubCategoryName']#
-                                                    </a>
-                                                </cfif>
-                                            </cfloop>
-                                        <cfelse>
-                                            <div class="errorMessage">
-                                                Error: #allSubCategories["message"]#
-                                            </div>
-                                        </cfif>
-                                    </div>
-                                </div>
-                            </div>
-                        </cfloop>
-                    <cfelse>
-                        <div class="errorMessage">
-                            Error: #viewCategory.message#
-                        </div>
-                    </cfif>
-                </div>
+                <cfinclude template = "navbar.cfm">
 
                 <div class="productListingBasedCategory"> 
                     <cfset viewCategory = application.myCartObj.viewCategoryData()>
@@ -113,7 +82,7 @@
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
                                                     <form method="post" name="form" action="filterProduct.cfm?subCategoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = subCategory['fldSubCategory_Id']))#">
-                                                        <div class="d-flex-column ms-2 mt-2 p-2">
+                                                        <div class="d-flex flex-column ms-2 mt-2 p-2">
                                                             <label for="selectedValue" class="ms-1 mt-2 mb-2">Price Range:</label>
                                                             <div class="d-flex">
                                                                 <input type="number" name="minRange" placeholder="Min" class="ms-2" value="0">
@@ -183,7 +152,7 @@
                                         
                                         <div id="productContainer" class="productContainer mt-2 ms-5">
                                             <cfloop query="viewProduct">
-                                                <div class="productBox d-flex-column" id="product_#viewProduct.currentRow#">
+                                                <div class="productBox d-flex flex-column" id="product_#viewProduct.currentRow#">
                                                     <a href="productDetails.cfm?productId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = viewProduct.fldProduct_Id))#&random=1" class="imageLink">
                                                         <img src="assets/#viewProduct.imageFileName#" alt="img" class="productBoxImage">
                                                         <div class="ms-4 font-weight-bold h5">#viewProduct.fldProductName#</div>
@@ -193,8 +162,8 @@
                                                 </div>
                                             </cfloop>         
                                         </div>
-                                        <button type="button" id="viewMoreBtn" class="viewCategoryBtn" 
-                                        onClick = "loadMoreProducts('#subcategoryId#','#url.sort#','#viewProductCount.recordCount#','#url.min#','#url.max#','#url.minRange#','#url.maxRange#')">View</button>
+                                        <button type="button" id="viewMoreBtn" class="viewCategoryBtn " 
+                                        onClick = "loadMoreProducts('#subcategoryId#','#url.sort#','#viewProductCount.recordCount#','#url.min#','#url.max#','#url.minRange#','#url.maxRange#')">View More</button>
                                     </cfif>
                                 </cfloop>
                             <cfelse>
