@@ -93,6 +93,7 @@
                                                     id="addSubCategorySubmit" value="" onClick="addSubCategoryFormSubmit()">
                                                     ADD
                                                 </button>
+                                                <div id = "subCategoryErrorMsg" class="text-danger"></div>
                                             </div>
                                         </form>
                                     </div>

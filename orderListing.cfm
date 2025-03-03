@@ -47,24 +47,40 @@
 
                     <cfif url.searchId NEQ "">
                         <cfset orderedEachItemList = application.myCartObj.fetchOrderDetails(searchId = url.searchId)>
+                        <cfif orderedEachItemList.recordCount EQ 0>
+                            <h6 class="text-danger ms-5 mt-2">No orders found with #url.searchId#</h6>
+                        </cfif>
                     <cfelse>
                         <cfset orderedEachItemList = application.myCartObj.fetchOrderDetails(limit = pageSize, offset = offset)>
                     </cfif>
                     <cfset totalOrders = application.myCartObj.fetchOrderDetails().recordCount>
                     <cfset totalPages = floor(((totalOrders + pageSize) - 1) / pageSize)>
-
-                    <cfset orderDetails = {}>
-                    <cfloop query = "#orderedEachItemList#">
+                    
+                    <cfloop query="#orderedEachItemList#">
                         <div class="d-flex flex-column mb-3">
                             <div class="d-flex orderListHeading">
-                                <div class="orderDiv">ORDER ID : #orderedEachItemList.fldOrder_Id#</div>
+                                <div class="">ORDER ID : #orderedEachItemList.fldOrder_Id#</div>
                                 <button type="button" class="invoiceDownload" onClick="downloadInvoice(event)" value="#orderedEachItemList.fldOrder_Id#" title="Download Invoice">
                                     <i class="fa-solid fa-download bg-light pe-none"></i> 
                                 </button>
                             </div>
-                            <cfloop list="#orderedEachItemList.fldQuantity#" item="item" index="index">
-                                <div class="orderedItemsBlock d-flex">
-                                    <img src="assets/#ListGetAt(orderedEachItemList.fldImageFileName,index)#" alt="img" class="orderListImage ms-2 me-3">
+                            
+                            <div class="orderedItemsBlock d-flex">
+                                <div class="productDetails d-flex flex-column col-4">
+                                    <cfloop list="#orderedEachItemList.fldQuantity#" item="item" index="index">
+                                        <div class="orderedItem">
+                                            <img src="assets/#ListGetAt(orderedEachItemList.fldImageFileName,index)#" alt="product_img" class="orderListImage ms-2 me-3">
+                                            <div class="d-flex flex-column">
+                                                <div>#ListGetAt(orderedEachItemList.fldProductName,index)#</div>
+                                                <div class="orderDiv">Quantity: #ListGetAt(orderedEachItemList.fldQuantity,index)#</div>
+                                                <div class="orderDiv">Unit Price: #ListGetAt(orderedEachItemList.fldUnitPrice,index)#</div>
+                                                <div class="orderDiv">Unit Tax: #ListGetAt(orderedEachItemList.productTax,index)# %</div>
+                                            </div>
+                                        </div>
+                                    </cfloop>
+                                </div>
+
+                                <div class="orderDetails d-flex flex-column col-8 ms-4 mt-3">
                                     <cfset originalDate = CreateDateTime(
                                         ListGetAt(orderedEachItemList.formattedDate, 3, '-'),
                                         ListGetAt(orderedEachItemList.formattedDate, 2, '-'),
@@ -72,31 +88,18 @@
                                     )>
                                     <cfset newDate = DateAdd("d", 7, originalDate)>
                                     <cfset date = dateFormat(newDate,'d-m-Y')>
-                                    <div class="d-flex flex-column col-2">
-                                        <div>#ListGetAt(orderedEachItemList.fldProductName,index)#</div>
-                                        <div class="orderDiv">Quantity : #ListGetAt(orderedEachItemList.fldQuantity,index)#</div>
-                                        <div class="orderDiv">Unit Price : #ListGetAt(orderedEachItemList.fldUnitPrice,index)#</div>
-                                        <div class="orderDiv">Unit Tax : #ListGetAt(orderedEachItemList.productTax,index)# % </div>
-                                    </div> 
-                                
-                                    <div class="d-flex flex-column ms-4 col-2">
-                                        <div class="orderDiv">Ordered On:</div>
-                                        <div class="orderDiv">#orderedEachItemList.formattedDate#</div>
-                                    </div> 
-                                    <div class="d-flex flex-column ms-4 col-3">
-                                        <div class="orderDiv">Contact Details:</div>
+                                    <div class="d-flex">
+                                        <div class="me-5"><div class="orderDiv">Ordered On: #orderedEachItemList.formattedDate#</div>
+                                        <div class="orderDiv">Delivery Date: #date#</div></div>
+                                        <div class="ms-5"><div class="orderDiv">Contact Details:</div>
                                         <div class="orderDiv">Mob No: #orderedEachItemList.fldPhoneNumber#</div>
-                                        <div class="orderDiv">Address: #orderedEachItemList.fldAdressLine1# #orderedEachItemList.fldAdressLine2#</div>
-                                    </div> 
-                                    <div class="d-flex flex-column ms-4 col-2">
-                                        <div class="orderDiv">Delivery date:</div>
-                                        <div class="orderDiv">#date#</div>
-                                    </div> 
-                                </div> 
-                            </cfloop>
+                                        <div class="orderDiv">Address: #orderedEachItemList.fldAdressLine1# #orderedEachItemList.fldAdressLine2#</div></div>
+                                    </div>
+                                </div>
+                            </div>
                         </div> 
                     </cfloop>
-                    
+
                     <div class="orderPagination">
                         <cfif (currentPage GT 1) AND (url.searchId EQ "")>
                             <a href="orderListing.cfm?searchId=#url.searchId#&page=#(currentPage - 1)#" class="paginaionLink">Previous</a>

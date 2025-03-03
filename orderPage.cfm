@@ -51,29 +51,27 @@
                         </cfif>
                     </div>
                     <div class="productOrder d-flex flex-column ">
-                        <cfif URL.productId NEQ "">
+                        <cfif URL.productId NEQ ""> 
                             <cfset cartData = application.myCartObj.viewProduct(productId = URL.productId)>
                         <cfelse>
                             <cfset cartData = application.myCartObj.viewCartData()>
                             <input type = "hidden" id="cartIdFetch" value="#cartData.fldCart_Id#">
                         </cfif>
 
-                        <div class="fs-6 text-success orderedProductName ms-4 mt-4">PRODUCT DETAILS</div>
+                        <div class="fs-6 text-success ms-4 mt-4">PRODUCT DETAILS</div> 
                         <cfloop query="#cartData#">
-                            <div class="cartItem d-flex">
-                                <div class="d-flex flex-column mt-3">
-                                    <div class="d-flex orderListing justify-content-space-between">
-                                        <cfif len(trim(URL.productId))>
-                                            <img src="assets/#cartData.imageFileName#" alt="img" class="productBoxImage1"> 
-                                        <cfelse>
-                                            <img src="assets/#cartData.fldImageFileName#" alt="img" class="productBoxImage1"> 
-                                        </cfif>
-                                    <cfif len(trim(URL.productId)) EQ 0>
-                                        <button type="submit" class="closeLink" value="#cartData.fldCart_Id#" onClick="removeCartProduct(event)"><i class="fa-solid fa-xmark pe-none"></i></button>
+                            <div class="cartItem d-flex m-3">
+                                <div class="d-flex orderListing justify-content-space-between">
+                                    <cfif len(trim(URL.productId))>
+                                        <img src="assets/#cartData.imageFileName#" alt="img" class="productBoxImage1"> 
+                                    <cfelse>
+                                        <img src="assets/#cartData.fldImageFileName#" alt="img" class="productBoxImage1"> 
                                     </cfif>
-                                    <div class="productBasedDetails">
-                                    <div class="ms-5 font-weight-bold h6 d-flex orderedProductName">#cartData.fldProductName#</div>
-                                    <div class="quantityBlock ms-5">
+                                </div>
+                                
+                                <div class="d-flex flex-column">
+                                    <div class="m-1 orderedProductName ">#cartData.fldProductName#</div>
+                                    <div class="quantityBlock m-1">
                                         <button class="decrement me-2" onClick="decrementQuantity(event)" value="#cartData.fldProduct_Id#">-</button>
                                         <cfif len(trim(URL.productId))>
                                             <span class="quantityNumber">1</span>  
@@ -82,19 +80,26 @@
                                         </cfif>
                                         <button class="increment ms-2" onClick="incrementQuantity(event)" value="#cartData.fldProduct_Id#">+</button>
                                     </div>
-                                    <div class="d-flex flex-column productMainDetails">
-                                        <div class="productPrice ms-3">Unit Price:$#cartData.fldPrice#</div>
-                                        <div class="productTax ms-3">Actual Price:$#cartData.fldPrice#</div>
-                                        <div class="productActualPrice ms-3">Product Tax:#cartData.fldTax#%</div>
-                                        <div class="totalPrice ms-3 text-success">Total Price:$#cartData.fldPrice#</div>
-                                        <input type="hidden" id="unitPriceProduct" value="#cartData.fldPrice#">
-                                        <input type="hidden" id="unitTaxProduct" value="#cartData.fldTax#">
-                                    </div>
                                 </div>
+                                
+                                <div class="d-flex flex-column productMainDetails">
+                                    <div class="productPrice ms-3">Unit Price:$#cartData.fldPrice#</div>
+                                    <div class="productTax ms-3">Actual Price:$#cartData.fldPrice#</div>
+                                    <div class="productActualPrice ms-3">Product Tax:#cartData.fldTax#%</div>
+                                    <div class="totalPrice ms-3 text-success">Total Price:$#cartData.fldPrice#</div>
+                                    <input type="hidden" id="unitPriceProduct" value="#cartData.fldPrice#">
+                                    <input type="hidden" id="unitTaxProduct" value="#cartData.fldTax#">
+                                </div>
+                                <cfif len(trim(URL.productId)) EQ 0>
+                                    <button type="submit" class="closeLink" value="#cartData.fldCart_Id#" onClick="removeCartProduct(event)"><i class="fa-solid fa-xmark pe-none"></i></button>
+                                </cfif>
                             </div>
                         </cfloop>
-                        <div class="priceDetailsHeading ms-5 text-success" id="priceDetailsHeading">Total Price:</div>
-                        <div class="taxDetailsHeading ms-5 text-success" id="taxDetailsHeading">Total Tax:</div>
+
+                        <div class="p-2 orderTotal">
+                            <div class="priceDetailsHeading ms-5 text-success" id="priceDetailsHeading">Total Price:</div>
+                            <div class="taxDetailsHeading ms-5 text-success" id="taxDetailsHeading">Total Tax:</div>
+                        </div>
                         <cfif viewUserAddress.recordCount EQ 0>
                             <button type="button" class="orderPlacingBtn" disabled>Place Order</button>
                             <div class="alert alert-danger ms-4 mt-2" id="addressErrorMessage">No address found. Please add an address before placing the order.
@@ -105,11 +110,11 @@
                             <div class="alert alert-danger ms-4 mt-2" id="addressErrorMessage">No products found. Please add products before placing the order.</div>
                         </cfif>
                         <div class="paymentError text-danger ms-5 ps-5" id="paymentError"></div>
-                        <form method="POST" name="form">
+                        <!--- <form method="POST" name="form">
                             <button type="submit" class="orderPlacingBtn" >ADD TO CART</button>
                             <input type="hidden" value = "#cartData.fldProduct_Id#" name="addToCartHidden">
                             <input type="hidden" name="cartToken" id="cartToken" value = 1>
-                        </form>
+                        </form> --->
                     </div>  
                 </div>
                 <cfif structKeyExists(form, "addToCartHidden")>

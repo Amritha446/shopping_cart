@@ -40,6 +40,10 @@ BEGIN
             p_UnitPrice,
             p_UnitTax
         );
+        DELETE FROM 
+            tblcart 
+        WHERE fldUserId = p_UserId
+            AND fldProductId = p_ProductId;
     ELSE
 		INSERT INTO tblorderitems (
 			fldOrderId,
@@ -60,9 +64,11 @@ BEGIN
 		WHERE 
 			fldUserId = p_UserId
 		;
+        DELETE FROM 
+            tblcart 
+        WHERE 
+            fldUserId = p_UserId;
     END IF;
-    
-    DELETE FROM tblcart WHERE fldUserId = p_UserId;
 
 END $$
 

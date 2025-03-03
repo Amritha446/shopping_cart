@@ -38,7 +38,7 @@
                     <input type = "hidden" id="cartIdFetch" value="#cartData.fldCart_Id#">
                     <div class="cartContainer d-flex flex-column">
                         <cfloop query="#cartData#">
-                            <div class="cartItem d-flex flex-column ms-5" >
+                            <div class="cartItem d-flex " >
                                 <div class="d-flex flex-column productBox1">
                                     <img src="assets/#cartData.fldImageFileName#" alt="img" class="productBoxImage"> 
                                     <div class="ms-4 font-weight-bold h5 ">#cartData.fldProductName#</div>

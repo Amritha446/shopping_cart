@@ -652,7 +652,6 @@
         <cfargument name = "quantity" required = "false" type = "numeric" default = 1>
         <cfargument name = "cartToken" required = "false" type = "numeric" default = 0>  
         <cftry>
-            
             <cfquery name = "local.selectCartItem" datasource = "#application.datasource#">
                 SELECT 
                     fldUserId,
@@ -779,7 +778,7 @@
                 <cfreturn "Enter User Last Name">
             <cfelseif len(trim(arguments.userEmail)) EQ 0>
                 <cfreturn "Enter Mail Id">
-            <cfelseif len(trim(arguments.userPhoneNumber)) LT 10>
+            <cfelseif val(arguments.userPhoneNumber) EQ 0>
                 <cfreturn "Enter PhoneNumber">
             <cfelse>
                 <cfquery name="local.queryCheck" datasource="#application.datasource#">
@@ -988,7 +987,7 @@
                         <p>Your order details are as follows:</p>
                         #productDetailsHTML#
                     </cfmail>
-
+                    <cfset session.cartCount = viewCartData().recordCount>
                     <cfset result = "Order placed successfully.">
                 <cfelse>
                     <cfset result = "Invalid card details">
@@ -1066,7 +1065,7 @@
                 <p>Phone: #local.orderHistoryData.fldPhoneNumber#</p>
                 
                 <h2>Ordered Items:</h2>
-                <table border="1" cellpadding="5" cellspacing="0">
+                <table border="2" cellpadding="5" cellspacing="1">
                     <thead>
                         <tr>
                             <th>Product Name</th>
@@ -1076,15 +1075,13 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <cfloop query="#local.orderHistoryData#">
-                            <cfloop list="#local.orderHistoryData.fldQuantity#" item="item" index="index">
-                                <tr>
-                                    <td>#ListGetAt(local.orderHistoryData.fldProductName,index)#</td>
-                                    <td>#ListGetAt(local.orderHistoryData.fldQuantity,index)#</td>
-                                    <td>$#ListGetAt(local.orderHistoryData.fldUnitPrice,index)#</td>
-                                    <td>#ListGetAt(local.orderHistoryData.productTax,index)#%</td>
-                                </tr>
-                            </cfloop>
+                        <cfloop list="#local.orderHistoryData.fldQuantity#" item="item" index="index">
+                            <tr>
+                                <td>#ListGetAt(local.orderHistoryData.fldProductName,index)#</td>
+                                <td>#ListGetAt(local.orderHistoryData.fldQuantity,index)#</td>
+                                <td>$#ListGetAt(local.orderHistoryData.fldUnitPrice,index)#</td>
+                                <td>#ListGetAt(local.orderHistoryData.productTax,index)#%</td>
+                            </tr>
                         </cfloop>
                     </tbody>
                 </table>
@@ -1109,10 +1106,6 @@
                     WHERE S.fldCategoryId = <cfqueryparam value="#arguments.itemId#" cfsqltype="integer">
                     AND PI.fldDefaultImage = 0
                 </cfquery>
-
-                <cfloop query="local.getImages">
-                    <cffile action="delete" file="#expandPath('/assets/' & local.getImages.fldImageFileName)#">
-                </cfloop>
 
                 <cfquery name="local.deactivateCategory" datasource="#application.datasource#">
                     UPDATE 
@@ -1139,6 +1132,10 @@
                         S.fldCategoryId = <cfqueryparam value="#arguments.itemId#" cfsqltype="integer">
                         AND PI.fldDefaultImage = 0
                 </cfquery>
+
+                <cfloop query="local.getImages">
+                    <cffile action="delete" file="#expandPath('/assets/' & local.getImages.fldImageFileName)#">
+                </cfloop>
                 
             <cfelseif arguments.itemType EQ "subcategory">
                 <cfquery name="local.getImages" datasource="#application.datasource#">
@@ -1150,10 +1147,6 @@
                     WHERE P.fldSubCategoryid = <cfqueryparam value="#arguments.itemId#" cfsqltype="integer">
                     AND PI.fldDefaultImage = 0
                 </cfquery>
-                
-                <cfloop query="local.getImages">
-                    <cffile action="delete" file="#expandPath('/assets/' & local.getImages.fldImageFileName)#">
-                </cfloop>
 
                 <cfquery name="local.deactivateSubCategory" datasource="#application.datasource#">
                     UPDATE 
@@ -1177,6 +1170,10 @@
                         P.fldSubCategoryid = <cfqueryparam value="#arguments.itemId#" cfsqltype="integer">
                         AND PI.fldDefaultImage = 0
                 </cfquery>
+
+                <cfloop query="local.getImages">
+                    <cffile action="delete" file="#expandPath('/assets/' & local.getImages.fldImageFileName)#">
+                </cfloop>
                 
             <cfelseif arguments.itemType EQ "product">
                 <cfquery name="local.getImages" datasource="#application.datasource#">

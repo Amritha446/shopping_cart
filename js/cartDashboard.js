@@ -284,9 +284,9 @@ function viewSelectedImages() {
             } else {   
                 let imageHtml = '';      
                 images.forEach(function(image) {
-                    let deleteButtonHtml = image.fldDefaultImage === 1 ? '' : `<button type="button" value="${image.fldProductImages_Id},${productId}" class="closeLink"><i class="fa-solid fa-xmark pe-none"></i></button>`;
+                    let deleteButtonHtml = image.fldDefaultImage === 1 ? '' : `<button type="button" value="${image.fldProductImages_Id},${productId}" class="closeLink1">Delete</button>`;
                     let defaultButton = image.fldDefaultImage === 1 ? '' : `<button type="button" value="${image.fldProductImages_Id},${productId}" class="DefaultLink">Default</button>`;
-                    imageHtml += `<div class="d-flex flex-column">
+                    imageHtml += `<div class="d-flex ">
                         <img src="assets/${image.fldImageFileName}" alt="${image.fldImageFileName}" width="50" height="50" />
                         <span>${image.fldImageFileName}</span>
                         ${deleteButtonHtml} 
@@ -362,7 +362,7 @@ $(document).ready(function() {
 
 
 function loadProductImages() {
-    let productId = event.target.value;
+    let productId = event.target.value; 
 
     $.ajax({
         url: './Components/myCart.cfc?method=getProductImages',

@@ -127,27 +127,23 @@
                                             <cfset offset = 0>
                                         </cfif>
                                         <cfif structKeyExists(form, "filterSubmit")> 
-                                            <cfset viewProductCount = application.myCartObj.viewProduct(subCategoryId = subCategoryId,
-                                                                                                        limit = 100)>
+                                            <cfset viewProductCount = application.myCartObj.viewProduct(subCategoryId = subCategoryId)>
                                             <cfset viewProduct = application.myCartObj.viewProduct(subCategoryId = subCategoryId, 
                                                                                                     min = form.min, 
                                                                                                     max = form.max, 
                                                                                                     minRange = form.minRange, 
                                                                                                     maxRange = form.maxRange,
                                                                                                     limit = limit,
-                                                                                                    offset = offset)>                                                           
+                                                                                                    offset = offset)>   
+                                        <cfelseif url.searchTerm NEQ ""> 
+                                            <cfset viewProduct = application.myCartObj.viewProduct(searchTerm = url.searchTerm)>                                                       
                                         <cfelse>
-                                            <cfset viewProductCount = application.myCartObj.viewProduct(subCategoryId = subCategoryId,
-                                                                                                 limit = 100)>
+                                            <cfset viewProductCount = application.myCartObj.viewProduct(subCategoryId = subCategoryId)>
                                             <cfset viewProduct = application.myCartObj.viewProduct( subCategoryId = subCategory['fldSubCategory_Id'],
                                                                                                 limit = limit,
                                                                                                 offset = offset,
                                                                                                 sort = url.sort
                                                                                                 )>
-                                        </cfif>
-                                        
-                                        <cfif url.searchTerm NEQ "">
-                                            <cfset viewProduct = application.myCartObj.viewProduct(searchTerm = url.searchTerm)>
                                         </cfif>
                                         
                                         <div id="productContainer" class="productContainer mt-2 ms-5">
@@ -162,8 +158,10 @@
                                                 </div>
                                             </cfloop>         
                                         </div>
-                                        <button type="button" id="viewMoreBtn" class="viewCategoryBtn " 
-                                        onClick = "loadMoreProducts('#subcategoryId#','#url.sort#','#viewProductCount.recordCount#','#url.min#','#url.max#','#url.minRange#','#url.maxRange#')">View More</button>
+                                        <cfif viewProductCount.recordCount GT 5>
+                                            <button type="button" id="viewMoreBtn" class="viewCategoryBtn " 
+                                            onClick = "loadMoreProducts('#subcategoryId#','#url.sort#','#viewProductCount.recordCount#','#url.min#','#url.max#','#url.minRange#','#url.maxRange#')">View More</button>
+                                        </cfif>
                                     </cfif>
                                 </cfloop>
                             <cfelse>

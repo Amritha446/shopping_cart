@@ -56,13 +56,12 @@
                                         <h5>#subCategory['fldSubCategoryName']#</h5>
                                     </a>
 
-                                    <cfset viewProduct = application.myCartObj.viewProduct(subCategoryId = subCategory['fldSubCategory_Id'],
-                                                                                            limit = 5)>
-
                                     <cfif url.searchTerm NEQ "">
                                         <cfset viewProduct = application.myCartObj.viewProduct(searchTerm=url.searchTerm)>
+                                    <cfelse>
+                                        <cfset viewProduct = application.myCartObj.viewProduct(subCategoryId = subCategory['fldSubCategory_Id'],
+                                                                                            limit = 5)>
                                     </cfif>
-
                                     <div class="productContainer">
                                         <cfset currentRow = 1>
                                         <cfloop query="viewProduct">

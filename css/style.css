@@ -285,8 +285,9 @@ body{
     width:30vw;
 }
 .mainImage-container {
-    overflow: hidden;
+
     width:30vw;
+
 }
 #mainImage {
     width: 80%;
@@ -447,19 +448,19 @@ body{
     height:20%;
 }
 .productMainDetails{
-    margin-left:30%;
-    margin-top:-15%;
+    margin-top:5%; 
 }
-.closeLink{
-    height:3%;
-    width:5%;
-    border:transparent;
-    color:#1f6625;
-}
-.defaultLink{
+.defaultLink,.closeLink1{
     border:transparent;
     color:#1f6625;
     margin-left:10px;
+    margin:5px;
+}
+.closeLink{
+    border:transparent;
+    color:#1f6625;
+    height:20px;
+    width:20px;
 }
 .priceDetails:hover {
     transform: scale(1.05);
@@ -470,7 +471,7 @@ body{
 }
 .viewMoreButton {
     font-size: 11px;
-    background-color: #77b680;
+    background-color: #77b682;
     color: white;
     border: none;
     border-radius: 5px;
@@ -490,8 +491,13 @@ body{
 }
 .quantityBlock {
     display: flex;
-    align-items: center;
-    margin:5px;
+    margin-left:-20%;
+}
+.orderTotal{
+    border:1px solid #1f6625;
+    width:50%;
+    margin-left:20%;
+    box-shadow: 1px 2px #1f6625;
 }
 .badge:after{
     content:attr(value);
@@ -572,6 +578,15 @@ body{
     border-bottom:1px slategrey; 
     justify-content:space-between;
 }
+.address-radio{
+    margin-right: 10px;
+    cursor: pointer;
+    width: 15px;
+    height: 15px;
+}
+.address-radio:checked {
+    accent-color: green;
+}
 .userAddressBtn{
     background-color: #d8e5f1;
     color:#1f6625;
@@ -627,7 +642,8 @@ body{
     margin-bottom:10%;
 }
 .orderedProductName{
-    width:10vw;
+    width:7vw;
+    color:#1f6625;
 }
 .productBasedDetails{
     margin-left:10px;
@@ -661,7 +677,6 @@ body{
     margin-top:10px;
 }
 .orderHistoryPage{
-    margin-left:30vw;
     align-items:center;
     justify-content: center;
 }
@@ -672,26 +687,55 @@ body{
     font-weight: 800;
     margin-bottom: 3vw;;
 }
-.orderedItems{
-    height:auto;
-    width:50vw;
-    margin-left:35vw;
-    padding:10px;
-    color:#1f6625;
-    margin-top:10px;
+.orderedItems {
+    height: auto;
+    width: 100%;
+    padding: 10px;
+    color: #1f6625;
     font-size: large;
     font-weight: 600;
 }
-.orderedItemsBlock{
-    height:auto;
+.orderedItemsBlock {
+    display: flex;
     width:75vw;
+    color: #1f6625;
+    border: 1px solid rgb(208, 216, 208);
+    justify-content: space-between;
     margin-left:10vw;
-    padding:10px;
-    color:#1f6625;
-    border:1px solid rgb(208, 216, 208);
+    padding:5px;
 }
-.orderedItemsBlock:hover{
+.orderedItemsBlock:hover {
     background-color: #b7d1ba;
+}
+.orderListHeading {
+    margin-left: 10vw;
+    padding: 10px;
+    background-color: #b1f1bc;
+    width: 75vw;
+}
+.productDetails {
+    display: flex;
+    flex-direction: column;
+    width: 30%;
+    margin-left:20px;
+}
+.productDetails .orderedItem {
+    display: flex;
+    margin-bottom: 10px;
+}
+.productDetails .orderedItem img {
+    width: 100px;
+    height: 100px;
+    padding:10px; 
+}
+.orderDetails {
+    width: 55%;
+    justify-content:space-between;
+}
+.orderDiv {
+    font-size: 14px;
+    font-weight: 500;
+    padding: 5px 0;
 }
 .orderedItemsSearch{
     height:2vw;
@@ -703,12 +747,6 @@ body{
     border-radius:10px;
     border:1px solid #1f6625;
 }
-.orderListImage{
-    height:5vw;
-    width:5vw;
-    border-radius: 50%;
-    margin:10px;
-}
 .invoiceDownload{
     border:white;
     margin-left:35vw;
@@ -716,12 +754,6 @@ body{
 .invoiceDownload:hover{
     background-color: #ddd;
     color:#b1f1bc;
-}
-.orderListHeading{
-    margin-left:10vw;
-    padding:10px;
-    background-color:#b1f1bc ;
-    width:75vw;
 }
 .editImageFile{
     border:transparent;
