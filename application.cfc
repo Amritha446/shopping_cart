@@ -10,16 +10,15 @@
         <cfreturn true>
     </cffunction>
 
-    <cffunction  name = "onRequest" returnType = "void">
+    <cffunction name = "onRequest" returnType = "void">
         <cfargument name = "requestPage" required="true">
         <cfinclude template = "commonLink.cfm">
         <cfinclude template = "#arguments.requestPage#">
-        <!--- <cfinclude template = "commonFooter.cfm"> --->
     </cffunction>
 
     <cffunction name="onRequestStart" returnType="boolean">
 
-        <cfargument  name = "requestPage" required = "true"> 
+        <cfargument name = "requestPage" required = "true"> 
 
         <cfif structKeyExists(URL,"reload") AND URL.reload EQ 1>
             <cfset onApplicationStart()>
@@ -63,11 +62,11 @@
         <cfreturn true>
     </cffunction>
 
-    <!--- <cffunction name="onError" access="public" returnType="void">
+    <cffunction name="onError" access="public" returnType="void">
         <cfargument name="exception" required="true" type="any">
         <cfargument name="eventName" required="true" type="string">
 
         <cfset location("./error.cfm?message=" & urlEncodedFormat(arguments.exception.message))>
-    </cffunction> --->
+    </cffunction>
     
 </cfcomponent>

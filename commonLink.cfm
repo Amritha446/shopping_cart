@@ -1,6 +1,6 @@
 <html>
     <head>
-    <title>Admin-dashboard</title>
+    <title>myCart</title>
     <script src = "js/jquery.min.js"></script>
     <script src="js/cartDashboard.js"></script>
     <script src="js/validate.js"></script>

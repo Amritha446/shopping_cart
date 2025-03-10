@@ -659,11 +659,11 @@ function editUserAddress(){
             userCity:document.getElementById('userCity').value,
             userState:document.getElementById('userState').value,
             userPincode:document.getElementById('userPincode').value,
-            userPhoneNumber:document.getElementById('userPhoneNumber').value,
+            userPhoneNumber:document.getElementById('userPhoneNumber').value
         },
         success:function(response1){
-            
             let response = JSON.parse(response1);
+            console.log(response)
             document.getElementById('addressFirstNameError').innerHTML = '';
             document.getElementById('addressLastNameError').innerHTML = '';
             document.getElementById('addressLine1Error').innerHTML = '';
@@ -773,7 +773,6 @@ function paymentData() {
             if (result == "Order placed successfully.") {
                 window.location.href = "paymentPage.cfm";
             } else {
-                /* alert(result); */
                 document.getElementById('paymentError').textContent = result;
             }
         },
@@ -836,7 +835,9 @@ function loadMoreProducts(subcategoryId,sort,count,min,max,minRange,maxRange) {
                     </div>
                 `
             $('#productContainer').append(div);
+            
             });
+           
         },
     })
 }

@@ -1,8 +1,4 @@
-<!--- <html>
-    <head>
-        <title>Admin-dashboard</title>
-        <cfinclude template="commonLink.cfm">   
-    </head>  --->
+
     <body>
         <cfoutput>
             <div class = "container-fluid" id = "container">
@@ -25,20 +21,20 @@
                         </div>
                     </cfif>
                 </div>
-                <div class = "mainContentDiv d-flex justify-content-center align-items-center mt-3 p-1" id = "content">
+                <div class = "mainContentDiv d-flex flex-column justify-content-center align-items-center mt-3 p-1" id = "content">
                     <input type="hidden" value="" name = "categoryId1" id = "categoryId1">
+                    <div class = "categorySection d-flex">
+                        <h5 id= "modalHeading" >Catagory List</h5>
+                        <button type="submit" class="addCategoryBtn ms-4 mb-3" id="addCategoryBtn" data-bs-toggle="modal" data-bs-target="##addContact" >Add</button>
+                    </div>
                     <div class="mainContent d-flex flex-column mt-3">
-                        <div class = "categorySection d-flex">
-                            <h5 id= "modalHeading">Catagory List</h5>
-                            <button type="submit" class="addCategoryBtn ms-4 mb-3" id="addCategoryBtn" data-bs-toggle="modal" data-bs-target="##addContact" >Add</button>
-                        </div>
                         <cfset viewCategory = application.myCartObj.viewCategoryData()>
                         <cfloop query = "#viewCategory#">
                             <div class="contentBox d-flex mb-3">
                                 <div class="col-5 categoryName" id="categoryName_#viewCategory.fldCategory_Id#">
                                     #viewCategory.fldCategoryName#
                                 </div>
-                                <div class="">
+                                <div>
                                     <input type="text" class="categoryName" id="categoryNameField_#viewCategory.fldCategory_Id#" 
                                         value="#viewCategory.fldCategoryName#" style="display:none;width:150px;border:transparent;" maxlength="32">
                                 </div>

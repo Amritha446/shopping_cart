@@ -134,7 +134,7 @@
                                                                                                     minRange = form.minRange, 
                                                                                                     maxRange = form.maxRange,
                                                                                                     limit = limit,
-                                                                                                    offset = offset)>   
+                                                                                                    offset = offset)>  
                                         <cfelseif url.searchTerm NEQ ""> 
                                             <cfset viewProduct = application.myCartObj.viewProduct(searchTerm = url.searchTerm)>                                                       
                                         <cfelse>
@@ -145,7 +145,6 @@
                                                                                                 sort = url.sort
                                                                                                 )>
                                         </cfif>
-                                        
                                         <div id="productContainer" class="productContainer mt-2 ms-5">
                                             <cfloop query="viewProduct">
                                                 <div class="productBox d-flex flex-column" id="product_#viewProduct.currentRow#">
@@ -158,8 +157,8 @@
                                                 </div>
                                             </cfloop>         
                                         </div>
-                                        <cfif viewProductCount.recordCount GT 5>
-                                            <button type="button" id="viewMoreBtn" class="viewCategoryBtn " 
+                                        <cfif viewProductCount.recordCount GT 5 AND viewProduct.recordCount EQ 5>
+                                            <button type="button" id="viewMoreBtn" class="viewCategoryBtn text-success" 
                                             onClick = "loadMoreProducts('#subcategoryId#','#url.sort#','#viewProductCount.recordCount#','#url.min#','#url.max#','#url.minRange#','#url.maxRange#')">View More</button>
                                         </cfif>
                                     </cfif>

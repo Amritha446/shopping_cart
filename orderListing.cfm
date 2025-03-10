@@ -47,53 +47,59 @@
 
                     <cfif url.searchId NEQ "">
                         <cfset orderedEachItemList = application.myCartObj.fetchOrderDetails(searchId = url.searchId)>
-                        <cfif orderedEachItemList.recordCount EQ 0>
+                        <cfif structCount(orderedEachItemList) EQ 0>
                             <h6 class="text-danger ms-5 mt-2">No orders found with #url.searchId#</h6>
                         </cfif>
                     <cfelse>
                         <cfset orderedEachItemList = application.myCartObj.fetchOrderDetails(limit = pageSize, offset = offset)>
                     </cfif>
-                    <cfset totalOrders = application.myCartObj.fetchOrderDetails().recordCount>
+
+                    <cfset totalOrder = application.myCartObj.fetchOrderDetails()>
+                    <cfset totalOrders = structCount(totalOrder)>
                     <cfset totalPages = floor(((totalOrders + pageSize) - 1) / pageSize)>
-                    
-                    <cfloop query="#orderedEachItemList#">
+
+                    <cfset orderIds = structKeyList(orderedEachItemList)>
+                    <cfloop list="#orderIds#" index="orderId">
+                        <cfset order = orderedEachItemList[orderId]>
                         <div class="d-flex flex-column mb-3">
                             <div class="d-flex orderListHeading">
-                                <div class="">ORDER ID : #orderedEachItemList.fldOrder_Id#</div>
-                                <button type="button" class="invoiceDownload" onClick="downloadInvoice(event)" value="#orderedEachItemList.fldOrder_Id#" title="Download Invoice">
+                                <div class="">ORDER ID : #order.orderId#</div>
+                                <button type="button" class="invoiceDownload" onClick="downloadInvoice(event)" value="#order.orderId#" title="Download Invoice">
                                     <i class="fa-solid fa-download bg-light pe-none"></i> 
                                 </button>
                             </div>
-                            
+
                             <div class="orderedItemsBlock d-flex">
                                 <div class="productDetails d-flex flex-column col-4">
-                                    <cfloop list="#orderedEachItemList.fldQuantity#" item="item" index="index">
-                                        <div class="orderedItem">
-                                            <img src="assets/#ListGetAt(orderedEachItemList.fldImageFileName,index)#" alt="product_img" class="orderListImage ms-2 me-3">
-                                            <div class="d-flex flex-column">
-                                                <div>#ListGetAt(orderedEachItemList.fldProductName,index)#</div>
-                                                <div class="orderDiv">Quantity: #ListGetAt(orderedEachItemList.fldQuantity,index)#</div>
-                                                <div class="orderDiv">Unit Price: #ListGetAt(orderedEachItemList.fldUnitPrice,index)#</div>
-                                                <div class="orderDiv">Unit Tax: #ListGetAt(orderedEachItemList.productTax,index)# %</div>
+                                    <cfloop array="#order.products#" index="product">
+                                        <div class="orderedItem ms-5">
+                                            <img src="assets/#product.imageFileName#" alt="product_img" class="orderListImage ms-2 me-3">
+                                            <div class="d-flex ms-5">
+                                                <div class="orderDiv1">#product.productName#</div>
+                                                <div class="orderDiv">Quantity: #product.quantity#</div>
+                                                <div class="orderDiv1">Unit Price: $#product.unitPrice#</div>
+                                                <div class="orderDiv ms-3">Unit Tax: #product.tax# %</div>
                                             </div>
                                         </div>
                                     </cfloop>
                                 </div>
+                            </div>
 
-                                <div class="orderDetails d-flex flex-column col-8 ms-4 mt-3">
+                            <div class="d-flex orderListHeading">
+                                <div class="orderDetails d-flex">
                                     <cfset originalDate = CreateDateTime(
-                                        ListGetAt(orderedEachItemList.formattedDate, 3, '-'),
-                                        ListGetAt(orderedEachItemList.formattedDate, 2, '-'),
-                                        ListGetAt(orderedEachItemList.formattedDate, 1, '-')
+                                        ListGetAt(order.orderDate, 3, '-'),
+                                        ListGetAt(order.orderDate, 2, '-'),
+                                        ListGetAt(order.orderDate, 1, '-')
                                     )>
                                     <cfset newDate = DateAdd("d", 7, originalDate)>
-                                    <cfset date = dateFormat(newDate,'d-m-Y')>
-                                    <div class="d-flex">
-                                        <div class="me-5"><div class="orderDiv">Ordered On: #orderedEachItemList.formattedDate#</div>
-                                        <div class="orderDiv">Delivery Date: #date#</div></div>
-                                        <div class="ms-5"><div class="orderDiv">Contact Details:</div>
-                                        <div class="orderDiv">Mob No: #orderedEachItemList.fldPhoneNumber#</div>
-                                        <div class="orderDiv">Address: #orderedEachItemList.fldAdressLine1# #orderedEachItemList.fldAdressLine2#</div></div>
+                                    <cfset date = dateFormat(newDate, 'd-m-Y')>
+
+                                    <div class="d-flex contactBlock">
+                                        <div class="text-success">Ordered On:<br> #order.orderDate#</div>
+                                        <div class="text-success">Delivery Date:<br> #date#</div>
+                                        <div class="text-success">Mob No:<br> #order.address.phoneNumber#</div>
+                                        <div class="text-success">Address:<br> #order.address.line1# #order.address.line2#</div>
                                     </div>
                                 </div>
                             </div>
