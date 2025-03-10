@@ -27,6 +27,10 @@ function validation(){
         document.getElementById('productNameError').textContent = 'Please enter Product Name';
         valid = false;
     }
+    else if (productName > 100) {
+        document.getElementById('taxError').textContent = 'Name cannot be greater than 100 charcters';
+        valid = false;
+    }
     else{
         document.getElementById('productNameError').textContent = '';
     }
@@ -41,6 +45,10 @@ function validation(){
         document.getElementById('descriptionError').textContent = 'Please enter product description';
         valid = false;
     }
+    else if (productDescrptn > 300) {
+        document.getElementById('taxError').textContent = 'Description cannot be greater than 300 charcters';
+        valid = false;
+    }
     else{
         document.getElementById('descriptionError').textContent = '';
     }
@@ -51,15 +59,20 @@ function validation(){
     else{
         document.getElementById('priceError').textContent = '';
     }
-    if(productImg == ''){
+    if (productImg == '' && document.getElementById('productId').value == "") {
         document.getElementById('imgError').textContent = 'Please upload image';
         valid = false;
-    }
-    else{
+    } else if (productImg != '' && !/\.(jpg|jpeg|png|gif)$/i.test(productImg)) {
+        document.getElementById('imgError').textContent = 'Please upload a valid image (jpg, jpeg, png, gif)';
+        valid = false;
+    } else {
         document.getElementById('imgError').textContent = '';
     }
-    if(productTax == ''){
+    if (productTax === '') {
         document.getElementById('taxError').textContent = 'Please enter product tax';
+        valid = false;
+    } else if (productTax > 100) {
+        document.getElementById('taxError').textContent = 'Tax cannot be greater than 100';
         valid = false;
     }
     else{
