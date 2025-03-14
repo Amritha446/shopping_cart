@@ -60,7 +60,7 @@
                             </div>
                         </cfif>
 
-                        <div id = "subCategoryErrorMsg" class="text-danger"></div>
+                        
 
                         <div class="modal fade" id="editSubContact" tabindex="-1">
                             <div class="modal-dialog">
@@ -93,7 +93,7 @@
                                                     id="addSubCategorySubmit" value="" onClick="addSubCategoryFormSubmit()">
                                                     ADD
                                                 </button>
-                                                <div id = "subCategoryErrorMsg" class="text-danger"></div>
+                                                <div id = "subCategoryErrorMsg" class="text-danger subCategoryError"></div>
                                             </div>
                                         </form>
                                     </div>

@@ -210,7 +210,7 @@
             <cfreturn "Failed to add or update sub-category: Name cannot be empty">
         </cfif>
         <cfif NOT reFind("^[a-zA-Z]+$", arguments.subCategoryName)>
-            <cfreturn "sub category name should contain only alphabets and should not be empty.">
+            <cfreturn "sub category name should contain only alphabets.">
         </cfif>
         <cfquery name = "local.checkSubCategory" datasource = "#application.datasource#">
             SELECT 
@@ -418,7 +418,7 @@
     <cffunction name = "viewProduct" access = "remote" returnType = "query" returnFormat = "json">
         <cfargument name = "subCategoryId" default = 0 required = "false" type = "integer">
         <cfargument name = "productId" default = "" required = "false" type = "string">
-        <cfargument name = "sort" type = "numeric" required = "false" default = 0>
+        <cfargument name = "sort" type = "numeric" required = "false" default = 1>
         <cfargument name = "min" type = "numeric" required = "false" default = 0>
         <cfargument name = "max" type = "numeric" required = "false" default = 0>
         <cfargument name = "minRange" type = "numeric" required = "false" default = 0>
@@ -1014,7 +1014,7 @@
                 O.fldOrder_Id,
                 O.fldTotalPrice,
                 O.fldTotalTax,
-                DATE_FORMAT(O.fldOrderDate, '%d-%m-%Y') AS formattedDate,
+                O.fldOrderDate,
                 OI.fldQuantity,
                 OI.fldUnitPrice,
                 A.fldFirstName AS addressFirstName,
@@ -1028,7 +1028,7 @@
                 P.fldProductName,
                 P.fldTax AS productTax,
                 PI.fldImageFileName
-            FROM 
+            FROM
                 tblorder O
                 INNER JOIN tblorderitems OI ON OI.fldOrderId = O.fldOrder_Id
                 INNER JOIN tbladdress A ON A.fldAddress_Id = O.fldAdressId
@@ -1055,7 +1055,7 @@
                 <cfset orderDetails[fldOrder_Id].orderId = fldOrder_Id>
                 <cfset orderDetails[fldOrder_Id].totalPrice = fldTotalPrice>
                 <cfset orderDetails[fldOrder_Id].totalTax = fldTotalTax>
-                <cfset orderDetails[fldOrder_Id].orderDate = formattedDate>
+                <cfset orderDetails[fldOrder_Id].orderDate = fldOrderDate>
 
                 <cfset orderDetails[fldOrder_Id].address = structNew()>
                 <cfset orderDetails[fldOrder_Id].address.firstName = addressFirstName>
@@ -1126,7 +1126,6 @@
         <cfabort>
     </cffunction>
 
-
     <cffunction name = "delItem" access = "remote" returnType = "string" returnFormat = "json">
         <cfargument name = "itemType" required = "true" type = "string">
         <cfargument name = "itemId" required = "true" type = "numeric">
@@ -1188,7 +1187,7 @@
                 <cfquery name="local.deactivateSubCategory" datasource="#application.datasource#">
                     UPDATE 
                         tblsubcategory S
-                        LEFT JOIN tblproduct P ON P.fldSubCategoryid = P.fldSubCategory_Id
+                        LEFT JOIN tblproduct P ON P.fldSubCategoryid = S.fldSubCategory_Id
                     SET 
                         S.fldActive = 0, 
                         S.fldUpdatedBy = <cfqueryparam value="#session.userId#" cfsqltype="integer">,

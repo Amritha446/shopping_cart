@@ -70,24 +70,49 @@ function signUpFunction() {
     });
 }
     
-function deleteCategory(event){
-    console.log(event.target.value)
-    if(confirm("Confirm delete?")){
-        $.ajax({
-            type:"POST",
-            url:"Components/myCart.cfc?method=delItem",
-            data:{itemId:event.target.value,
-                itemType:"category"
-            },
-            success:function(result){
-                event.target.parentNode.parentNode.remove()
-            }
-        })
-    }
-    else{
-        event.preventDefault()
-    }
+function deleteCategory(event) {
+    console.log(event.target.value);
+    
+    Swal.fire({
+        title: 'Confirm Delete?',
+        text: 'Are you sure you want to delete this category?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'Cancel',
+        reverseButtons: true, 
+        customClass: {
+            confirmButton: 'btn btn-success', 
+            cancelButton: 'btn btn-danger' 
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                type: "POST",
+                url: "Components/myCart.cfc?method=delItem",
+                data: {
+                    itemId: event.target.value,
+                    itemType: "category"
+                },
+                success: function(result) {
+                    event.target.parentNode.parentNode.remove();
+                    Swal.fire(
+                        'Deleted!',
+                        'The category has been deleted.',
+                        'success'
+                    );
+                }
+            });
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+            Swal.fire(
+                'Cancelled',
+                'The category was not deleted.',
+                'info'
+            );
+        }
+    });
 }
+
 
 function addCategoryFormSubmit(){
     event.preventDefault();
@@ -104,7 +129,7 @@ function addCategoryFormSubmit(){
             if (result == "Category added successfully.") {
                 location.reload();
             } else {
-                document.getElementById('categoryErrorMsg').innerHTML = result;  
+                document.getElementById('categoryErrorMsg1').innerHTML = result;  
                 console.log(response)
             }   
         } 
@@ -214,22 +239,45 @@ function editSubCategoryFormSubmit(){
         }
     })
 }
-function deleteSubCategory(event){
-    if(confirm("Confirm delete?")){
-        $.ajax({
-            type:"POST",
-            url:"Components/myCart.cfc?method=delItem",
-            data:{itemId:event.target.value,
-                itemType:"subcategory"
-            },
-            success:function(result){
-                event.target.parentNode.parentNode.remove()
-            }
-        })
-    }
-    else{
-        event.preventDefault()
-    }
+
+function deleteSubCategory(event) {
+    Swal.fire({
+        title: 'Confirm Delete?',
+        text: 'Are you sure you want to delete this subcategory?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'Cancel',
+        customClass: {
+            confirmButton: 'btn btn-success', 
+            cancelButton: 'btn btn-danger' 
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                type: "POST",
+                url: "Components/myCart.cfc?method=delItem",
+                data: {
+                    itemId: event.target.value,
+                    itemType: "subcategory"
+                },
+                success: function(result) {
+                    event.target.parentNode.parentNode.remove();
+                    Swal.fire(
+                        'Deleted!',
+                        'The subcategory has been deleted.',
+                        'success'
+                    );
+                }
+            });
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+            Swal.fire(
+                'Cancelled',
+                'The subcategory was not deleted.',
+                'info'
+            );
+        }
+    });
 }
 
 function createNewProduct(){
@@ -314,22 +362,44 @@ function viewSelectedImages() {
     });
 } 
  
-function deleteProduct(event){
-    if(confirm("Confirm delete?")){
-        $.ajax({
-            type:"POST",
-            url:"Components/myCart.cfc?method=delItem",
-            data:{itemId:event.target.value,
-                itemType:"product"
-            },
-            success:function(){
-                event.target.parentNode.parentNode.remove()
-            }
-        })
-    }
-    else{
-        event.preventDefault()
-    }
+function deleteProduct(event) {
+    Swal.fire({
+        title: 'Confirm Delete?',
+        text: 'Are you sure you want to delete this product?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'Cancel',
+        customClass: {
+            confirmButton: 'btn btn-success', 
+            cancelButton: 'btn btn-danger'  
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                type: "POST",
+                url: "Components/myCart.cfc?method=delItem",
+                data: {
+                    itemId: event.target.value,
+                    itemType: "product"
+                },
+                success: function() {
+                    event.target.parentNode.parentNode.remove();
+                    Swal.fire(
+                        'Deleted!',
+                        'The product has been deleted.',
+                        'success'
+                    );
+                }
+            });
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+            Swal.fire(
+                'Cancelled',
+                'The product was not deleted.',
+                'info'
+            );
+        }
+    });
 }
 
 $(document).ready(function() {
@@ -359,7 +429,6 @@ $(document).ready(function() {
         });    
     });
 });
-
 
 function loadProductImages() {
     let productId = event.target.value; 
@@ -500,20 +569,37 @@ function toggleProducts() {
 document.querySelectorAll('.hiddenProduct').forEach(function(product) {
     product.style.display = "none";
 });
- 
-function removeCartProduct(event) {
-    if(confirm("Confirm delete?")){
-        $.ajax({
-            type:"POST",
-            url:"Components/myCart.cfc?method=removeCartProduct", 
-            data:{CartId:event.target.value},
-            success:function(result){
-                location.reload()
-            }     
-        })
-    } 
-}      
 
+function removeCartProduct(event) {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "Do you want to remove this product from your cart?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, remove it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                type: "POST",
+                url: "Components/myCart.cfc?method=removeCartProduct",
+                data: { CartId: event.target.value },
+                success: function(result) {
+                    Swal.fire({
+                        title: 'Removed!',
+                        text: 'The product has been removed from your cart.',
+                        icon: 'success',
+                        confirmButtonText: 'Okay'
+                    }).then(() => {
+                        location.reload();
+                    });
+                }
+            });
+        }
+    });
+}
+    
 function updateTotalPrice() {
     let totalPrice = 0;
     let totalTaxAmount = 0; 
@@ -612,7 +698,6 @@ function updateCartQuantity(productId, newQuantity) {
     });
 }
 
-
 function editUser(){
     $.ajax({
         type:"POST",
@@ -626,6 +711,7 @@ function editUser(){
         }
     })
 }
+
 function editUserSubmit(){
     event.preventDefault()
     $.ajax({
@@ -809,6 +895,7 @@ function loadMoreProducts(subcategoryId,sort,count,min,max,minRange,maxRange) {
     } else {
         document.getElementById('viewMoreBtn').style.display = "block";
     }
+    
     $.ajax({
         type:"POST",
         url:"Components/myCart.cfc?method=viewProduct",
@@ -837,7 +924,6 @@ function loadMoreProducts(subcategoryId,sort,count,min,max,minRange,maxRange) {
             $('#productContainer').append(div);
             
             });
-           
         },
     })
 }

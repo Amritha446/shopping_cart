@@ -48,7 +48,7 @@
                     <cfif url.searchId NEQ "">
                         <cfset orderedEachItemList = application.myCartObj.fetchOrderDetails(searchId = url.searchId)>
                         <cfif structCount(orderedEachItemList) EQ 0>
-                            <h6 class="text-danger ms-5 mt-2">No orders found with #url.searchId#</h6>
+                            <h6 class="text-danger mt-2 orderListingError">No orders found with #url.searchId#</h6>
                         </cfif>
                     <cfelse>
                         <cfset orderedEachItemList = application.myCartObj.fetchOrderDetails(limit = pageSize, offset = offset)>
@@ -87,16 +87,12 @@
 
                             <div class="d-flex orderListHeading">
                                 <div class="orderDetails d-flex">
-                                    <cfset originalDate = CreateDateTime(
-                                        ListGetAt(order.orderDate, 3, '-'),
-                                        ListGetAt(order.orderDate, 2, '-'),
-                                        ListGetAt(order.orderDate, 1, '-')
-                                    )>
+                                    <cfset originalDate =dateTimeFormat(parsedatetime(order.orderDate) , "d-m-Y")>
                                     <cfset newDate = DateAdd("d", 7, originalDate)>
                                     <cfset date = dateFormat(newDate, 'd-m-Y')>
 
                                     <div class="d-flex contactBlock">
-                                        <div class="text-success">Ordered On:<br> #order.orderDate#</div>
+                                        <div class="text-success">Ordered On:<br> #originalDate#</div>
                                         <div class="text-success">Delivery Date:<br> #date#</div>
                                         <div class="text-success">Mob No:<br> #order.address.phoneNumber#</div>
                                         <div class="text-success">Address:<br> #order.address.line1# #order.address.line2#</div>
@@ -108,17 +104,17 @@
 
                     <div class="orderPagination">
                         <cfif (currentPage GT 1) AND (url.searchId EQ "")>
-                            <a href="orderListing.cfm?searchId=#url.searchId#&page=#(currentPage - 1)#" class="paginaionLink">Previous</a>
+                            <a href="orderListing.cfm?searchId=#url.searchId#&page=#(currentPage - 1)#" class="paginationLink"> Previous </a>
                         <cfelse>
-                            <button class="paginaionLink disabled" >Previous</button>
+                            <button class="paginationLink disabled" > Previous </button>
                         </cfif>
 
-                        <span>Page #currentPage# </span>
+                        <span class="m-2">Page #currentPage# </span>
                         
                         <cfif (currentPage LT totalPages) AND (url.searchId EQ "")>
-                            <a href="orderListing.cfm?searchId=#url.searchId#&page=#(currentPage + 1)#" class="paginaionLink">Next</a>
+                            <a href="orderListing.cfm?searchId=#url.searchId#&page=#(currentPage + 1)#" class="paginationLink"> Next </a>
                         <cfelse>
-                            <button class="paginaionLink disabled" >Next</button>
+                            <button class="paginationLink disabled" > Next </button>
                         </cfif>
                     </div>
                 </div>

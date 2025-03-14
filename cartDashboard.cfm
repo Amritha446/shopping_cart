@@ -76,7 +76,8 @@
                                                     <div class="text-secondary mt-4 ms-5"> Enter Category Name: </div>
                                                     <input type="text" name="categoryName" class="inputs ms-5" id="categoryNameAdd">
                                                 </div>
-                                                <button type="submit" name="submit" class="btn mt-5 ms-5" onClick = "addCategoryFormSubmit()">ADD</button>
+                                                <button type="submit" name="submit" class="btn mt-5 ms-5 " onClick = "addCategoryFormSubmit()">ADD</button>
+                                                <div id="categoryErrorMsg1" class="text-danger mt-3 d-flex align-items-center justify-content-center"></div>
                                             </div>
                                         </form>
                                     </div>

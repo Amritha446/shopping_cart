@@ -62,11 +62,11 @@
         <cfreturn true>
     </cffunction>
 
-    <cffunction name="onError" access="public" returnType="void">
+    <!--- <cffunction name="onError" access="public" returnType="void">
         <cfargument name="exception" required="true" type="any">
         <cfargument name="eventName" required="true" type="string">
 
         <cfset location("./error.cfm?message=" & urlEncodedFormat(arguments.exception.message))>
-    </cffunction>
+    </cffunction> --->
     
 </cfcomponent>
