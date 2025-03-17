@@ -28,7 +28,9 @@
                         </div>
                     </button>
                 </div>
+                
                 <cfinclude template = "navbar.cfm">
+
                 <div class="orderHistoryPage d-flex flex-column">
                     <div class = "successMsg ">PAYMENT SUCCESSFULL!</div>
                     <div class="d-flex">

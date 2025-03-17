@@ -53,7 +53,7 @@
 
                                 <cfloop array="#viewSubCategory['data']#" index="subCategory">
                                     <a href="filterProduct.cfm?subCategoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = subCategory['fldSubCategory_Id']))#" class="navBarButton ms-2">
-                                        <h5>#subCategory['fldSubCategoryName']#</h5>
+                                        <h5 class = "ms-2">#subCategory['fldSubCategoryName']#</h5>
                                     </a>
 
                                     <cfif url.searchTerm NEQ "">
@@ -62,15 +62,9 @@
                                         <cfset viewProduct = application.myCartObj.viewProduct(subCategoryId = subCategory['fldSubCategory_Id'],
                                                                                             limit = 5)>
                                     </cfif>
-                                    <div class="productContainer">
+                                    <div class="productContainer ms-3">
                                         <cfset currentRow = 1>
                                         <cfloop query="viewProduct">
-                                            <cfif (currentRow mod 6) EQ 1>
-                                                <cfif currentRow GT 1>
-                                                    </div>
-                                                </cfif>
-                                                <div class="productRow d-flex">
-                                            </cfif>
                                             <div class="productBox d-flex flex-column">
                                                 <a href="productDetails.cfm?productId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = viewProduct.fldProduct_Id))#&random=1" class="imageLink">
                                                     <img src="assets/#viewProduct.imageFileName#" alt="img" class="productBoxImage">
@@ -79,7 +73,6 @@
                                                     <div class="ms-4 small">$#viewProduct.fldPrice#</div>
                                                 </a>
                                             </div>
-                                            <cfset currentRow = currentRow + 1>
                                         </cfloop>
                                     </div>
                                 </cfloop>

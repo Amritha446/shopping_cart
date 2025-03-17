@@ -470,12 +470,12 @@
                     OR P.fldDescription LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">)
                 </cfif>
             ORDER BY 
-                <cfif arguments.sort EQ 2>
-                    P.fldPrice ASC
+                <cfif arguments.randomProducts>
+                    RAND()
                 <cfelseif arguments.sort EQ 1>
                     P.fldPrice DESC
-                <cfelseif arguments.randomProducts EQ true>
-                    RAND()
+                <cfelseif arguments.sort EQ 2>
+                    P.fldPrice ASC
                 <cfelse>
                     P.fldProduct_Id
                 </cfif>,
@@ -972,22 +972,26 @@
                     <cfset local.orderDetails = fetchOrderDetails(orderId = local.orderId)>
 
                     <cfset local.productDetailsHTML = "<ul>"/>
-                    
-                    <cfloop query="#local.orderDetails#">
-                        <cfset local.productDetailsHTML = local.productDetailsHTML & "<li>#fldProductName# (Qty: #fldQuantity#) - $ #fldUnitPrice#</li>" />
+
+                    <cfloop collection = "#local.orderDetails#" item = "orderId">
+                        <cfset local.order = local.orderDetails[orderId]>
+                        <cfloop array = "#local.order.products#" index = "product">
+                            <cfset local.productDetailsHTML = local.productDetailsHTML & "<li>#product.productName# (Qty: #product.quantity#) - $ #product.unitPrice#</li>" />
+                        </cfloop>
                     </cfloop>
-                    
+
                     <cfset local.productDetailsHTML = local.productDetailsHTML & "</ul>" />
-                    
+
                     <cfmail to="#session.mail#"
                             from="myCart@myCart.com" 
                             subject="Order Confirmation"
                             type="html">
-                        <p>Hi #session.userName#</p>
+                        <p>Hi #session.userName#,</p>
                         <p>Thank you for your purchase!</p>
                         <p>Your order details are as follows:</p>
                         #local.productDetailsHTML#
                     </cfmail>
+
                     <cfset session.cartCount = viewCartData().recordCount>
                     <cfset local.result = "Order placed successfully.">
                 <cfelse>
@@ -1008,76 +1012,80 @@
         <cfargument name="offset" required="false" type="numeric" default="0">
 
         <cfset local.orderDetails = structNew()>
-
-        <cfquery name="local.orderHistoryData" datasource="#application.datasource#">
-            SELECT 
-                O.fldOrder_Id,
-                O.fldTotalPrice,
-                O.fldTotalTax,
-                O.fldOrderDate,
-                OI.fldQuantity,
-                OI.fldUnitPrice,
-                A.fldFirstName AS addressFirstName,
-                A.fldLastName AS addressLastName,
-                A.fldAdressLine1,
-                A.fldAdressLine2,
-                A.fldCity,
-                A.fldState,
-                A.fldPincode,
-                A.fldPhoneNumber,
-                P.fldProductName,
-                P.fldTax AS productTax,
-                PI.fldImageFileName
-            FROM
-                tblorder O
-                INNER JOIN tblorderitems OI ON OI.fldOrderId = O.fldOrder_Id
-                INNER JOIN tbladdress A ON A.fldAddress_Id = O.fldAdressId
-                INNER JOIN tblproduct P ON P.fldProduct_Id = OI.fldProductId
-                INNER JOIN tblproductimages PI ON PI.fldProductId = P.fldProduct_Id AND PI.fldDefaultImage = 1
-            WHERE
-                O.fldUserId = <cfqueryparam value="#session.UserId#" cfsqltype="integer">
-                <cfif trim(len(arguments.orderId))>
-                    AND fldOrder_Id = <cfqueryparam value="#arguments.orderId#" cfsqltype="varchar">
+        <cftry>
+            <cfquery name="local.orderHistoryData" datasource="#application.datasource#">
+                SELECT 
+                    O.fldOrder_Id,
+                    O.fldTotalPrice,
+                    O.fldTotalTax,
+                    O.fldOrderDate,
+                    OI.fldQuantity,
+                    OI.fldUnitPrice,
+                    A.fldFirstName AS addressFirstName,
+                    A.fldLastName AS addressLastName,
+                    A.fldAdressLine1,
+                    A.fldAdressLine2,
+                    A.fldCity,
+                    A.fldState,
+                    A.fldPincode,
+                    A.fldPhoneNumber,
+                    P.fldProductName,
+                    P.fldTax AS productTax,
+                    PI.fldImageFileName
+                FROM
+                    tblorder O
+                    INNER JOIN tblorderitems OI ON OI.fldOrderId = O.fldOrder_Id
+                    INNER JOIN tbladdress A ON A.fldAddress_Id = O.fldAdressId
+                    INNER JOIN tblproduct P ON P.fldProduct_Id = OI.fldProductId
+                    INNER JOIN tblproductimages PI ON PI.fldProductId = P.fldProduct_Id AND PI.fldDefaultImage = 1
+                WHERE
+                    O.fldUserId = <cfqueryparam value="#session.UserId#" cfsqltype="integer">
+                    <cfif trim(len(arguments.orderId))>
+                        AND fldOrder_Id = <cfqueryparam value="#arguments.orderId#" cfsqltype="varchar">
+                    </cfif>
+                    <cfif trim(len(arguments.searchId))>
+                        AND fldOrder_Id LIKE <cfqueryparam value="%#arguments.searchId#%" cfsqltype="varchar">
+                    </cfif>
+                ORDER BY O.fldOrderDate DESC
+                <cfif arguments.limit NEQ 0>
+                    LIMIT <cfqueryparam value="#arguments.offset#" cfsqltype="numeric">,
+                    <cfqueryparam value="#arguments.limit#" cfsqltype="numeric">
                 </cfif>
-                <cfif trim(len(arguments.searchId))>
-                    AND fldOrder_Id LIKE <cfqueryparam value="%#arguments.searchId#%" cfsqltype="varchar">
+            </cfquery>
+
+            <cfloop query="local.orderHistoryData">
+                <cfif NOT structKeyExists(orderDetails, fldOrder_Id)>
+                    <cfset orderDetails[fldOrder_Id] = structNew()>
+                    <cfset orderDetails[fldOrder_Id].orderId = fldOrder_Id>
+                    <cfset orderDetails[fldOrder_Id].totalPrice = fldTotalPrice>
+                    <cfset orderDetails[fldOrder_Id].totalTax = fldTotalTax>
+                    <cfset orderDetails[fldOrder_Id].orderDate = fldOrderDate>
+
+                    <cfset orderDetails[fldOrder_Id].address = structNew()>
+                    <cfset orderDetails[fldOrder_Id].address.firstName = addressFirstName>
+                    <cfset orderDetails[fldOrder_Id].address.lastName = addressLastName>
+                    <cfset orderDetails[fldOrder_Id].address.line1 = fldAdressLine1>
+                    <cfset orderDetails[fldOrder_Id].address.line2 = fldAdressLine2>
+                    <cfset orderDetails[fldOrder_Id].address.city = fldCity>
+                    <cfset orderDetails[fldOrder_Id].address.state = fldState>
+                    <cfset orderDetails[fldOrder_Id].address.pincode = fldPincode>
+                    <cfset orderDetails[fldOrder_Id].address.phoneNumber = fldPhoneNumber>
+
+                    <cfset orderDetails[fldOrder_Id].products = arrayNew(1)>
                 </cfif>
-            ORDER BY O.fldOrderDate DESC
-            <cfif arguments.limit NEQ 0>
-                LIMIT <cfqueryparam value="#arguments.offset#" cfsqltype="numeric">,
-                <cfqueryparam value="#arguments.limit#" cfsqltype="numeric">
-            </cfif>
-        </cfquery>
 
-        <cfloop query="local.orderHistoryData">
-            <cfif NOT structKeyExists(orderDetails, fldOrder_Id)>
-                <cfset orderDetails[fldOrder_Id] = structNew()>
-                <cfset orderDetails[fldOrder_Id].orderId = fldOrder_Id>
-                <cfset orderDetails[fldOrder_Id].totalPrice = fldTotalPrice>
-                <cfset orderDetails[fldOrder_Id].totalTax = fldTotalTax>
-                <cfset orderDetails[fldOrder_Id].orderDate = fldOrderDate>
-
-                <cfset orderDetails[fldOrder_Id].address = structNew()>
-                <cfset orderDetails[fldOrder_Id].address.firstName = addressFirstName>
-                <cfset orderDetails[fldOrder_Id].address.lastName = addressLastName>
-                <cfset orderDetails[fldOrder_Id].address.line1 = fldAdressLine1>
-                <cfset orderDetails[fldOrder_Id].address.line2 = fldAdressLine2>
-                <cfset orderDetails[fldOrder_Id].address.city = fldCity>
-                <cfset orderDetails[fldOrder_Id].address.state = fldState>
-                <cfset orderDetails[fldOrder_Id].address.pincode = fldPincode>
-                <cfset orderDetails[fldOrder_Id].address.phoneNumber = fldPhoneNumber>
-
-                <cfset orderDetails[fldOrder_Id].products = arrayNew(1)>
-            </cfif>
-
-            <cfset arrayAppend(orderDetails[fldOrder_Id].products, {
-                productName = fldProductName,
-                quantity = fldQuantity,
-                unitPrice = fldUnitPrice,
-                tax = productTax,
-                imageFileName = fldImageFileName
-            })>
-        </cfloop>
+                <cfset arrayAppend(orderDetails[fldOrder_Id].products, {
+                    productName = fldProductName,
+                    quantity = fldQuantity,
+                    unitPrice = fldUnitPrice,
+                    tax = productTax,
+                    imageFileName = fldImageFileName
+                })>
+            </cfloop>
+        <cfcatch type="any">
+            <cfset local.result = "#cfcatch.message#">
+        </cfcatch>
+        </cftry>
 
         <cfreturn local.orderDetails>
     </cffunction>

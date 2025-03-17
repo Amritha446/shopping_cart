@@ -855,16 +855,14 @@ function paymentData() {
         type: "POST",
         data: data,
         success: function(response) {
+            console.log(response)
             let result = JSON.parse(response);
             if (result == "Order placed successfully.") {
                 window.location.href = "paymentPage.cfm";
             } else {
                 document.getElementById('paymentError').textContent = result;
             }
-        },
-        error: function (xhr, ajaxOptions, thrownError) {
-            alert(thrownError);
-          }
+        }
     });
 }
 
@@ -917,14 +915,18 @@ function loadMoreProducts(subcategoryId,sort,count,min,max,minRange,maxRange) {
                             <img src="assets/${product[9]}" alt="img" class="productBoxImage">
                             <div class="ms-4 font-weight-bold h5">${product[2]}</div>
                             <div class="ms-4 h6 ">${product[3]}</div>
-                            <div class="ms-4 small">$${product[5]}</div>
+                            <div class="ms-4 small">$${product[5]}.00</div>
                         </a>
                     </div>
                 `
             $('#productContainer').append(div);
             
             });
+            if (offset + limit >= count) {
+                document.getElementById('viewMoreBtn').style.display = "none";
+            }
         },
+
     })
 }
 

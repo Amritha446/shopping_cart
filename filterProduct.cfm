@@ -58,35 +58,31 @@
                         <cfloop query="#viewCategory#">
                             <cfset currentCategoryId = viewCategory.fldCategory_Id>
                             <cfset viewSubCategory = subCategoryData[currentCategoryId]>
+
                             <cfif viewSubCategory["message"] EQ "Success">
                                 <cfloop array="#viewSubCategory['data']#" index="subCategory">
                                     <cfif subCategory['fldSubCategory_Id'] EQ subCategoryId>
                                         <div class="productPath ms-3 p-2">
-                                            <a href="homePage.cfm" class="navBarButton ms-2" >home</a>
+                                            <a href="homePage.cfm" class="navBarButton ms-2">home</a>
                                             > <a href="categoryBasedProduct.cfm?categoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = viewCategory.fldCategory_Id))#" class="navBarButton ms-2">#viewCategory.fldCategoryName#</a>
                                             > <a href="filterProduct.cfm?subCategoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = subCategory['fldSubCategory_Id']))#" class="navBarButton ms-2">#subCategory['fldSubCategoryName']#</a>
                                         </div>
+
                                         <h5 class="navBarButton ms-5 mt-2">#subCategory['fldSubCategoryName']#</h5>
                                         <div class="filterProduct d-flex ms-5">
-                                            <!--- <div class="filterLink ms-2">
-                                                <a href="filterProduct.cfm?subCategoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = subCategory['fldSubCategory_Id']))#&sort=1" class="navBarButton" name="navBarButton">Price High To Low</a>
+                                            <div class="filterLink ms-2">
+                                                <a href="filterProduct.cfm?subCategoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = subCategory['fldSubCategory_Id']))#&sort=1" class="navBarButton">Price High To Low</a>
                                                 <a href="filterProduct.cfm?subCategoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = subCategory['fldSubCategory_Id']))#&sort=2" class="ms-3 navBarButton">Price Low To High</a>
-                                            </div> --->
+                                            </div>
                                             <div class="d-flex">
                                                 <button type="submit" class="filterButton" data-bs-toggle="modal" data-bs-target="##filterProduct">Filter <i class="fa-solid fa-filter"></i></button>
                                             </div>
                                         </div>
-                                    <form method="post" name="form" action="filterProduct.cfm?subCategoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = subCategory['fldSubCategory_Id']))#">
-                                        <div class="filterLink ms-2">
-                                            <a href="filterProduct.cfm?subCategoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = subCategory['fldSubCategory_Id']))#&sort=1" class="navBarButton" name="navBarButton">Price High To Low</a>
-                                            <a href="filterProduct.cfm?subCategoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = subCategory['fldSubCategory_Id']))#&sort=2" class="ms-3 navBarButton">Price Low To High</a>
-                                        </div>
                                         <div class="fade modal" id="filterProduct" tabindex="-1">
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
-                                                    
-
-                                                        <div class="d-flex flex-column ms-2 mt-2 p-2">
+                                                    <form method="post" name="form" action="filterProduct.cfm?subCategoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = subCategory['fldSubCategory_Id']))#">
+                                                        <div class="d-flex-column ms-2 mt-2 p-2">
                                                             <label for="selectedValue" class="ms-1 mt-2 mb-2">Price Range:</label>
                                                             <div class="d-flex">
                                                                 <input type="number" name="minRange" placeholder="Min" class="ms-2" value="0">
@@ -97,7 +93,6 @@
                                                                 <label for="selectedValue">Min value:</label>
                                                                 <select name="min" id="selectedValueMin" class="mb-1 ">
                                                                     <option value="0" default>0</option>
-                                                                    <option value="100">100</option>
                                                                     <option value="5000">5000</option>
                                                                     <option value="15000">15000</option>
                                                                     <option value="35000">35000</option>
@@ -105,7 +100,7 @@
                                                                 </select>
                                                                 <label for="selectedValue" class="ms-3">Max value:</label>
                                                                 <select name="max" id="selectedValueMax" class="mt-1 mb-2">
-                                                                    <option value="5000" default>5000</option>
+                                                                    <option value="0" default>0</option>
                                                                     <option value="10000">10000</option>
                                                                     <option value="20000">20000</option>
                                                                     <option value="40000">40000</option>
@@ -118,43 +113,46 @@
                                                             <input type="hidden" name="subCategoryId" id="subC" value="#subCategory['fldSubCategory_Id']#">
                                                             
                                                         </div>
-                                                        
-
+                                                    </form>
                                                 </div>  
                                             </div>
                                         </div>
-                                    </form>
+                                        
                                         <cfset limit = 5>
                                         <cfset offset = 0>
-<cfdump var="#url.sort#">  hyy
-                                        <cfif structKeyExists(form, "subCategoryId")> 
-                                        hi
-                                            <cfset viewProductCount = application.myCartObj.viewProduct(subCategoryId = subCategoryId)>
-                                            <cfset viewProduct = application.myCartObj.viewProduct(subCategoryId = subCategory['fldSubCategory_Id'], 
+
+                                        <cfif structKeyExists(form, "viewMoreClicked")>
+                                            <cfset offset = offset + limit>
+                                        <cfelse>
+                                            <cfset offset = 0>
+                                        </cfif>
+                                        <cfset viewProductCount = application.myCartObj.viewProduct(subCategoryId = subCategoryId)>
+                                        <cfif structKeyExists(form, "filterSubmit")> 
+                                            <cfset viewProduct = application.myCartObj.viewProduct(subCategoryId = subCategoryId, 
                                                                                                     min = form.min, 
                                                                                                     max = form.max, 
                                                                                                     minRange = form.minRange, 
                                                                                                     maxRange = form.maxRange,
                                                                                                     limit = limit,
                                                                                                     offset = offset,
-                                                                                                    sort = url.sort)>
-                                                                                                    
+                                                                                                    sort = url.sort)> 
                                         <cfelseif url.searchTerm NEQ ""> 
-                                        hlo
-                                            <cfset viewProduct = application.myCartObj.viewProduct(searchTerm = url.searchTerm)>                                                       
+                                            <cfset viewProduct = application.myCartObj.viewProduct(searchTerm = url.searchTerm)>                                                                                                                
                                         <cfelse>
-                                            <cfset viewProductCount = application.myCartObj.viewProduct(subCategoryId = subCategoryId)>
-                                            <cfset viewProduct = application.myCartObj.viewProduct( subCategoryId = subCategory['fldSubCategory_Id'],
+                                            <cfset viewProduct = application.myCartObj.viewProduct(subCategoryId = subCategory['fldSubCategory_Id'],
                                                                                                 limit = limit,
-                                                                                                offset = offset
+                                                                                                offset = offset,
+                                                                                                sort = url.sort
                                                                                                 )>
                                         </cfif>
+
                                         <cfif viewProduct.recordCount EQ 0>
                                             <h5 class="text-success ms-5 mt-5">No product found!</h5>
                                         </cfif>
+                                        
                                         <div id="productContainer" class="productContainer mt-2 ms-5">
-                                            <cfloop query="#viewProduct#">
-                                                <div class="productBox d-flex flex-column" id="product_#viewProduct.currentRow#">
+                                            <cfloop query="viewProduct">
+                                                <div class="productBox d-flex-column" id="product_#viewProduct.currentRow#">
                                                     <a href="productDetails.cfm?productId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = viewProduct.fldProduct_Id))#&random=1" class="imageLink">
                                                         <img src="assets/#viewProduct.imageFileName#" alt="img" class="productBoxImage">
                                                         <div class="ms-4 font-weight-bold h5">#viewProduct.fldProductName#</div>
@@ -164,12 +162,14 @@
                                                 </div>
                                             </cfloop>         
                                         </div>
-                                        <cfif viewProductCount.recordCount GT 5 AND viewProduct.recordCount GTE 5>
-                                            <button type="button" id="viewMoreBtn" class="viewCategoryBtn text-success" 
-                                            onClick = "loadMoreProducts('#subcategoryId#','#url.sort#','#viewProductCount.recordCount#','#url.min#','#url.max#','#url.minRange#','#url.maxRange#')">View More</button>
-                                        </cfif>
+                                        
+                                        <button type="button" id="viewMoreBtn" class="viewCategoryBtn text-success" 
+                                            onClick = "loadMoreProducts('#subcategoryId#','#url.sort#','#viewProductCount.recordCount#','#url.min#','#url.max#','#url.minRange#','#url.maxRange#')">
+                                            View More
+                                        </button>
+                                        
                                     </cfif>
-                                </cfloop>
+                                </cfloop>        
                             <cfelse>
                                 <div class="errorMessage">
                                     Error: #viewSubCategory['message']#
