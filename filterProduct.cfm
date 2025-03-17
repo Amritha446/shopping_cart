@@ -109,9 +109,7 @@
                                                                 </select>
                                                                 <button type="submit" class=" selectBtn" name="filterSubmit">Submit</button>
                                                             </div>
-                                                            
                                                             <input type="hidden" name="subCategoryId" id="subC" value="#subCategory['fldSubCategory_Id']#">
-                                                            
                                                         </div>
                                                     </form>
                                                 </div>  
@@ -126,6 +124,7 @@
                                         <cfelse>
                                             <cfset offset = 0>
                                         </cfif>
+                                        
                                         <cfset viewProductCount = application.myCartObj.viewProduct(subCategoryId = subCategoryId)>
                                         <cfif structKeyExists(form, "filterSubmit")> 
                                             <cfset viewProduct = application.myCartObj.viewProduct(subCategoryId = subCategoryId, 
@@ -162,14 +161,14 @@
                                                 </div>
                                             </cfloop>         
                                         </div>
-                                        
-                                        <button type="button" id="viewMoreBtn" class="viewCategoryBtn text-success" 
-                                            onClick = "loadMoreProducts('#subcategoryId#','#url.sort#','#viewProductCount.recordCount#','#url.min#','#url.max#','#url.minRange#','#url.maxRange#')">
-                                            View More
-                                        </button>
-                                        
+                                        <cfif viewProductCount.recordCount GT (offset + limit) AND viewProduct.recordCount EQ limit>
+                                            <button type="button" id="viewMoreBtn" class="viewCategoryBtn text-success" 
+                                                onClick="loadMoreProducts('#subcategoryId#','#sort#','#viewProductCount.recordCount#','#url.min#','#url.max#','#url.minRange#','#url.maxRange#')">
+                                                View More
+                                            </button>
+                                        </cfif>
                                     </cfif>
-                                </cfloop>        
+                                </cfloop>
                             <cfelse>
                                 <div class="errorMessage">
                                     Error: #viewSubCategory['message']#

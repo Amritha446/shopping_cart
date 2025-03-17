@@ -5,7 +5,8 @@
     
     <cffunction name = "onApplicationStart" access = "public" returnType = "boolean">
         <cfset application.key = "1e0Js/hDrE8mllZflN+WkQ==">
-        <cfset application.myCartObj = createObject("component", "components.myCart")>
+        <cfset application.myCartObj = createObject("component", "components.myCartUser")>
+        <cfset application.myCartObjAdmin = createObject("component", "components.myCartAdmin")>
         <cfset application.datasource = "shoppingCart">
         <cfreturn true>
     </cffunction>
@@ -17,14 +18,13 @@
     </cffunction>
 
     <cffunction name="onRequestStart" returnType="boolean">
-
         <cfargument name = "requestPage" required = "true"> 
 
         <cfif structKeyExists(URL,"reload") AND URL.reload EQ 1>
             <cfset onApplicationStart()>
         </cfif>
 
-        <cfset local.publicPages = ["/Components/myCart.cfc",
+        <cfset local.publicPages = ["/Components/myCartUser.cfc",
                                 "/login.cfm",
                                 "/signUp.cfm",
                                 "/homePage.cfm",

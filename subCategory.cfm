@@ -23,7 +23,6 @@
                             <button type="submit" class="addSubCategoryBtn ms-4 mb-3" id="addCategoryBtn" onClick="createSubCategory()">Add</button>
                         </div>
 
-                        <cfset objCreate = createObject("component", "components.myCart")>
                         <cfset viewSubCategory = application.myCartObj.viewSubCategoryData(categoryId = categoryId)>
 
                         <cfif viewSubCategory["message"] EQ "Success">
@@ -60,8 +59,6 @@
                             </div>
                         </cfif>
 
-                        
-
                         <div class="modal fade" id="editSubContact" tabindex="-1">
                             <div class="modal-dialog">
                                 <div class="modal-content">
@@ -71,7 +68,6 @@
                                                 <div class="d-flex">
                                                     <div class = "d-flex flex-column">
                                                         <div class="text-secondary mt-4 ms-5"> Enter Category Name: </div>
-                                                        <cfset objCreate = createObject("component","components.myCart")>
                                                         <cfset viewCategory = application.myCartObj.viewCategoryData()>
 
                                                         <select name="categoryFrmSubCategory" id="categoryFrmSubCategory" class="inputs ms-5">

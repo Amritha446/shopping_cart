@@ -3,7 +3,7 @@ function logoutUser(){
     if(confirm("Confirm Logout?")){
         $.ajax({
             type:"POST",
-            url:"Components/myCart.cfc?method=logout",
+            url:"Components/myCartUser.cfc?method=logout",
             success:function(){
                 location.reload();
             }
@@ -21,7 +21,7 @@ function signUpFunction() {
     document.getElementById('validationError').innerHTML = "";
     $.ajax({
         type: "POST",
-        url: "Components/myCart.cfc?method=signUp", 
+        url: "Components/myCartUser.cfc?method=signUp", 
         data: {
             firstName: firstName,
             lastName: lastName,
@@ -89,7 +89,7 @@ function deleteCategory(event) {
         if (result.isConfirmed) {
             $.ajax({
                 type: "POST",
-                url: "Components/myCart.cfc?method=delItem",
+                url: "Components/myCartAdmin.cfc?method=delItem",
                 data: {
                     itemId: event.target.value,
                     itemType: "category"
@@ -118,7 +118,7 @@ function addCategoryFormSubmit(){
     event.preventDefault();
     $.ajax({
         type:"POST",
-        url:"Components/myCart.cfc?method=saveCategory", 
+        url:"Components/myCartAdmin.cfc?method=saveCategory", 
         data:{
             categoryName:document.getElementById('categoryNameAdd').value,
             operation:"add"
@@ -152,7 +152,7 @@ function saveCategory(event, categoryId) {
     }
     $.ajax({
         type: "POST",
-        url: "Components/myCart.cfc?method=saveCategory", 
+        url: "Components/myCartAdmin.cfc?method=saveCategory", 
         data: {
             categoryId: categoryId,
             categoryName: updatedCategoryName,
@@ -192,7 +192,7 @@ function addSubCategoryFormSubmit(){
     console.log('hi')
     $.ajax({
         type:"POST",
-        url:"Components/myCart.cfc?method=saveSubCategory", 
+        url:"Components/myCartAdmin.cfc?method=saveSubCategory", 
         data:{
             subCategoryName:document.getElementById('subCategoryNameField').value,
             categoryId:categoryId,
@@ -223,7 +223,7 @@ function editSubCategoryFormSubmit(){
     let categoryId = document.getElementById('categoryFrmSubCategory').value;
     $.ajax({
         type:"POST",
-        url:"Components/myCart.cfc?method=saveSubCategory", 
+        url:"Components/myCartAdmin.cfc?method=saveSubCategory", 
         data:{subCategoryId:document.getElementById('subCategoryId').value,
             subCategoryName:document.getElementById('subCategoryNameField').value,
             categoryId:categoryId,
@@ -256,7 +256,7 @@ function deleteSubCategory(event) {
         if (result.isConfirmed) {
             $.ajax({
                 type: "POST",
-                url: "Components/myCart.cfc?method=delItem",
+                url: "Components/myCartAdmin.cfc?method=delItem",
                 data: {
                     itemId: event.target.value,
                     itemType: "subcategory"
@@ -299,7 +299,7 @@ function editProductDetailsButton(event){
     $('.error').text("");
     $.ajax({
         type:"POST",
-        url:"Components/myCart.cfc?method=viewProduct", 
+        url:"Components/myCartUser.cfc?method=viewProduct", 
         data:{productId:  event.target.value,
             subCategoryId: new URLSearchParams(document.URL.split('?')[1]).get('subCategoryId')
         },
@@ -321,7 +321,7 @@ function viewSelectedImages() {
     let productId = document.getElementById('productId').value;
     $.ajax({
         type: "POST",
-        url: "Components/myCart.cfc?method=getProductImages",
+        url: "Components/myCartAdmin.cfc?method=getProductImages",
         data: { productId: productId },
         success: function (result) {
             document.getElementById('selectedImagesList').innerHTML = '';
@@ -378,7 +378,7 @@ function deleteProduct(event) {
         if (result.isConfirmed) {
             $.ajax({
                 type: "POST",
-                url: "Components/myCart.cfc?method=delItem",
+                url: "Components/myCartAdmin.cfc?method=delItem",
                 data: {
                     itemId: event.target.value,
                     itemType: "product"
@@ -407,7 +407,7 @@ $(document).ready(function() {
         let categoryId = this.value;
         $.ajax({
             type: "POST",
-            url: "./Components/myCart.cfc?method=viewSubCategoryData",
+            url: "./Components/myCartUser.cfc?method=viewSubCategoryData",
             data: {
                 categoryId: categoryId
             },
@@ -434,7 +434,7 @@ function loadProductImages() {
     let productId = event.target.value; 
 
     $.ajax({
-        url: './Components/myCart.cfc?method=getProductImages',
+        url: './Components/myCartAdmin.cfc?method=getProductImages',
         data: { productId: productId },
         type: 'POST',
         success: function(response) {
@@ -473,8 +473,7 @@ function loadProductImages() {
         }
     });
 }
-    
-    
+     
 function setDefaultImage() {
     let currentId = event.target.value;
     let Id = currentId.split(",")
@@ -484,7 +483,7 @@ function setDefaultImage() {
     if (!currentImageId) return alert('No image selected');
 
     $.ajax({
-        url: './Components/myCart.cfc?method=setDefaultImage',
+        url: './Components/myCartAdmin.cfc?method=setDefaultImage',
         type: 'POST',
         data: { 
             productId: currentProductId,
@@ -506,7 +505,7 @@ function deleteImage() {
 
     if (confirm('Are you sure you want to delete this image?')) {
         $.ajax({
-            url: './Components/myCart.cfc?method=deleteImage',
+            url: './Components/myCartAdmin.cfc?method=deleteImage',
             type: 'POST',
             data: { 
                 productId: currentProductId,
@@ -583,7 +582,7 @@ function removeCartProduct(event) {
         if (result.isConfirmed) {
             $.ajax({
                 type: "POST",
-                url: "Components/myCart.cfc?method=removeCartProduct",
+                url: "Components/myCartUser.cfc?method=removeCartProduct",
                 data: { CartId: event.target.value },
                 success: function(result) {
                     Swal.fire({
@@ -687,7 +686,7 @@ document.querySelectorAll('.decrement').forEach(button => {
 function updateCartQuantity(productId, newQuantity) {
     $.ajax({
         type: "GET",
-        url: "Components/myCart.cfc?method=addToCart",
+        url: "Components/myCartUser.cfc?method=addToCart",
         data: {
             productId: productId,
             quantity: newQuantity
@@ -701,7 +700,7 @@ function updateCartQuantity(productId, newQuantity) {
 function editUser(){
     $.ajax({
         type:"POST",
-        url:"Components/myCart.cfc?method=userDetailsFetching", 
+        url:"Components/myCartUser.cfc?method=userDetailsFetching", 
         success:function(result){
             let formattedResult=JSON.parse(result);
             document.getElementById('userFirstNameProfile').value = formattedResult.DATA[0][0]; 
@@ -716,7 +715,7 @@ function editUserSubmit(){
     event.preventDefault()
     $.ajax({
         type:"GET",
-        url:"Components/myCart.cfc?method=userDetailsUpdating", 
+        url:"Components/myCartUser.cfc?method=userDetailsUpdating", 
         data:{userFirstName:document.getElementById('userFirstNameProfile').value,
             userLastName:document.getElementById('userLastNameProfile').value,
             userEmail:document.getElementById('userPhoneNumberProfile').value,
@@ -737,7 +736,7 @@ function editUserAddress(){
     event.preventDefault()
     $.ajax({
         type:"POST",
-        url:"Components/myCart.cfc?method=addUserAddress", 
+        url:"Components/myCartUser.cfc?method=addUserAddress", 
         data:{userFirstName:document.getElementById('addressFirstName').value,
             userLastName:document.getElementById('addressLastName').value,
             addressLine1:document.getElementById('addressLine1').value,
@@ -749,7 +748,6 @@ function editUserAddress(){
         },
         success:function(response1){
             let response = JSON.parse(response1);
-            console.log(response)
             document.getElementById('addressFirstNameError').innerHTML = '';
             document.getElementById('addressLastNameError').innerHTML = '';
             document.getElementById('addressLine1Error').innerHTML = '';
@@ -797,7 +795,7 @@ function removeAddress(event){
     if(confirm("Confirm delete?")){
         $.ajax({
             type:"GET",
-            url:"Components/myCart.cfc?method=removeUserAddress",
+            url:"Components/myCartUser.cfc?method=removeUserAddress",
             data:{addressId:event.target.value},
             success:function(response){
                 location.reload(); 
@@ -851,7 +849,7 @@ function paymentData() {
         unitTax: unitTax
     };
     $.ajax({
-        url: "Components/myCart.cfc?method=addOrderPayment",
+        url: "Components/myCartUser.cfc?method=addOrderPayment",
         type: "POST",
         data: data,
         success: function(response) {
@@ -869,7 +867,7 @@ function paymentData() {
 function downloadInvoice(event) {
     $.ajax({
         type:"POST",
-        url:"Components/myCart.cfc?method=downloadOrderData",
+        url:"Components/myCartUser.cfc?method=downloadOrderData",
         data:{orderId:event.target.value}
     })
 }
@@ -896,11 +894,11 @@ function loadMoreProducts(subcategoryId,sort,count,min,max,minRange,maxRange) {
     
     $.ajax({
         type:"POST",
-        url:"Components/myCart.cfc?method=viewProduct",
+        url:"Components/myCartUser.cfc?method=viewProduct",
         data:{offset:offset,
+            sort:sort,
             limit:limit,
             subcategoryId:subcategoryId,
-            sort:sort,
             min:min,
             max:max,
             minRange:minRange,
@@ -922,7 +920,7 @@ function loadMoreProducts(subcategoryId,sort,count,min,max,minRange,maxRange) {
             $('#productContainer').append(div);
             
             });
-            if (offset + limit >= count) {
+            if (offset + limit >= count || count < limit) {
                 document.getElementById('viewMoreBtn').style.display = "none";
             }
         },

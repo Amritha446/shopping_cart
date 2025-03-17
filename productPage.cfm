@@ -139,7 +139,7 @@
                                 <div class="d-flex mt-3 ms-4">
                                     <div class="textHead col-3">Product Brand:</div>
                                     <select id="productBrand" name="productBrand" class="categoryInbox ms-3">
-                                        <cfset brandName = application.myCartObj.viewBrands()>
+                                        <cfset brandName = application.myCartObjAdmin.viewBrands()>
                                         <cfloop query = #brandName#>
                                             <option value="#brandName.fldBrand_Id#">#brandName.fldBrandName#</option>
                                         </cfloop> 
@@ -179,11 +179,9 @@
                                     </div>
                                 </div>
 
-                                <!--- <button type="button" class="editImageFile mt-3 mb-5 ms-5" id="viewSelectedImgBtn" name="submit" onClick="viewSelectedImages()" data-bs-toggle="modal" data-bs-target="##editImageDetails">VIEW SELECTED IMAGES</button> --->
-                               <button type="button" class="editImageFile mt-3 mb-5 ms-5" id="viewSelectedImgBtn" name="submit" onClick="viewSelectedImages(event)" data-bs-toggle="modal" data-bs-target="##editImageDetails">VIEW SELECTED IMAGES</button>
+                                <button type="button" class="editImageFile mt-3 mb-5 ms-5" id="viewSelectedImgBtn" name="submit" onClick="viewSelectedImages(event)" data-bs-toggle="modal" data-bs-target="##editImageDetails">VIEW SELECTED IMAGES</button>
 
                                 <div class="ms-5"><button type="submit" value="submit" class="btn mt-3 mb-5 ms-5" name="submit" onClick="return validation()" >SUBMIT</button></div>
-                                <!--- <button type="button" class="btn2 btn-secondary ms-5" data-bs-dismiss="modal" id="closeBtnId">Close</button> --->
                             </form>
                         </div>
                     </div>
@@ -191,7 +189,7 @@
             </div>
             
             <cfif structKeyExists(form,"submit") AND form.productId == "">
-                <cfset resultProduct=application.myCartObj.createProduct(
+                <cfset resultProduct=application.myCartObjAdmin.createProduct(
                     categoryId = form.categoryIdProduct,
                     subCategoryId = form.subCategoryIdProduct,
                     productName = form.productName,
@@ -209,7 +207,7 @@
             </cfif>  
 
             <cfif structKeyExists(form,"submit") AND form.productId != "">
-                <cfset resultProduct=application.myCartObj.editProduct(categoryId = form.categoryIdProduct,
+                <cfset resultProduct=application.myCartObjAdmin.editProduct(categoryId = form.categoryIdProduct,
                 subCategoryId = form.subCategoryIdProduct,
                 productId = form.productId,
                 productName = form.productName,

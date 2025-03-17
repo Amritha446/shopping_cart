@@ -7,9 +7,20 @@ CREATE PROCEDURE sp_AddOrderPayment(
     IN p_ProductId INT,
     IN p_UnitPrice DECIMAL(10, 2),
     IN p_UnitTax DECIMAL(10, 2),
-    OUT v_OrderId VARCHAR(64)  
+    OUT v_OrderId VARCHAR(64),  
+    OUT Error VARCHAR(64)
 )
 BEGIN
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION 
+    BEGIN
+        SET Error = 'Error occured';
+        ROLLBACK;
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'An error occurred while processing the order.';
+    END;
+
+    START TRANSACTION;
+
     SET v_OrderId = UUID();
     INSERT INTO tblorder (
         fldOrder_Id,
@@ -69,7 +80,7 @@ BEGIN
         WHERE 
             fldUserId = p_UserId;
     END IF;
-
+    COMMIT;
 END $$
 
 DELIMITER ;
