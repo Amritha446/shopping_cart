@@ -335,7 +335,7 @@ function viewSelectedImages() {
                     let deleteButtonHtml = image.fldDefaultImage === 1 ? '' : `<button type="button" value="${image.fldProductImages_Id},${productId}" class="closeLink1">Delete</button>`;
                     let defaultButton = image.fldDefaultImage === 1 ? '' : `<button type="button" value="${image.fldProductImages_Id},${productId}" class="DefaultLink">Default</button>`;
                     imageHtml += `<div class="d-flex ">
-                        <img src="assets/${image.fldImageFileName}" alt="${image.fldImageFileName}" width="50" height="50" />
+                        <img src="assets/product_Images/${image.fldImageFileName}" alt="${image.fldImageFileName}" width="50" height="50" />
                         <span>${image.fldImageFileName}</span>
                         ${deleteButtonHtml} 
                         ${defaultButton}
@@ -460,7 +460,7 @@ function loadProductImages() {
                         
                         ${deleteButton} 
                     </div>
-                    <img src="assets/${image.fldImageFileName}" class="d-block ${defaultImageClass} mx-auto border border-1 p-3" alt="Image ${i+1}" height="200" width="200">
+                    <img src="assets/product_Images/${image.fldImageFileName}" class="d-block ${defaultImageClass} mx-auto border border-1 p-3" alt="Image ${i+1}" height="200" width="200">
                     
                 </div>
                 `;
@@ -891,7 +891,6 @@ function loadMoreProducts(subcategoryId,sort,count,min,max,minRange,maxRange) {
     } else {
         document.getElementById('viewMoreBtn').style.display = "block";
     }
-    
     $.ajax({
         type:"POST",
         url:"Components/myCartUser.cfc?method=viewProduct",
@@ -906,11 +905,12 @@ function loadMoreProducts(subcategoryId,sort,count,min,max,minRange,maxRange) {
         },
         success: function(response) {
             let result = JSON.parse(response);
+            
             result.DATA.forEach((product) => {
                 let div = `
                     <div class="productBox d-flex flex-column">
-                        <a href="productDetails.cfm?productId=${product[0]}&random=1" class="imageLink">
-                            <img src="assets/${product[9]}" alt="img" class="productBoxImage">
+                        <a href="productDetails.cfm?productId=${product[0]}&productImages=1" class="imageLink">
+                            <img src="assets/product_Images/${product[9]}" alt="img" class="productBoxImage">
                             <div class="ms-4 font-weight-bold h5">${product[2]}</div>
                             <div class="ms-4 h6 ">${product[3]}</div>
                             <div class="ms-4 small">$${product[5]}.00</div>

@@ -32,37 +32,37 @@
                 </div>
                 <cfinclude template = "navbar.cfm">
                 <div class="d-flex">
-                    <cfset cartData = application.myCartObj.viewCartData()>
-                    <cfif cartData.recordCount EQ 0>
+                    <cfset variables.cartData = application.myCartObj.viewCartData()>
+                    <cfif variables.cartData.recordCount EQ 0>
                         <h5 class="text-success ms-5 mt-5">Cart is empty!</h5>
                     </cfif>
-                    <input type = "hidden" id="cartIdFetch" value="#cartData.fldCart_Id#">
+                    <input type = "hidden" id="cartIdFetch" value="#variables.cartData.fldCart_Id#">
                     <div class="cartContainer d-flex flex-column">
-                        <cfloop query="#cartData#">
+                        <cfloop query="#variables.cartData#">
                             <div class="cartItem d-flex " >
                                 <div class="d-flex flex-column productBox1">
-                                    <img src="assets/#cartData.fldImageFileName#" alt="img" class="productBoxImage"> 
-                                    <div class="ms-4 font-weight-bold h5 ">#cartData.fldProductName#</div>
+                                    <img src="assets/product_Images/#variables.cartData.fldImageFileName#" alt="img" class="productBoxImage"> 
+                                    <div class="ms-4 font-weight-bold h5 ">#variables.cartData.fldProductName#</div>
                                     <div class="quantityBlock ms-4">
-                                        <button class="decrement me-2" value="#cartData.fldProduct_Id#" onClick="decrementQuantity(event)">-</button>
-                                        <span class="quantityNumber">#cartData.fldQuantity#</span>
-                                        <button class="increment ms-2" value="#cartData.fldProduct_Id#" onClick="incrementQuantity(event)">+</button>
+                                        <button class="decrement me-2" value="#variables.cartData.fldProduct_Id#" onClick="decrementQuantity(event)">-</button>
+                                        <span class="quantityNumber">#variables.cartData.fldQuantity#</span>
+                                        <button class="increment ms-2" value="#variables.cartData.fldProduct_Id#" onClick="incrementQuantity(event)">+</button>
                                         <input type="hidden" id="hiddenQuantityUpdate" value = 1>
                                     </div>
 
                                     <div class="d-flex">
-                                        <button type="submit" class="buyProduct" value="#cartData.fldCart_Id#" onClick="removeCartProduct(event)">REMOVE</button>
-                                        <a href="productDetails.cfm?productId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = cartData.fldProduct_Id))#&random=1" class="imageLink">
+                                        <button type="submit" class="buyProduct" value="#variables.cartData.fldCart_Id#" onClick="removeCartProduct(event)">REMOVE</button>
+                                        <a href="productDetails.cfm?productId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = variables.cartData.fldProduct_Id))#&productImages=1" class="imageLink">
                                             <button type="submit" class="buyProduct">VIEW</button>
                                         </a>
                                     </div>
                                     
                                 </div>
                                 <div class="d-flex flex-column productMainDetails">
-                                    <div class="productPrice ms-3" id="orderedProductPriceId">Unit Price:$#cartData.fldPrice#</div>
-                                    <div class="productTax ms-3" id="orderedProductTaxId">Actual Price:$#cartData.fldPrice#</div>
-                                    <div class="productActualPrice ms-3" id="orderedProductActualId">Product Tax:#cartData.fldTax#%</div>
-                                    <div class="totalPrice ms-3 text-success" id="orderedProductTotalId">Total Price:$#cartData.fldPrice#</div>
+                                    <div class="productPrice ms-3" id="orderedProductPriceId">Unit Price:$#variables.cartData.fldPrice#</div>
+                                    <div class="productTax ms-3" id="orderedProductTaxId">Actual Price:$#variables.cartData.fldPrice#</div>
+                                    <div class="productActualPrice ms-3" id="orderedProductActualId">Product Tax:#variables.cartData.fldTax#%</div>
+                                    <div class="totalPrice ms-3 text-success" id="orderedProductTotalId">Total Price:$#variables.cartData.fldPrice#</div>
                                 </div>
 
                             </div>
@@ -79,15 +79,15 @@
                         <div class="modal-content d-flex justify-content-center align-items-center">
                             <div class="buyModal">
                                 <div class="text-success ms-5 mt-1 fw-bold">SELECT ADDRESS</div>
-                                <cfset viewUserAddress = application.myCartObj.fetchUserAddress()>
+                                <cfset variables.viewUserAddress = application.myCartObj.fetchUserAddress()>
                                 <form action="orderPage.cfm" method="get">
-                                    <cfloop query="#viewUserAddress#">
+                                    <cfloop query="#variables.viewUserAddress#">
                                         <div class="addressAddSection d-flex ms-4 mt-2">
                                             <div class="d-flex flex-column">
-                                                <input type="radio" name="addressId" value="#viewUserAddress.fldAddress_Id#" class="address-radio" required>
-                                                <div class="d-flex ms-4">#viewUserAddress.fldFirstName# #viewUserAddress.fldLastName#</div>
-                                                <div class="d-flex ms-4">#viewUserAddress.fldAdressLine1# , #viewUserAddress.fldAdressLine2# , #viewUserAddress.fldCity# , #viewUserAddress.fldState#</div>
-                                                <div class="d-flex ms-4">#viewUserAddress.fldPincode# #viewUserAddress.fldPhoneNumber#</div>
+                                                <input type="radio" name="addressId" value="#variables.viewUserAddress.fldAddress_Id#" class="address-radio" required>
+                                                <div class="d-flex ms-4">#variables.viewUserAddress.fldFirstName# #variables.viewUserAddress.fldLastName#</div>
+                                                <div class="d-flex ms-4">#variables.viewUserAddress.fldAdressLine1# , #variables.viewUserAddress.fldAdressLine2# , #variables.viewUserAddress.fldCity# , #variables.viewUserAddress.fldState#</div>
+                                                <div class="d-flex ms-4">#variables.viewUserAddress.fldPincode# #variables.viewUserAddress.fldPhoneNumber#</div>
                                             </div>
                                         </div>
                                     </cfloop>                     

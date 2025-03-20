@@ -14,7 +14,7 @@
                         </div>
                     </button>
                 </div>
-                <cfset categoryId = URL.categoryId>
+                <cfset variables.categoryId = URL.categoryId>
                 <div class = "mainContent d-flex justify-content-center align-items-center mt-5" id = "content">
                     <input type="hidden" value="" name = "categoryId1" id = "categoryId1">
                     <div class="d-flex flex-column">
@@ -23,7 +23,7 @@
                             <button type="submit" class="addSubCategoryBtn ms-4 mb-3" id="addCategoryBtn" onClick="createSubCategory()">Add</button>
                         </div>
 
-                        <cfset viewSubCategory = application.myCartObj.viewSubCategoryData(categoryId = categoryId)>
+                        <cfset viewSubCategory = application.myCartObj.viewSubCategoryData(categoryId = variables.categoryId)>
 
                         <cfif viewSubCategory["message"] EQ "Success">
                             <cfloop array="#viewSubCategory['data']#" index="subCategory">
@@ -78,7 +78,7 @@
                                                     </div>
                                                     <div class = "d-flex flex-column">
                                                         <div class="text-secondary mt-4 ms-5"> Enter Sub-Category Name: </div>
-                                                        <input type="hidden" value="#categoryId#" name = "categoryIdUrl" id = "categoryIdUrl">
+                                                        <input type="hidden" value="#variables.categoryId#" name = "categoryIdUrl" id = "categoryIdUrl">
                                                         <input type="hidden" value="" name = "subCategoryId" id = "subCategoryId">
                                                         <input type="text" name="subCategoryName" class="inputs ms-5" id="subCategoryNameField" maxlength="32">
                                                     </div>

@@ -194,7 +194,7 @@
                     )
                 </cfquery>
     
-                <cfset local.path = expandPath("./assets")>
+                <cfset local.path = expandPath("./assets/product_Images")>
                 <cffile action="uploadall" destination="#local.path#" nameConflict="makeUnique" result="uploadImg">
             
                 <cfquery name = "local.prdctImg" datasource = "#application.datasource#">
@@ -254,7 +254,7 @@
         <cfelseif arguments.productTax NEQ int(arguments.productTax)>
             <cfreturn "Invalid Tax">
         <cfelse>
-            <cfset local.path = expandPath("./assets")>
+            <cfset local.path = expandPath("./assets/product_Images")>
             <cffile  action="uploadall" destination="#local.path#" nameConflict="makeUnique" result="uploadImg">
 
             <cfquery name="local.checkProduct" datasource = "#application.datasource#">
@@ -430,7 +430,7 @@
                 </cfquery>
 
                 <cfloop query="local.getImages">
-                    <cffile action="delete" file="#expandPath('/assets/' & local.getImages.fldImageFileName)#">
+                    <cffile action="delete" file="#expandPath('/assets/product_Images/' & local.getImages.fldImageFileName)#">
                 </cfloop>
                 
             <cfelseif arguments.itemType EQ "subcategory">
@@ -468,7 +468,7 @@
                 </cfquery>
 
                 <cfloop query="local.getImages">
-                    <cffile action="delete" file="#expandPath('/assets/' & local.getImages.fldImageFileName)#">
+                    <cffile action="delete" file="#expandPath('/assets/product_Images/' & local.getImages.fldImageFileName)#">
                 </cfloop>
                 
             <cfelseif arguments.itemType EQ "product">
@@ -500,7 +500,7 @@
                 </cfquery>
 
                 <cfloop query="local.getImages">
-                    <cffile action="delete" file="#expandPath('/assets/' & local.getImages.fldImageFileName)#">
+                    <cffile action="delete" file="#expandPath('/assets/product_Images/' & local.getImages.fldImageFileName)#">
                 </cfloop>
             </cfif>
 

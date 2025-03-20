@@ -15,8 +15,7 @@ BEGIN
     BEGIN
         SET Error = 'Error occured';
         ROLLBACK;
-        SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'An error occurred while processing the order.';
+        SIGNAL SQLSTATE '45000';
     END;
 
     START TRANSACTION;

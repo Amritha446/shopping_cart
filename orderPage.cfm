@@ -36,61 +36,61 @@
                 <div class="orderSummary mb-5">
                     <h5 class="ms-5 ps-5 mt-3 text-light p-2">ORDER SUMMARY</h5>
                     <div class="addressOrder">
-                        <cfset viewUserAddress = application.myCartObj.fetchUserAddress(addressId = URL.addressId)>
-                        <cfif viewUserAddress.recordCount EQ 0>
+                        <cfset variables.viewUserAddress = application.myCartObj.fetchUserAddress(addressId = URL.addressId)>
+                        <cfif variables.viewUserAddress.recordCount EQ 0>
                             
                         <cfelse>
                             <div class="addressAddSection d-flex flex-column mt-2 ">
                                 <div class="fs-6 ms-4 text-success">SELECTED ADDRESS</div>
-                                <div class="d-flex ms-4">#viewUserAddress.fldFirstName#  #viewUserAddress.fldLastName#  </div>
-                                <div class="d-flex ms-4">#viewUserAddress.fldAdressLine1# , #viewUserAddress.fldAdressLine2# ,
-                                #viewUserAddress.fldCity# , #viewUserAddress.fldState#</div>
-                                <div class="d-flex ms-4">#viewUserAddress.fldPincode# #viewUserAddress.fldPhoneNumber#</div>
+                                <div class="d-flex ms-4">#variables.viewUserAddress.fldFirstName#  #variables.viewUserAddress.fldLastName#  </div>
+                                <div class="d-flex ms-4">#variables.viewUserAddress.fldAdressLine1# , #variables.viewUserAddress.fldAdressLine2# ,
+                                #variables.viewUserAddress.fldCity# , #variables.viewUserAddress.fldState#</div>
+                                <div class="d-flex ms-4">#variables.viewUserAddress.fldPincode# #variables.viewUserAddress.fldPhoneNumber#</div>
                             </div>
                         </cfif>
                     </div>
                     <div class="productOrder d-flex flex-column ">
                         <cfif URL.productId NEQ ""> 
-                            <cfset cartData = application.myCartObj.viewProduct(productId = URL.productId)>
+                            <cfset variables.cartData = application.myCartObj.viewProduct(productId = URL.productId)>
                         <cfelse>
-                            <cfset cartData = application.myCartObj.viewCartData()>
-                            <input type = "hidden" id="cartIdFetch" value="#cartData.fldCart_Id#">
+                            <cfset variables.cartData = application.myCartObj.viewCartData()>
+                            <input type = "hidden" id="cartIdFetch" value="#variables.cartData.fldCart_Id#">
                         </cfif>
 
                         <div class="fs-6 text-success ms-4 mt-4">PRODUCT DETAILS</div> 
-                        <cfloop query="#cartData#">
+                        <cfloop query="#variables.cartData#">
                             <div class="cartItem d-flex m-3">
                                 <div class="d-flex orderListing justify-content-space-between">
                                     <cfif len(trim(URL.productId))>
-                                        <img src="assets/#cartData.imageFileName#" alt="img" class="productBoxImage1"> 
+                                        <img src="assets/product_Images/#variables.cartData.imageFileName#" alt="img" class="productBoxImage1"> 
                                     <cfelse>
-                                        <img src="assets/#cartData.fldImageFileName#" alt="img" class="productBoxImage1"> 
+                                        <img src="assets/product_Images/#variables.cartData.fldImageFileName#" alt="img" class="productBoxImage1"> 
                                     </cfif>
                                 </div>
                                 
                                 <div class="d-flex flex-column">
-                                    <div class="m-1 orderedProductName ">#cartData.fldProductName#</div>
+                                    <div class="m-1 orderedProductName ">#variables.cartData.fldProductName#</div>
                                     <div class="quantityBlock m-1">
-                                        <button class="decrement me-2" onClick="decrementQuantity(event)" value="#cartData.fldProduct_Id#">-</button>
+                                        <button class="decrement me-2" onClick="decrementQuantity(event)" value="#variables.cartData.fldProduct_Id#">-</button>
                                         <cfif len(trim(URL.productId))>
                                             <span class="quantityNumber">1</span>  
                                         <cfelse>
-                                            <span class="quantityNumber">#cartData.fldQuantity#</span> 
+                                            <span class="quantityNumber">#variables.cartData.fldQuantity#</span> 
                                         </cfif>
-                                        <button class="increment ms-2" onClick="incrementQuantity(event)" value="#cartData.fldProduct_Id#">+</button>
+                                        <button class="increment ms-2" onClick="incrementQuantity(event)" value="#variables.cartData.fldProduct_Id#">+</button>
                                     </div>
                                 </div>
                                 
                                 <div class="d-flex flex-column productMainDetails">
-                                    <div class="productPrice ms-3">Unit Price:$#cartData.fldPrice#</div>
-                                    <div class="productTax ms-3">Actual Price:$#cartData.fldPrice#</div>
-                                    <div class="productActualPrice ms-3">Product Tax:#cartData.fldTax#%</div>
-                                    <div class="totalPrice ms-3 text-success">Total Price:$#cartData.fldPrice#</div>
-                                    <input type="hidden" id="unitPriceProduct" value="#cartData.fldPrice#">
-                                    <input type="hidden" id="unitTaxProduct" value="#cartData.fldTax#">
+                                    <div class="productPrice ms-3">Unit Price:$#variables.cartData.fldPrice#</div>
+                                    <div class="productTax ms-3">Actual Price:$#variables.cartData.fldPrice#</div>
+                                    <div class="productActualPrice ms-3">Product Tax:#variables.cartData.fldTax#%</div>
+                                    <div class="totalPrice ms-3 text-success">Total Price:$#variables.cartData.fldPrice#</div>
+                                    <input type="hidden" id="unitPriceProduct" value="#variables.cartData.fldPrice#">
+                                    <input type="hidden" id="unitTaxProduct" value="#variables.cartData.fldTax#">
                                 </div>
                                 <cfif len(trim(URL.productId)) EQ 0>
-                                    <button type="submit" class="closeLink" value="#cartData.fldCart_Id#" onClick="removeCartProduct(event)"><i class="fa-solid fa-xmark pe-none"></i></button>
+                                    <button type="submit" class="closeLink" value="#variables.cartData.fldCart_Id#" onClick="removeCartProduct(event)"><i class="fa-solid fa-xmark pe-none"></i></button>
                                 </cfif>
                             </div>
                         </cfloop>
@@ -99,25 +99,25 @@
                             <div class="priceDetailsHeading ms-5 text-success" id="priceDetailsHeading">Total Price:</div>
                             <div class="taxDetailsHeading ms-5 text-success" id="taxDetailsHeading">Total Tax:</div>
                         </div>
-                        <cfif viewUserAddress.recordCount EQ 0>
+                        <cfif variables.viewUserAddress.recordCount EQ 0>
                             <button type="button" class="orderPlacingBtn" disabled>Place Order</button>
                             <div class="alert alert-danger ms-4 mt-2" id="addressErrorMessage">No address found. Please add an address before placing the order.
                             <a href="userProfile.cfm" class="imageLink">ADD ADDRESS</a></div>
-                        <cfelseif cartData.recordCount GT 0>
-                            <button type="button" class="orderPlacingBtn" data-bs-toggle="modal" data-bs-target="##orderItems" name="placeorder" data-recordcount="#viewUserAddress.recordCount#" onClick="checkAddressBeforeOrder()" >PLACE ORDER</button>
+                        <cfelseif variables.cartData.recordCount GT 0>
+                            <button type="button" class="orderPlacingBtn" data-bs-toggle="modal" data-bs-target="##orderItems" name="placeorder" data-recordcount="#variables.viewUserAddress.recordCount#" onClick="checkAddressBeforeOrder()" >PLACE ORDER</button>
                         <cfelse>
                             <div class="alert alert-danger ms-4 mt-2" id="addressErrorMessage">No products found. Please add products before placing the order.</div>
                         </cfif>
                         <div class="paymentError text-danger ms-5 ps-5" id="paymentError"></div>
                         <!--- <form method="POST" name="form">
                             <button type="submit" class="orderPlacingBtn" >ADD TO CART</button>
-                            <input type="hidden" value = "#cartData.fldProduct_Id#" name="addToCartHidden">
+                            <input type="hidden" value = "#variables.cartData.fldProduct_Id#" name="addToCartHidden">
                             <input type="hidden" name="cartToken" id="cartToken" value = 1>
                         </form> --->
                     </div>  
                 </div>
                 <cfif structKeyExists(form, "addToCartHidden")>
-                    <cfset viewcart = application.myCartObj.addToCart(productId = form.addToCartHidden,
+                    <cfset variables.viewcart = application.myCartObj.addToCart(productId = form.addToCartHidden,
                                                                  cartToken = form.cartToken)>
                     <cflocation  url="cartPage.cfm">
                 </cfif>

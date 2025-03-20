@@ -32,15 +32,15 @@
                 <cfinclude template = "navbar.cfm">
 
                 <div class="nameSection justify-content-center text-align-center d-flex">
-                    <cfset viewUserDetails = application.myCartObj.userDetailsFetching()>
+                    <cfset variables.viewUserDetails = application.myCartObj.userDetailsFetching()>
                     <div class="userImage">
                         <button type="submit" class="profileButton" data-bs-toggle="modal" data-bs-target="##editUserDetails" id="userDetailedBtn" onClick="editUser()">
-                            <img src="assets1/user.JPG" alt="img" class="mt-3 userImg pe-none">
+                            <img src="assets/user.JPG" alt="img" class="mt-3 userImg pe-none">
                         </button>
                     </div>
                     <div class="userDetails ms-2 mt-3">
-                        <div class="text-light"> Hello, #viewUserDetails.fldFirstName# #viewUserDetails.fldLastName#</div>
-                        <div class="productPath text-light">Email:#viewUserDetails.fldEmail#</div>
+                        <div class="text-light"> Hello, #variables.viewUserDetails.fldFirstName# #variables.viewUserDetails.fldLastName#</div>
+                        <div class="productPath text-light">Email:#variables.viewUserDetails.fldEmail#</div>
                     </div>
                 </div>
                 

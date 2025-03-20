@@ -1,5 +1,4 @@
     <cfparam name="url.productId" default=0>
-    <cfparam name="url." default=0>
     <cfif url.productId NEQ 0>
         <cfset variables.productId = application.myCartObj.decryptUrl(encryptedData = url.productId)>
     </cfif>

@@ -21,10 +21,9 @@
                         </a>
                     </div>
                 </div>
-                    
                 <cfinclude template = "navbar.cfm">
                 <div class="d-flex flex-column align-items-center justify-content-center p-5">
-                    <img src="./assets1/error.jpg" alt="errorImg" class="">
+                    <img src="./assets/error.jpg" alt="errorImg" class="">
                     <div class="d-flex align-items-center justify-content-center text-danger mt-3 fs-5"><i class="fa-regular fa-face-frown me-1"></i> Something went wrong!Try again later.</div>
                     <a href = "homePage.cfm" class="imageLink d-flex align-items-center justify-content-center mt-3">Go back to Home Page</a>
                 </div>

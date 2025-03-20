@@ -13,7 +13,7 @@
                     HELP CENTER
                 </div>
                 <div class="footerHeading ms-5 mt-4">
-                    <img src="assets1/6.PNG" class="ms-5" alt="img">
+                    <img src="assets/6.PNG" class="ms-5" alt="img">
                 </div>
             </div>
                 <div class="footer d-flex">

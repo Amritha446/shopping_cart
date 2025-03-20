@@ -11,8 +11,8 @@
                         </div>
                     </button>
                 </div>
-                <cfset categoryId = URL.categoryId> 
-                <cfset subCategoryId = URL.subCategoryId>
+                <cfset variables.categoryId = URL.categoryId> 
+                <cfset variables.subCategoryId = URL.subCategoryId>
                 <div class="mainSection mb-5 mt-5">
                     <div class="modal-content">
                         <div class = "categorySection d-flex">
@@ -34,7 +34,7 @@
                                 <div>
                                     <button type="submit" class="imgBtn ms-2 mt-2" data-bs-toggle="modal" data-bs-target="##imgDetails"
                                      value = "#viewProduct.fldProduct_Id#" onClick="loadProductImages()">
-                                        <img src="assets/#viewProduct.imageFileName#" alt="img" class = "pe-none prdctImg">
+                                        <img src="assets/product_Images/#viewProduct.imageFileName#" alt="img" class = "pe-none prdctImg">
                                     </butoon>
                                 </div>
                                 <div class = " p-1">
@@ -200,7 +200,7 @@
                     productTax = form.productTax
                 )>
                 <cfif len(trim(resultProduct)) EQ 0>
-                    <cflocation  url="productPage.cfm?categoryId=#categoryId#&subCategoryId=#subCategoryId#">
+                    <cflocation  url="productPage.cfm?categoryId=#variables.categoryId#&subCategoryId=#variables.subCategoryId#">
                 <cfelse>
                     #resultProduct#
                 </cfif>
@@ -217,7 +217,7 @@
                 productImg = form.productImg,
                 productTax = form.productTax)>
                 <cfif len(trim(resultProduct)) EQ 0>
-                    <cflocation  url="productPage.cfm?categoryId=#categoryId#&subCategoryId=#subCategoryId#">
+                    <cflocation  url="productPage.cfm?categoryId=#variables.categoryId#&subCategoryId=#variables.subCategoryId#">
                 <cfelse>
                     #resultProduct#
                 </cfif>

@@ -38,39 +38,35 @@
                 <cfinclude template = "navbar.cfm">
 
                 <div class="productListingBasedCategory">
-                    <cfset categoryId = application.myCartObj.decryptUrl(encryptedData = URL.categoryId)>
-                    <cfset viewCategory = application.myCartObj.viewCategoryData()>
+                    <cfset variables.categoryId = application.myCartObj.decryptUrl(encryptedData = URL.categoryId)>
+                    <cfset variables.viewCategory = application.myCartObj.viewCategoryData()>
 
-                    <cfloop query="#viewCategory#">
-                        <cfif viewCategory.fldCategory_Id EQ categoryId>
-                            <cfset viewSubCategory = application.myCartObj.viewSubCategoryData(categoryId = viewCategory.fldCategory_Id)>
+                    <cfloop query="#variables.viewCategory#">
+                        <cfif variables.viewCategory.fldCategory_Id EQ variables.categoryId>
+                            <cfset variables.viewSubCategory = application.myCartObj.viewSubCategoryData(categoryId = variables.viewCategory.fldCategory_Id)>
 
-                            <cfif viewSubCategory["message"] EQ "Success">
+                            <cfif variables.viewSubCategory["message"] EQ "Success">
                                 <div class="productPath">
                                     <a href="homePage.cfm" class="navBarButton ms-2">home</a>
-                                    > <a href="categoryBasedProduct.cfm?categoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = categoryId))#" class="navBarButton ms-2">#viewCategory.fldCategoryName#</a>
+                                    > <a href="categoryBasedProduct.cfm?categoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = categoryId))#" class="navBarButton ms-2">#variables.viewCategory.fldCategoryName#</a>
                                 </div>
 
-                                <cfloop array="#viewSubCategory['data']#" index="subCategory">
+                                <cfloop array="#variables.viewSubCategory['data']#" index="subCategory">
                                     <a href="filterProduct.cfm?subCategoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = subCategory['fldSubCategory_Id']))#" class="navBarButton ms-2">
                                         <h5 class = "ms-2">#subCategory['fldSubCategoryName']#</h5>
                                     </a>
-
-                                    <cfif url.searchTerm NEQ "">
-                                        <cfset viewProduct = application.myCartObj.viewProduct(searchTerm=url.searchTerm)>
-                                    <cfelse>
-                                        <cfset viewProduct = application.myCartObj.viewProduct(subCategoryId = subCategory['fldSubCategory_Id'],
-                                                                                            limit = 5)>
-                                    </cfif>
+    
+                                    <cfset variables.viewProduct = application.myCartObj.viewProduct(subCategoryId = subCategory['fldSubCategory_Id'],
+                                                                                            limit = 5,
+                                                                                            searchTerm=url.searchTerm)>
                                     <div class="productContainer ms-3">
-                                        <cfset currentRow = 1>
-                                        <cfloop query="viewProduct">
+                                        <cfloop query="variables.viewProduct">
                                             <div class="productBox d-flex flex-column">
-                                                <a href="productDetails.cfm?productId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = viewProduct.fldProduct_Id))#&random=1" class="imageLink">
-                                                    <img src="assets/#viewProduct.imageFileName#" alt="img" class="productBoxImage">
-                                                    <div class="ms-4 font-weight-bold h5">#viewProduct.fldProductName#</div>
-                                                    <div class="ms-4 h6 ">#viewProduct.fldBrandName#</div>
-                                                    <div class="ms-4 small">$#viewProduct.fldPrice#</div>
+                                                <a href="productDetails.cfm?productId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = variables.viewProduct.fldProduct_Id))#&productImages=1" class="imageLink">
+                                                    <img src="assets/product_Images/#variables.viewProduct.imageFileName#" alt="img" class="productBoxImage">
+                                                    <div class="ms-4 font-weight-bold h5">#variables.viewProduct.fldProductName#</div>
+                                                    <div class="ms-4 h6 ">#variables.viewProduct.fldBrandName#</div>
+                                                    <div class="ms-4 small">$#variables.viewProduct.fldPrice#</div>
                                                 </a>
                                             </div>
                                         </cfloop>
@@ -78,7 +74,7 @@
                                 </cfloop>
                             <cfelse>
                                 <div class="errorMessage">
-                                    Error: #viewSubCategory['message']#
+                                    Error: #variables.viewSubCategory['message']#
                                 </div>
                             </cfif>
                         </cfif>

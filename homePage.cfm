@@ -48,39 +48,41 @@
                 <div id="homeCarousel" class="carousel slide" data-bs-ride="carousel">
                     <div class="carouselMainBox">
                         <div class="carousel-item active">
-                            <img src="assets1/home.jpeg" class="d-block w-100" alt="Image 1">
+                            <img src="assets/home.jpeg" class="d-block w-100" alt="Image 1">
                         </div>
                         <div class="carousel-item">
-                            <img src="assets1/form2.jpg" class="d-block w-100" alt="Image 2">
+                            <img src="assets/form2.jpg" class="d-block w-100" alt="Image 2">
                         </div>
                     </div>
                 </div>
 
                 <div class="productListing d-flex flex-column">
                     <h6 class="mt-3 ms-3">RANDOM PRODUCTS</h6>
-                    <cfif url.searchTerm NEQ "">
-                        <cfset viewProductCount = application.myCartObj.viewProduct(searchTerm=url.searchTerm)>
-                        <cfset viewProduct = application.myCartObj.viewProduct(searchTerm=url.searchTerm,
-                                                                                limit = viewProductCount.recordCount)>                                                       
-                    <cfelse>
-                        <cfset viewProduct = application.myCartObj.viewProduct(randomProducts = true,
-                                                                                limit = 10)>                 
-                    </cfif>
-                    <cfif viewProduct.recordCount GT 0>
+                    <!--- <cfif url.searchTerm NEQ "">
+                        <cfset variables.viewProductCount = application.myCartObj.viewProduct(searchTerm=url.searchTerm)>
+                        <cfset variables.viewProduct = application.myCartObj.viewProduct(searchTerm=url.searchTerm,
+                                                                                limit = variables.viewProductCount.recordCount)>                                                       
+                    <cfelse> --->
+                        <cfset variables.viewProduct = application.myCartObj.viewProduct(randomProducts = true,
+                                                                                limit = 10,
+                                                                                searchTerm=url.searchTerm
+                                                                                )>                 
+                    <!--- </cfif> --->
+                    <cfif variables.viewProduct.recordCount GT 0>
                         <div class="productContainer">
-                            <cfloop query="viewProduct"> 
+                            <cfloop query="variables.viewProduct"> 
                                 <div class="productBox d-flex flex-column">
-                                    <a href="productDetails.cfm?productId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = viewProduct.fldProduct_Id))#&random=1" class="imageLink">
-                                        <img src="assets/#viewProduct.imageFileName#" alt="img" class="productBoxImage">
-                                        <div class="ms-4 font-weight-bold h5">#viewProduct.fldProductName#</div>
-                                        <div class="ms-4 h6 ">#viewProduct.fldBrandName#</div>
-                                        <div class="ms-4 small">$#viewProduct.fldPrice#</div>
+                                    <a href="productDetails.cfm?productId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = variables.viewProduct.fldProduct_Id))#&productImages=1" class="imageLink">
+                                        <img src="assets/product_Images/#variables.viewProduct.imageFileName#" alt="img" class="productBoxImage">
+                                        <div class="ms-4 font-weight-bold h5">#variables.viewProduct.fldProductName#</div>
+                                        <div class="ms-4 h6 ">#variables.viewProduct.fldBrandName#</div>
+                                        <div class="ms-4 small">$#variables.viewProduct.fldPrice#</div>
                                     </a>
                                 </div>
                             </cfloop>
                         </div>  
                     <cfelse>
-                        <h6 class="mt-3 ms-3 text-danger">NO RESULT'S FOUND WITH #url.searchTerm#..</h6>
+                        <h6 class="mt-3 ms-3 text-danger text-truncate">NO RESULT'S FOUND WITH #url.searchTerm#..</h6>
                     </cfif>
                 </div>
             </cfoutput>

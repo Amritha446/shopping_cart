@@ -194,12 +194,12 @@
         <cfargument name = "max" type = "numeric" required = "false" default = 0>
         <cfargument name = "minRange" type = "numeric" required = "false" default = 0>
         <cfargument name = "maxRange" type = "numeric" required = "false" default = 0>
-        <cfargument name = "random" type = "numeric" required = "false" default = 0>
+        <cfargument name = "productImages" type = "numeric" required = "false" default = 0>
         <cfargument name = "searchTerm" type = "string" required = "false" default = "">
-        <cfargument name="limit" type="numeric" required="false" default=0>  
-        <cfargument name="offset" type="numeric" required="false" default="0">
-        <cfargument name="randomProducts" type="boolean" required="false" default="false">
-        <cfquery name="local.viewProductDetails" datasource = "#application.datasource#">
+        <cfargument name = "limit" type = "numeric" required = "false" default = 0>  
+        <cfargument name = "offset" type = "numeric" required = "false" default = "0">
+        <cfargument name = "randomProducts" type = "boolean" required = "false" default = "false">
+        <cfquery name = "local.viewProductDetails" datasource = "#application.datasource#">
             SELECT 
                 P.fldProduct_Id, 
                 P.fldSubCategoryId, 
@@ -217,7 +217,7 @@
                 INNER JOIN tblproductimages PI ON PI.fldProductId = P.fldProduct_Id
             WHERE
                 P.fldActive = 1
-                <cfif arguments.random EQ 0>
+                <cfif arguments.productImages EQ 0>
                     AND PI.fldDefaultImage = 1
                 <cfelse>
                     AND PI.fldActive = 1
@@ -228,11 +228,11 @@
                 <cfif len(trim(arguments.productId)) AND isNumeric(arguments.productId)> 
                     AND P.fldProduct_Id = <cfqueryparam value="#arguments.productId#" cfsqltype = "integer">
                 </cfif>
-                <cfif arguments.max NEQ 0 AND arguments.min NEQ 0> 
+                <cfif arguments.max NEQ 0> 
                     AND P.fldPrice >= <cfqueryparam value = "#arguments.min#" cfsqltype = "integer"> 
                         AND P.fldPrice <= <cfqueryparam value = "#arguments.max#" cfsqltype = "integer">
                 </cfif>
-                <cfif arguments.maxRange NEQ 0 AND arguments.minRange NEQ 0> 
+                <cfif arguments.maxRange NEQ 0> 
                     AND P.fldPrice >= <cfqueryparam value = "#arguments.minRange#" cfsqltype = "integer">       
                         AND P.fldPrice <= <cfqueryparam value = "#arguments.maxRange#" cfsqltype = "integer">
                 </cfif>
@@ -259,8 +259,6 @@
         </cfquery>
         <cfreturn local.viewProductDetails>
     </cffunction>
-
-    
 
     <cffunction name = "addToCart" access = "remote" returnType = "boolean" returnFormat = "json">
         <cfargument name = "productId" required = "true" type = "numeric">
@@ -630,7 +628,7 @@
         <cfargument name="limit" required="false" type="numeric" default="0">
         <cfargument name="offset" required="false" type="numeric" default="0">
 
-        <cfset local.orderDetails = structNew()>
+        <cfset local.orderDetails = structNew('ordered')>
         <cftry>
             <cfquery name="local.orderHistoryData" datasource="#application.datasource#">
                 SELECT 
@@ -714,7 +712,7 @@
         <cfset local.order = fetchOrderDetails(orderId = arguments.orderId)[arguments.orderId]>
 
         <cfif arrayLen(local.order.products) GT 0>
-            <cfdocument format="pdf" filename="../assets1/createdPdf.pdf" overwrite="yes">
+            <cfdocument format="pdf" filename="../assets/createdPdf.pdf" overwrite="yes">
                 <cfoutput>
                     <h3>Invoice for Order: #local.order.orderId#</h3>
                     <p>Order Date: #local.order.orderDate#</p>

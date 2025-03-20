@@ -41,26 +41,28 @@
                     <cfparam name="url.searchId" default="">
                     <cfparam name="url.page" default="1">
                     
-                    <cfset pageSize = 5>
-                    <cfset currentPage = #url.page#>
-                    <cfset offset = (currentPage - 1) * pageSize>
+                    <cfset variables.pageSize = 5>
+                    <cfset variables.currentPage = #url.page#>
+                    <cfset variables.offset = (variables.currentPage - 1) * variables.pageSize>
 
                     <cfif url.searchId NEQ "">
-                        <cfset orderedEachItemList = application.myCartObj.fetchOrderDetails(searchId = url.searchId)>
-                        <cfif structCount(orderedEachItemList) EQ 0>
+                        <cfset variables.orderedEachItemList = application.myCartObj.fetchOrderDetails(searchId = url.searchId)>
+                        <cfif structCount(variables.orderedEachItemList) EQ 0>
                             <h6 class="text-danger mt-2 orderListingError">No orders found with #url.searchId#</h6>
                         </cfif>
                     <cfelse>
-                        <cfset orderedEachItemList = application.myCartObj.fetchOrderDetails(limit = pageSize, offset = offset)>
+                        <cfset variables.orderedEachItemList = application.myCartObj.fetchOrderDetails(limit = variables.pageSize,
+                                                                                             offset = variables.offset
+                                                                                             )>
                     </cfif>
 
-                    <cfset totalOrder = application.myCartObj.fetchOrderDetails()>
-                    <cfset totalOrders = structCount(totalOrder)>
-                    <cfset totalPages = floor(((totalOrders + pageSize) - 1) / pageSize)>
+                    <cfset variables.totalOrder = application.myCartObj.fetchOrderDetails()>
+                    <cfset variables.totalOrders = structCount(variables.totalOrder)>
+                    <cfset variables.totalPages = floor(((variables.totalOrders + variables.pageSize) - 1) / variables.pageSize)>
 
-                    <cfset orderIds = structKeyList(orderedEachItemList)>
+                    <cfset orderIds = structKeyList(variables.orderedEachItemList)>
                     <cfloop list="#orderIds#" index="orderId">
-                        <cfset order = orderedEachItemList[orderId]>
+                        <cfset order = variables.orderedEachItemList[orderId]>
                         <div class="d-flex flex-column mb-3">
                             <div class="d-flex orderListHeading">
                                 <div class="">ORDER ID : #order.orderId#</div>
@@ -73,7 +75,7 @@
                                 <div class="productDetails d-flex flex-column col-4">
                                     <cfloop array="#order.products#" index="product">
                                         <div class="orderedItem ms-5">
-                                            <img src="assets/#product.imageFileName#" alt="product_img" class="orderListImage ms-2 me-3">
+                                            <img src="assets/product_Images/#product.imageFileName#" alt="product_img" class="orderListImage ms-2 me-3">
                                             <div class="d-flex ms-5">
                                                 <div class="orderDiv1">#product.productName#</div>
                                                 <div class="orderDiv">Quantity: #product.quantity#</div>
@@ -103,16 +105,16 @@
                     </cfloop>
 
                     <div class="orderPagination">
-                        <cfif (currentPage GT 1) AND (url.searchId EQ "")>
-                            <a href="orderListing.cfm?searchId=#url.searchId#&page=#(currentPage - 1)#" class="paginationLink"> Previous </a>
+                        <cfif (variables.currentPage GT 1) AND (url.searchId EQ "")>
+                            <a href="orderListing.cfm?searchId=#url.searchId#&page=#(variables.currentPage - 1)#" class="paginationLink"> Previous </a>
                         <cfelse>
                             <button class="paginationLink disabled" > Previous </button>
                         </cfif>
 
-                        <span class="m-2">Page #currentPage# </span>
+                        <span class="m-2">Page #variables.currentPage# </span>
                         
-                        <cfif (currentPage LT totalPages) AND (url.searchId EQ "")>
-                            <a href="orderListing.cfm?searchId=#url.searchId#&page=#(currentPage + 1)#" class="paginationLink"> Next </a>
+                        <cfif (variables.currentPage LT variables.totalPages) AND (url.searchId EQ "")>
+                            <a href="orderListing.cfm?searchId=#url.searchId#&page=#(variables.currentPage + 1)#" class="paginationLink"> Next </a>
                         <cfelse>
                             <button class="paginationLink disabled" > Next </button>
                         </cfif>
