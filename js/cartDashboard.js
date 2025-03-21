@@ -927,7 +927,8 @@ function loadMoreProducts(subcategoryId,sort,count,min,max,minRange,maxRange) {
 
     })
 }
-
+    
+    
 
 
 

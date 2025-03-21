@@ -283,11 +283,14 @@ body{
     height:25vw;
 }
 .filterButton{
-    margin-left:60vw;
+    margin-left:75vw;
     border:1px solid white;
     color:#1f6625;
     padding:10px;
     border-radius:10px;
+}
+.filterLink{
+    margin-top:-3vw;
 }
 .imageLink{
     text-decoration:none;

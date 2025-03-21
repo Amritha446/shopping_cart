@@ -2,6 +2,11 @@
     <body>
         <cfoutput>
             <cfparam name="url.searchTerm" default="">
+            <cfparam name="url.sort" default=1>
+            <cfparam name="url.min" default=0>
+            <cfparam name="url.max" default=0>
+            <cfparam name="url.minRange" default=0>
+            <cfparam name="url.maxRange" default=0>
             <div class="container-fluid ">
                 <div class="header d-flex text-align-center">
                     <a href="homePage.cfm" class="imageLink"><div class="headerText ms-5 mt-2 col-6">MyCart</div></a>
@@ -37,12 +42,7 @@
                     </cfif>
                 </div>
                 <cfset variables.subCategoryId = application.myCartObj.decryptUrl(encryptedData =url.subCategoryId)>
-                <cfparam name="url.sort" default=1>
-                <cfparam name="url.min" default=0>
-                <cfparam name="url.max" default=0>
-                <cfparam name="url.minRange" default=0>
-                <cfparam name="url.maxRange" default=0>
-
+                
                 <cfinclude template = "navbar.cfm">
                 
                 <div class="productListingBasedCategory"> 
@@ -65,53 +65,50 @@
                                             > <a href="categoryBasedProduct.cfm?categoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = variables.viewCategory.fldCategory_Id))#" class="navBarButton ms-2">#variables.viewCategory.fldCategoryName#</a>
                                             > <a href="filterProduct.cfm?subCategoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = subCategory['fldSubCategory_Id']))#" class="navBarButton ms-2">#subCategory['fldSubCategoryName']#</a>
                                         </div>
-
                                         <h5 class="navBarButton ms-5 mt-2">#subCategory['fldSubCategoryName']#</h5>
                                         <div class="filterProduct d-flex ms-5">
-                                            
-                                            <div class="d-flex">
-                                                <button type="submit" class="filterButton" data-bs-toggle="modal" data-bs-target="##filterProduct">Filter <i class="fa-solid fa-filter"></i></button>
-                                            </div>
+                                            <button type="submit" class="filterButton" data-bs-toggle="modal" data-bs-target="##filterProduct">Filter <i class="fa-solid fa-filter"></i></button>
                                         </div>
-                                        <form method="post" name="form" action="filterProduct.cfm?subCategoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = subCategory['fldSubCategory_Id']))#">
-                                            <div class="filterLink ms-2">
-                                                <a href="filterProduct.cfm?subCategoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = subCategory['fldSubCategory_Id']))#&sort=1" class="navBarButton">Price High To Low</a>
-                                                <a href="filterProduct.cfm?subCategoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = subCategory['fldSubCategory_Id']))#&sort=2" class="ms-3 navBarButton">Price Low To High</a>
+                                        <form method="get" name="form" >
+                                            <div class="filterLink ms-3">
+                                                <a href="filterProduct.cfm?subCategoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = subCategory['fldSubCategory_Id']))#&sort=1&min=#url.min#&max=#url.max#&minRange=#url.minRange#&maxRange=#url.maxRange#" class="navBarButton">Price High To Low</a>
+                                                <a href="filterProduct.cfm?subCategoryId=#urlEncodedFormat(application.myCartObj.encryptUrl(plainData = subCategory['fldSubCategory_Id']))#&sort=2&min=#url.min#&max=#url.max#&minRange=#url.minRange#&maxRange=#url.maxRange#" class="ms-3 navBarButton">Price Low To High</a>
                                             </div>
                                             <div class="fade modal" id="filterProduct" tabindex="-1">
                                                 <div class="modal-dialog">
                                                     <div class="modal-content">
                                                         
-                                                            <div class="d-flex-column ms-2 mt-2 p-2">
-                                                                <label for="selectedValue" class="ms-1 mt-2 mb-2">Price Range:</label>
-                                                                <div class="d-flex">
-                                                                    <input type="number" name="minRange" placeholder="Min" class="ms-2" value="0">
-                                                                    <div class="ms-4 me-2 filterText"> To </div>
-                                                                    <input type="number" name="maxRange" placeholder="Max" class="ms-2" value="0">
-                                                                </div>
-                                                                <div class="mt-3">
-                                                                    <label for="selectedValue">Min value:</label>
-                                                                    <select name="min" id="selectedValueMin" class="mb-1 ">
-                                                                        <option value="0" default>0</option>
-                                                                        <option value="5000">5000</option>
-                                                                        <option value="15000">15000</option>
-                                                                        <option value="35000">35000</option>
-                                                                        <option value="50000">50000</option>
-                                                                    </select>
-                                                                    <label for="selectedValue" class="ms-3">Max value:</label>
-                                                                    <select name="max" id="selectedValueMax" class="mt-1 mb-2">
-                                                                        <option value="0" default>0</option>
-                                                                        <option value="10000">10000</option>
-                                                                        <option value="20000">20000</option>
-                                                                        <option value="40000">40000</option>
-                                                                        <option value="80000">80000</option>
-                                                                        <option value="150000">150000</option>
-                                                                    </select>
-                                                                    <button type="submit" class=" selectBtn" name="filterSubmit">Submit</button>
-                                                                </div>
-                                                                <input type="hidden" name="subCategoryId" id="subC" value="#subCategory['fldSubCategory_Id']#">
+                                                        <div class="d-flex-column ms-2 mt-2 p-2">
+                                                            <label for="selectedValue" class="ms-1 mt-2 mb-2">Price Range:</label>
+                                                            <div class="d-flex">
+                                                                <input type="number" name="minRange" placeholder="Min" class="ms-2" value="0">
+                                                                <div class="ms-4 me-2 filterText"> To </div>
+                                                                <input type="number" name="maxRange" placeholder="Max" class="ms-2" value="0">
                                                             </div>
-                                                        
+                                                            <!--- <input type="hidden" value="#urlEncodedFormat(url.subCategoryId)#" name="subCategoryId"> --->
+                                                            <div class="mt-3">
+                                                                <label for="selectedValue">Min value:</label>
+                                                                <select name="min" id="selectedValueMin" class="mb-1 ">
+                                                                    <option value="0" default>0</option>
+                                                                    <option value="5000">5000</option>
+                                                                    <option value="15000">15000</option>
+                                                                    <option value="35000">35000</option>
+                                                                    <option value="50000">50000</option>
+                                                                </select>
+                                                                <label for="selectedValue" class="ms-3">Max value:</label>
+                                                                <select name="max" id="selectedValueMax" class="mt-1 mb-2">
+                                                                    <option value="0" default>0</option>
+                                                                    <option value="10000">10000</option>
+                                                                    <option value="20000">20000</option>
+                                                                    <option value="40000">40000</option>
+                                                                    <option value="80000">80000</option>
+                                                                    <option value="150000">150000</option>
+                                                                </select>
+                                                                <button type="submit" class=" selectBtn" name="filterSubmit" value="#url.sort#">Submit</button>
+                                                            </div>
+                                                            <input type="hidden" name="subCategoryId" id="subC" value="#application.myCartObj.encryptUrl(plainData = subCategory['fldSubCategory_Id'])#">
+                                                            <input type="hidden" name="sort" value="#url.sort#">
+                                                        </div>
                                                     </div>  
                                                 </div>
                                             </div>
@@ -126,26 +123,17 @@
                                         </cfif>
                                         
                                         <cfset variables.viewProductCount = application.myCartObj.viewProduct(subCategoryId = variables.subCategoryId).recordCount()>
-                                        <cfif structKeyExists(form, "filterSubmit")> 
-                                            <cfset variables.viewProduct = application.myCartObj.viewProduct(subCategoryId = variables.subCategoryId,
-                                                                                                    min = form.min, 
-                                                                                                    max = form.max, 
-                                                                                                    minRange = form.minRange, 
-                                                                                                    maxRange = form.maxRange,
+                                        
+                                        <cfset variables.viewProduct = application.myCartObj.viewProduct(subCategoryId = variables.subCategoryId,
+                                                                                                    min = url.min, 
+                                                                                                    max = url.max, 
+                                                                                                    minRange = url.minRange, 
+                                                                                                    maxRange = url.maxRange,
                                                                                                     limit = variables.limit,
                                                                                                     offset = variables.offset,
                                                                                                     sort = url.sort,
                                                                                                     searchTerm = url.searchTerm
-                                                                                                    )>                                                                                                                
-                                        <cfelse>
-                                            <cfset variables.viewProduct = application.myCartObj.viewProduct(subCategoryId = subCategory['fldSubCategory_Id'],
-                                                                                                limit = variables.limit,
-                                                                                                offset = variables.offset,
-                                                                                                sort = url.sort,
-                                                                                                searchTerm = url.searchTerm
-                                                                                                )>
-                                        </cfif>
-
+                                                                                                    )>                                                                                                             
                                         <cfif variables.viewProduct.recordCount EQ 0>
                                             <h5 class="text-success ms-5 mt-5">No product found!</h5>
                                         </cfif>
@@ -165,7 +153,7 @@
                                         <cfset variables.countGenerated = variables.offset + variables.limit>
                                         <cfif (variables.viewProductCount GT variables.countGenerated) >
                                             <button type="button" id="viewMoreBtn" class="viewCategoryBtn text-success" 
-                                                onClick="loadMoreProducts('#variables.subCategoryId#','#sort#','#variables.viewProductCount#','#url.min#','#url.max#','#url.minRange#','#url.maxRange#')">
+                                                onClick="loadMoreProducts('#variables.subCategoryId#','#url.sort#','#variables.viewProductCount#','#url.min#','#url.max#','#url.minRange#','#url.maxRange#')">
                                                 View More
                                             </button>
                                         </cfif>

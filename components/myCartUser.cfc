@@ -573,11 +573,7 @@
                     <cfstoredproc procedure="sp_AddOrderPayment" datasource="#application.datasource#">
                         <cfprocparam type="in" value="#session.userId#" cfsqltype="integer">
                         <cfprocparam type="in" value="#arguments.addressId#" cfsqltype="integer">
-                        <cfprocparam type="in" value="#arguments.totalPrice#" cfsqltype="decimal">
-                        <cfprocparam type="in" value="#arguments.totalTax#" cfsqltype="decimal">
                         <cfprocparam type="in" value="#arguments.productId#" cfsqltype="integer">
-                        <cfprocparam type="in" value="#arguments.unitPrice#" cfsqltype="decimal">
-                        <cfprocparam type="in" value="#arguments.unitTax#" cfsqltype="decimal">
                         <cfprocparam type="out" variable="v_OrderId" cfsqltype="varchar">
                         <cfprocparam type="out" variable="Error" cfsqltype="varchar">
                     </cfstoredproc>

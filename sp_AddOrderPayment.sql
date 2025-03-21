@@ -2,11 +2,7 @@ DELIMITER $$
 CREATE PROCEDURE sp_AddOrderPayment(
     IN p_UserId INT,
     IN p_AddressId INT,
-    IN p_TotalPrice DECIMAL(10, 2),
-    IN p_TotalTax DECIMAL(10, 2),
     IN p_ProductId INT,
-    IN p_UnitPrice DECIMAL(10, 2),
-    IN p_UnitTax DECIMAL(10, 2),
     OUT v_OrderId VARCHAR(64),  
     OUT Error VARCHAR(64)
 )
@@ -21,6 +17,7 @@ BEGIN
     START TRANSACTION;
 
     SET v_OrderId = UUID();
+   
     INSERT INTO tblorder (
         fldOrder_Id,
         fldUserId,
@@ -28,13 +25,19 @@ BEGIN
         fldTotalPrice,
         fldTotalTax
     )
-    VALUES (
+    SELECT 
         v_OrderId,
         p_UserId,
         p_AddressId,
-        p_TotalPrice,
-        p_TotalTax
-    );
+        SUM(c.fldQuantity * p.fldPrice) AS totalPrice, 
+        SUM(c.fldQuantity * p.fldTax * p.fldPrice/100) AS totalTax
+    FROM 
+        tblcart c
+        INNER JOIN tblproduct p ON c.fldProductId = p.fldProduct_Id
+    WHERE 
+        c.fldUserId = p_UserId
+	GROUP BY c.fldUserId;
+    
     IF p_ProductId IS NOT NULL AND p_ProductId != 0 THEN
         INSERT INTO tblorderitems (
             fldOrderId,
@@ -43,13 +46,17 @@ BEGIN
             fldUnitPrice,
             fldUnitTax
         )
-        VALUES (
+        SELECT 
             v_OrderId,
             p_ProductId,
             1,
-            p_UnitPrice,
-            p_UnitTax
-        );
+            fldPrice,
+            fldTax
+        FROM 
+            tblproduct
+        WHERE 
+            fldProduct_Id = p_ProductId;
+
         DELETE FROM 
             tblcart 
         WHERE fldUserId = p_UserId
