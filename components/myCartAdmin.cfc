@@ -1,14 +1,5 @@
 <cfcomponent>
-    <cffunction name="saveCategory" access="remote" returnType="string" returnFormat = "json">
-        <cfargument name="operation" required="true" type="string">
-        <cfargument name="categoryName" required="true" type="string">
-        <cfargument name="categoryId" required="false" type="numeric" default=0>
-        <cfif len(trim(arguments.categoryName)) EQ 0>
-            <cfreturn "Category name should be filled.">
-        </cfif>
-        <cfif NOT reFind("^[a-zA-Z]+$", arguments.categoryName)>
-            <cfreturn "Category name should contain only alphabets and should not be empty.">
-        </cfif>
+    <cffunction name="saveCategory" access="public" returnType="string">
         <cfquery name="local.checkCategory" datasource="#application.datasource#">
             SELECT 
                 fldCategoryName    

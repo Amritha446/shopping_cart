@@ -118,7 +118,7 @@ function addCategoryFormSubmit(){
     event.preventDefault();
     $.ajax({
         type:"POST",
-        url:"Components/myCartAdmin.cfc?method=saveCategory", 
+        url:"Components/controller.cfc?method=savedCategory", 
         data:{
             categoryName:document.getElementById('categoryNameAdd').value,
             operation:"add"
@@ -152,7 +152,7 @@ function saveCategory(event, categoryId) {
     }
     $.ajax({
         type: "POST",
-        url: "Components/myCartAdmin.cfc?method=saveCategory", 
+        url: "Components/controller.cfc?method=savedCategory", 
         data: {
             categoryId: categoryId,
             categoryName: updatedCategoryName,

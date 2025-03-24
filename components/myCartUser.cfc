@@ -188,7 +188,7 @@
 
     <cffunction name = "viewProduct" access = "remote" returnType = "query" returnFormat = "json">
         <cfargument name = "subCategoryId" default = 0 required = "false" type = "integer">
-        <cfargument name = "productId" default = "" required = "false" type = "string">
+        <cfargument name = "productId" default = 0 required = "false" type = "numeric">
         <cfargument name = "sort" type = "numeric" required = "false" default = 1>
         <cfargument name = "min" type = "numeric" required = "false" default = 0>
         <cfargument name = "max" type = "numeric" required = "false" default = 0>
@@ -225,7 +225,7 @@
                 <cfif arguments.subCategoryId NEQ 0> 
                     AND P.fldSubCategoryid = <cfqueryparam value = "#arguments.subCategoryId#" cfsqltype = "integer">
                 </cfif>
-                <cfif len(trim(arguments.productId)) AND isNumeric(arguments.productId)> 
+                <cfif arguments.productId NEQ 0  AND isNumeric(arguments.productId)> 
                     AND P.fldProduct_Id = <cfqueryparam value="#arguments.productId#" cfsqltype = "integer">
                 </cfif>
                 <cfif arguments.max NEQ 0> 
