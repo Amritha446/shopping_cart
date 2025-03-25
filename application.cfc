@@ -2,43 +2,70 @@
     <cfset this.name = 'shoppingCart'>
     <cfset this.sessionManagement = true>
     <cfset this.sessionTimeout=createTimespan(0, 2, 0, 0)>
-    <cfset this.datasource = "shoppingCart">
     
-    <cffunction name = "onApplicationStart" access="public" returnType="boolean">
-        <cfset application.myCartObj = createObject("component", "components.myCart")>
-
+    <cffunction name = "onApplicationStart" access = "public" returnType = "boolean">
+        <cfset application.key = "1e0Js/hDrE8mllZflN+WkQ==">
+        <cfset application.myCartObj = createObject("component", "components.myCartUser")>
+        <cfset application.myCartObjAdmin = createObject("component", "components.myCartAdmin")>
+        <cfset application.datasource = "shoppingCart">
         <cfreturn true>
     </cffunction>
 
-    <cffunction  name="onRequest" returnType="void">
-        <cfargument  name="requestPage" required="true">
-        <cfinclude template="commonLink.cfm">
-        <cfinclude  template="#arguments.requestPage#">
+    <cffunction name = "onRequest" returnType = "void">
+        <cfargument name = "requestPage" required="true">
+        <cfinclude template = "commonLink.cfm">
+        <cfinclude template = "#arguments.requestPage#">
     </cffunction>
 
     <cffunction name="onRequestStart" returnType="boolean">
+        <cfargument name = "requestPage" required = "true"> 
 
-        <cfargument  name="requestPage" required="true"> 
-    <cfset onApplicationStart()>
-        <cfset local.excludePages = ["/Amritha_CF/testTask/myCart/shopping_cart/login.cfm","/Amritha_CF/testTask/myCart/shopping_cart/signUp.cfm"]>
-        <cfset local.adminPages = ["/Amritha_CF/testTask/myCart/shopping_cart/cartDashboard.cfm","/Amritha_CF/testTask/myCart/shopping_cart/addCategory.cfm",
-        "/Amritha_CF/testTask/myCart/shopping_cart/productPage.cfm","/Amritha_CF/testTask/myCart/shopping_cart/subCategory.cfm"]>
-        <cfif ArrayContains(local.excludePages,arguments.requestPage)>
-            <cfreturn true>
-        <cfelseif structKeyExists(session, "isAuthenticated")>
-            <cfif session.roleId EQ 1>
-                <cfreturn true> 
-            <cfelse>
-                <cfif ArrayContains(local.adminPages,arguments.requestPage)>
-                    <cflocation  url="homePage.cfm">
-                <cfelse>
-                    <cfreturn true>
-                </cfif>
-            </cfif>
-        <cfelse>
-            <cfreturn true>
+        <cfif structKeyExists(URL,"reload") AND URL.reload EQ 1>
+            <cfset onApplicationStart()>
         </cfif>
-    </cffunction>
-    
 
+        <cfset local.publicPages = ["/Components/myCartUser.cfc",
+                                "/login.cfm",
+                                "/signUp.cfm",
+                                "/homePage.cfm",
+                                "/categoryBasedProduct.cfm",
+                                "/productDetails.cfm",
+                                "/filterProduct.cfm"]>
+        <cfset local.adminPages = ["/cartDashboard.cfm",
+                                "/addCategory.cfm",
+                                "/productPage.cfm",
+                                "/subCategory.cfm"]>
+        
+        <cfif ArrayContains(local.adminPages,arguments.requestPage)>
+            <cfif structKeyExists(session, "isAuthenticated") AND session.isAuthenticated EQ true >
+                <cfif session.roleId EQ 1>
+                    <cfreturn true> 
+                <cfelse>
+                    <cflocation url = "/homePage.cfm">
+                </cfif>
+            <cfelse>
+                <cflocation url = "/homePage.cfm">
+           </cfif>
+        <cfelseif ArrayContains(["/logIn.cfm","/signUp.cfm"],arguments.requestPage)>
+            <cfif structKeyExists(session, "isAuthenticated") AND session.isAuthenticated EQ true >
+                <cflocation url ="/homePage.cfm">
+            </cfif>
+        <cfelseif ArrayContains(local.publicPages,arguments.requestPage)>
+            <cfreturn true>
+        <cfelse>
+            <cfif structKeyExists(session, "isAuthenticated") AND session.isAuthenticated EQ true >
+                <cfreturn true>
+            <cfelse>
+                <cflocation url ="/logIn.cfm">  
+            </cfif> 
+        </cfif>
+        <cfreturn true>
+    </cffunction>
+
+    <!--- <cffunction name="onError" access="public" returnType="void">
+        <cfargument name="exception" required="true" type="any">
+        <cfargument name="eventName" required="true" type="string">
+        <cfset location("./error.cfm?message=" & urlEncodedFormat(arguments.exception.message))>
+    </cffunction> --->
+    
 </cfcomponent>
